@@ -5,9 +5,16 @@ jobs:
   deploy-to-development:
     runs-on: ubuntu-latest
     steps:
+    - name: Setup SSH Private Key
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy to SSH
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} root@server.itslgit.com "
+        ssh -o StrictHostKeyChecking=no root@server.itslgit.com "
         docker container rm -f lumecafe_backend || true && 
         docker image rm -f mrizalrizky/lume-pos-backend:latest || true &&
         docker run --name lumcafe_backend -d -p 3443:3443"
