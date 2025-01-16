@@ -23,11 +23,7 @@ db.masterProductCategory = require("../models/masterproductcategory")(
   sequelize,
   Sequelize
 );
-db.subProductCategory = require("../models/subproductcategory")(
-  sequelize,
-  Sequelize
-);
-db.masterProduct = require("../models/masterproduct")(sequelize, Sequelize);
+db.masterProducts = require("../models/masterproducts")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
