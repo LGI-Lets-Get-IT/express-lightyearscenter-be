@@ -19,4 +19,4 @@ jobs:
     - name: Publish docker image to Docker Hub
       run: |
         docker login -u mrizalrizky -p ${{ secrets.DOCKER_HUB_TOKEN }}
-        docker push itslgit/lume-pos-be:latest
+        docker push mrizalrizky/lume-pos-be:latest
