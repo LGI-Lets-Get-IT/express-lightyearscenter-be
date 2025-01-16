@@ -9,10 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      MasterProducts.belongsTo(models, MasterProductsCategory, {
-        foreignKey: "products_category_id",
-        key: "id",
-      });
+      // this.belongsTo(models.MasterProductCategory, {
+      //   foreignKey: "products_category_id",
+      //   key: "id",
+      // });
     }
   }
   MasterProducts.init(
@@ -30,4 +30,3 @@ module.exports = (sequelize, DataTypes) => {
   );
   return MasterProducts;
 };
-
