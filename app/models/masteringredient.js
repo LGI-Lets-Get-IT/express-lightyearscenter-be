@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      MasterIngredient.belongsTo(models.Supplier, {
+        foreignKey: "suplier_id",
+        as: "supplier",
+      });
     }
   }
   MasterIngredient.init(
@@ -25,3 +29,4 @@ module.exports = (sequelize, DataTypes) => {
   );
   return MasterIngredient;
 };
+

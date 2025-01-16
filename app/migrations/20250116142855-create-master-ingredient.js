@@ -20,6 +20,10 @@ module.exports = {
       },
       supplier_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "supplier",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,
@@ -35,3 +39,4 @@ module.exports = {
     await queryInterface.dropTable("MasterIngredients");
   },
 };
+
