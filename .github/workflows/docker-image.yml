@@ -15,4 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag itslgit/lume-pos-be:$(date +%s)
+      run: docker build . --file Dockerfile --tag itslgit/lume-pos-be:latest
+    - name: Publish docker image to Docker Hub
+      run: |
+        docker login -u mrizalrizky -p 'dckr_pat_Aa_j-7sAGI7zADQ712Srb_7ul1I'
+        docker push itslgit/lume-pos-be:latest
