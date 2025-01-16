@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag itslgit/lume-pos-be:latest
+      run: docker build . --file Dockerfile --tag mrizalrizky/lume-pos-be:latest
     - name: Publish docker image to Docker Hub
       run: |
         docker login -u mrizalrizky -p ${{ secrets.DOCKER_HUB_TOKEN }}
