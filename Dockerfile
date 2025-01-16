@@ -10,4 +10,4 @@ RUN npm install bcrypt@latest --save
 
 EXPOSE 3344
 
-CMD ["npm", "run", "dev"]
+CMD ["node", "server.js"]
