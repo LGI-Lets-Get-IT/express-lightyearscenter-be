@@ -7,7 +7,7 @@ const messageHandler = require("./app/utils/messageHandler.utils");
 
 require("dotenv").config();
 
-app.set('trust proxy', 1)
+app.set("trust proxy", 1);
 app.use(cors({ origin: "*" }));
 
 app.use(express.json());
@@ -19,6 +19,10 @@ if (process.env.NODE_ENV === "DEVELOPMENT") {
 }
 
 require("./app/routes")(app);
+
+app.get("/api/health-check", (req, res) => {
+  res.status(200).json(`API is healthy, running on port ${PORT}`);
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
