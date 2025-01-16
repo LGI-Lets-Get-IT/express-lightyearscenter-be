@@ -1,17 +1,13 @@
-const {
-  masterProduct,
-  subProductCategory,
-  masterProductCategory,
-} = require("../models");
+const { masterProduct, masterProductCategory } = require("../models");
 
 const getAllProducts = async (req, res) => {
   try {
     const allProductsData = await masterProduct.findAll({
-      include: [
-        {
-          model: subProductCategory,
-        },
-      ],
+      // include: [
+      //   {
+      //     model: subProductCategory,
+      //   },
+      // ],
     });
     console.log("allProductsData", allProductsData);
 

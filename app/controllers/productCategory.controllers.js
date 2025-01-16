@@ -1,10 +1,10 @@
-const { masterProductCategory, subProductCategory } = require("../models");
+const { masterProductCategory } = require("../models");
 
 const getAllCategories = async (req, res) => {
   try {
     const allCategoiesData = await masterProductCategory.findAll({
       order: [["id", "ASC"]],
-      include: [{ model: subProductCategory }],
+      // include: [{ model: subProductCategory }],
     });
 
     res.jsonSuccess(
