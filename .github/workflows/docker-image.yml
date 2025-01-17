@@ -14,9 +14,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag mrizalrizky/lume-pos-backend:latest
-    - name: Publish docker image to Docker Hub
+    - name: Setup .env file
       run: |
-        docker login -u mrizalrizky -p ${{ secrets.DOCKER_HUB_TOKEN }}
-        docker push mrizalrizky/lume-pos-backend:latest
+        echo "${{ secrets.ENV_DEVELOPMENT }}" > .env
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: mrizalrizky
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build the Docker image
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: mrizalrizky/lume-pos-backend:latest
+        build-args: |
+          ENV_FILE_PATH=.env
+      # run: |
+      #   docker build . 
+    # - name: Publish docker image to Docker Hub
+    #   run: |
+    #     docker login -u mrizalrizky -p ${{ secrets.DOCKER_HUB_TOKEN }}
+    #     docker push mrizalrizky/lume-pos-backend:latest
