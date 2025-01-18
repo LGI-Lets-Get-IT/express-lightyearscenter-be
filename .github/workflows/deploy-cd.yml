@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-to-development:
-    if: github.ref == 'ref/heads/development'
+    if: github.ref == 'refs/heads/development'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to SSH
@@ -35,7 +35,7 @@ jobs:
     #     docker image rm -f mrizalrizky/lume-pos-backend:latest || true &&
     #     docker run --name lumcafe_backend -d -p 3443:3443"
   deploy-to-production:
-    if: github.ref == 'ref/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to SSH
