@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 COPY . .
 
-# RUN npm install
+RUN npm install
 # RUN npm uninstall bcrypt
 # RUN npm install bcrypt@latest --save
 
