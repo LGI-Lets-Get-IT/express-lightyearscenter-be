@@ -1,7 +1,9 @@
 name: Deploy application
 on:
   push:
-    branches: ["main", "development"]
+    branches:
+      - main
+      - development
 
 jobs:
   deploy-to-development:
