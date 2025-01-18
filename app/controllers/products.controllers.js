@@ -1,14 +1,8 @@
-const { masterProduct, masterProductCategory } = require("../models");
+const ProductService = require('../services/products.services')
 
 const getAllProducts = async (req, res) => {
   try {
-    const allProductsData = await masterProduct.findAll({
-      // include: [
-      //   {
-      //     model: subProductCategory,
-      //   },
-      // ],
-    });
+    const allProductsData = await ProductService.fetchAllOrders()
     console.log("allProductsData", allProductsData);
 
     res.jsonSuccess(
