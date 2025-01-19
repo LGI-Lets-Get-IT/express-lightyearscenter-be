@@ -19,11 +19,10 @@ if (config.use_env_variable) {
   );
 }
 
-db.masterProductCategory = require("../models/masterproductcategory")(
-  sequelize,
-  Sequelize
-);
-db.masterProducts = require("../models/masterproducts")(sequelize, Sequelize);
+db.suppliers = require("../models/supplier")(sequelize, Sequelize);
+db.ingredients = require("../models/masteringredient")(sequelize, Sequelize);
+db.productCategories = require("../models/masterproductcategory")(sequelize,Sequelize);
+db.products = require("../models/masterproducts")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

@@ -1,5 +1,11 @@
-// function MasterProductRepository(db) {
-//     const create = () => {
-//         return db.m
-//     }
-// }
+function MasterProductRepository(db) {
+  const findAll = () => {
+    return db.products.findAll();
+  };
+
+  return {
+    findAll,
+  };
+}
+
+module.exports = MasterProductRepository;

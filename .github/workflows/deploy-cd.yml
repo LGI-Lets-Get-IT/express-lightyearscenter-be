@@ -1,8 +1,13 @@
 name: Deploy application
-on: push
+on:
+  push:
+    branches:
+      - main
+      - development
 
 jobs:
   deploy-to-development:
+    if: github.ref == 'refs/heads/development'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to SSH
@@ -12,11 +17,10 @@ jobs:
           port: ${{ secrets.SSH_PORT}}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          # key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker container rm -f lumecafe_backend || true
-            docker image rm -f mrizalrizky/lume-pos-backend:latest || true
-            docker run --name lumecafe_backend -d -p 3443:3443 mrizalrizky/lume-pos-backend:latest
+            docker container rm -f lumecoffee_pos_api-dev || true
+            docker image rm -f mrizalrizky/lumecoffee-backend-dev:latest || true
+            docker run --name lumecoffee_pos_api-dev -d -p 3344:3344 mrizalrizky/lumecoffee-backend-dev:latest
     # - name: Setup SSH Private Key
     #   run: |
     #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -27,7 +31,21 @@ jobs:
     # - name: Deploy to SSH
     #   run: |
     #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@server.itslgit.com "
-    #     docker container rm -f lumecafe_backend || true && 
+    #     docker container rm -f lumecafe_backend || true &&
     #     docker image rm -f mrizalrizky/lume-pos-backend:latest || true &&
     #     docker run --name lumcafe_backend -d -p 3443:3443"
-    
+  deploy-to-production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT}}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker container rm -f lumecoffee_pos_api || true
+            docker image rm -f mrizalrizky/lumecoffee-backend:latest || true
+            docker run --name lumecoffee_pos_api -d -p 3344:3344 mrizalrizky/lumecoffee-backend:latest

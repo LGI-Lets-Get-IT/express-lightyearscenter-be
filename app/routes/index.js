@@ -1,5 +1,11 @@
 const _routes = [
   {
+    path: 'auth',
+    router: require('./auth.routes'),
+    middlewares: [],
+    version: '1'
+  },
+  {
     path: "orders",
     router: require("./orders.routes"),
     middlewares: [],

@@ -21,7 +21,10 @@ if (process.env.NODE_ENV === "DEVELOPMENT") {
 require("./app/routes")(app);
 
 app.get("/api/health-check", (req, res) => {
-  res.status(200).json(`API is healthy, running on port ${PORT}`);
+  if(process.env.NODE_ENV === 'production') {
+    res.status(200).json(`Production API is healthy, running on port ${PORT}`);
+  }
+  res.status(200).json(`Development API is healthy, running on port ${PORT}`);
 });
 
 const PORT = process.env.PORT || 3001;
