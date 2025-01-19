@@ -1,13 +1,12 @@
-FROM node:20
+FROM node:20 as build
 
 WORKDIR /usr/app
 
 COPY . .
-
 RUN npm install
-# RUN npm uninstall bcrypt
-# RUN npm install bcrypt@latest --save
 
+FROM node:alpine as main
+
+COPY --from=build /usr/app /
 EXPOSE 3344
-
 CMD ["node", "server.js"]
