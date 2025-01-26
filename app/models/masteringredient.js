@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // this.belongsTo(models.Supplier)
       // this.belongsTo(models.Supplier, {
-      //   foreignKey: "supolier_id",
+      //   foreignKey: "supplier_id",
       //   as: "supplier",
       // });
     }
@@ -18,13 +18,21 @@ module.exports = (sequelize, DataTypes) => {
   MasterIngredient.init(
     {
       name: DataTypes.STRING,
-      unit_type: DataTypes.STRING,
-      available_qty: DataTypes.INTEGER,
-      supplier_id: DataTypes.INTEGER,
+      unit_type: {
+        type: DataTypes.ENUM,
+        values: ['ml', 'l', 'kg', 'g']
+      },
+      available_quantity: DataTypes.INTEGER,
+      supplier_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
     },
     {
       sequelize,
       modelName: "MasterIngredient",
+      tableName: "master_ingredients",
+      underscored: true
     }
   );
   return MasterIngredient;

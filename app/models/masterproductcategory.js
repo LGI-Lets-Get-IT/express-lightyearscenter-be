@@ -14,12 +14,14 @@ module.exports = (sequelize, DataTypes) => {
   MasterProductCategory.init(
     {
       name: DataTypes.STRING,
-      description: DataTypes.TEXT,
-      icon: DataTypes.STRING,
+      description: DataTypes.STRING(128),
+      order: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "MasterProductCategory",
+      tableName: "master_product_categories",
+      underscored: true,
     }
   );
   return MasterProductCategory;

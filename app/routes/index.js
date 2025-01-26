@@ -23,12 +23,18 @@ const _routes = [
     middlewares: [],
     version: "1",
   },
-  //   {
-  //     path: "promotions",
-  //     router: require("./promotions.routes"),
-  //     middlewares: [],
-  //     version: "1",
-  //   },
+  {
+    path: 'ingredients',
+    router: require('./ingredients.routes'),
+    middlewares: [],
+    version: '1'
+  },
+  {
+    path: "promotions",
+    router: require("./promotions.routes"),
+    middlewares: [],
+    version: "1",
+  },
 ];
 
 module.exports = (app) => {

@@ -1,6 +1,6 @@
 function OrderRepository(db) {
   const findAll = () => {
-    return db.orders.findAll({});
+    return db.orders.findAll();
   };
   const findAllByCondition = (whereCond) => {
     return db.orders.findAll({

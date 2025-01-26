@@ -22,7 +22,9 @@ if (config.use_env_variable) {
 db.suppliers = require("../models/supplier")(sequelize, Sequelize);
 db.ingredients = require("../models/masteringredient")(sequelize, Sequelize);
 db.productCategories = require("../models/masterproductcategory")(sequelize,Sequelize);
-db.products = require("../models/masterproducts")(sequelize, Sequelize);
+db.products = require("../models/masterproduct")(sequelize, Sequelize);
+db.customers = require('../models/customer')(sequelize, Sequelize);
+db.promotions = require('../models/masterpromotion')(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

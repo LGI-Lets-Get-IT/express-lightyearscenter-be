@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("MasterIngredients", {
+    await queryInterface.createTable("master_ingredients", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,30 +13,32 @@ module.exports = {
         type: Sequelize.STRING,
       },
       unit_type: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM,
+        values: ['ml', 'l', 'kg', 'g']
       },
-      available_qty: {
+      available_quantity: {
         type: Sequelize.INTEGER,
       },
       supplier_id: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         references: {
-          model: "supplier",
+          model: "suppliers",
           key: "id",
         },
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("MasterIngredients");
+    await queryInterface.dropTable("master_ingredients");
   },
 };
 

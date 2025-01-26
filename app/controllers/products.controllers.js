@@ -1,9 +1,10 @@
-const ProductService = require('../services/products.services')
+const productService = require('../services/products.services')
+const ingredientService = require('../services/ingredients.services')
+const customError = new Error()
 
 const getAllProducts = async (req, res) => {
   try {
-    const allProductsData = await ProductService.fetchAllOrders()
-    console.log("allProductsData", allProductsData);
+    const allProducts = await productService.fetchAllProducts()
 
     res.jsonSuccess(
       200,
@@ -11,14 +12,29 @@ const getAllProducts = async (req, res) => {
         indonesian: "Data produk berhasil diambil",
         english: "Products data fetched successfully",
       },
-      allProductsData
+      allProducts
     );
   } catch (error) {
-    console.log("error", error);
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 };
 
+const createProduct =  async (req, res) => {
+  try {
+    const { name, product_category, description, price, ingredients } = req.body
+
+    const createdProduct = await productService.create(name, product_category, description, price, ingredients)
+
+    res.jsonSuccess(200, {
+      indonesian: "Produk berhasil ditambahkan",
+      english: "Product created successfully"
+    }, createdProduct)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
+
 module.exports = {
   getAllProducts,
+  createProduct
 };

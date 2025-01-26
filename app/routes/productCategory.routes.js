@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const ProductCategoryController = require("../controllers/productCategory.controllers");
+const productCategoryController = require("../controllers/productCategory.controllers");
 
-router.get("/", ProductCategoryController.getAllCategories);
-// router.post("/", OrderController.createOrder);
+router.get("/", productCategoryController.getAllCategories);
+router.post("/", productCategoryController.createCategory);
 // router.put("/", OrderController.updateOrder);
 // router.delete("/", OrderController.deleteOrder);
 

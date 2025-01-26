@@ -4,7 +4,6 @@ const app = express();
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocs = require("./app/apidocs/swagger.json");
 const messageHandler = require("./app/utils/messageHandler.utils");
-
 require("dotenv").config();
 
 app.set("trust proxy", 1);
@@ -21,10 +20,7 @@ if (process.env.NODE_ENV === "DEVELOPMENT") {
 require("./app/routes")(app);
 
 app.get("/api/health-check", (req, res) => {
-  if(process.env.NODE_ENV === 'production') {
-    res.status(200).json(`Production API is healthy, running on port ${PORT}`);
-  }
-  res.status(200).json(`Development API is healthy, running on port ${PORT}`);
+  res.status(200).json(`API is healthy, running on port ${PORT}`);
 });
 
 const PORT = process.env.PORT || 3001;

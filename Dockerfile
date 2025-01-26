@@ -6,6 +6,6 @@ RUN npm install
 
 FROM gcr.io/distroless/nodejs
 
-COPY --from=build /usr/app /
+COPY --from=build /usr/app /usr/app
 EXPOSE 3344
 CMD ["node", "server.js"]

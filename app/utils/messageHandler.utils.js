@@ -1,8 +1,9 @@
 module.exports = (req, res, next) => {
   res.jsonSuccess = (statusCode, message, data, rest) => {
+    console.log('MASUK SUCCESS')
     return res.status(statusCode).send({
       response: {
-        code: "DC-00",
+        success: true,
         message,
       },
       ...(data && { data }),
@@ -10,13 +11,14 @@ module.exports = (req, res, next) => {
     });
   };
 
-  res.jsonFailed = (statusCode, code, message, error) => {
+  res.jsonFailed = (statusCode, message, error) => {
+    console.log('MASUK FAILED')
     return res.status(statusCode).send({
       response: {
-        code,
+        success: false,
         message,
-        ...(error && { error }),
       },
+      ...(error && { error }),
     });
   };
 
