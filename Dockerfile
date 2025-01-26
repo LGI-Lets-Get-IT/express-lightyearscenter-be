@@ -4,7 +4,7 @@ WORKDIR /usr/app
 COPY package.json server.js ./
 RUN npm install
 
-FROM gcr.io/distroless/nodejs
+FROM node:alpine
 
 WORKDIR /usr/app
 
