@@ -15,6 +15,7 @@ const getAllProducts = async (req, res) => {
       allProducts
     );
   } catch (error) {
+    console.log('ERRORR', error)
     res.jsonFailed(error?.statusCode, error?.message);
   }
 };

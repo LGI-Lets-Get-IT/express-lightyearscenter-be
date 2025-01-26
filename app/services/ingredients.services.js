@@ -10,11 +10,13 @@ const fetchAllIngredients = async () => {
 
 const getIngredientStock = async (productsList) => {
   const ingredientList = await ingredientRepository.findAll()
+  console.log('ingredientList', ingredientList)
 
   const ingredientStock = ingredientList.reduce((acc, ingredient) => {
     acc[ingredient['name']] = ingredient['available_quantity'];  // Assuming ingredient.name and ingredient.stock exist
     return acc;
   }, {});
+  console.log('ingredientStock', ingredientStock)
 
   let maxProducts = Infinity
   for(let product of productsList) {
@@ -25,12 +27,15 @@ const getIngredientStock = async (productsList) => {
       const availableStock = ingredientStock[name] || 0
       const possibleProducts = Math.floor(availableStock / requiredQty)
 
+      console.log('possibleProducts', possibleProducts)
       if(possibleProducts < maxProducts) {
         maxProducts = possibleProducts
       }
     })
 
     product.stock = maxProducts;
+
+    console.log('PRODUCTTT', product)
     
     return product
   }
