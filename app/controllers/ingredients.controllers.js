@@ -14,6 +14,18 @@ const getAllIngredients = async (req, res) => {
   }
 };
 
+const getIngredientById = async (req, res) => {
+  try {
+    
+    res.jsonSuccess(200, {
+      indonesian: "Bahan produk berhasil ditambah",
+      english: "Product ingredientts fetched successfully",
+    })
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message)
+  }
+}
+
 const createIngredient =  async (req, res) => {
   try {
     const { name, unit_type, available_quantity, supplier_id } = req.body
@@ -31,5 +43,6 @@ const createIngredient =  async (req, res) => {
 
 module.exports = {
   getAllIngredients,
+  getIngredientById,
   createIngredient,
 };

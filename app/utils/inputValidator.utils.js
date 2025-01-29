@@ -1,11 +1,14 @@
 const validateInput = (schema) => {
     return (req, res, next) => {
-        const { error, value } = schema.validate(req.body, { abortEarly: false })
+        const { error, value } = schema.validate(req.body, { abortEarly: false, escapeHtml: true })
         
         if(error) {
-            const errorMessages = errors.details.map(err => err.message)
-            console.log('ERRORSSS', error.details.length, error.details)
-            return res.status(400).json(error.details)
+            const errorMessages = error.details.map(err => err.message)
+
+            return res.jsonFailed(400, {
+                indonesian: "Validasi error",
+                english: "Validation error"
+            }, errorMessages)
         }
 
         next()

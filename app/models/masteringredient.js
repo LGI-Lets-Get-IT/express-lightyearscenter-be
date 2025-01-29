@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   MasterIngredient.init(
     {
       name: DataTypes.STRING,
+      key: DataTypes.STRING(64),
       unit_type: {
         type: DataTypes.ENUM,
         values: ['ml', 'l', 'kg', 'g']

@@ -1,9 +1,12 @@
 const Joi = require('joi')
 
-const productSchema = {
+exports.productSchema = {
     create: Joi.object({
         name: Joi.string().required(),
-        description: Joi.string().required()
+        description: Joi.string().required(),
+        price: Joi.number().required(),
+        ingredients: Joi.object().required(),
+        product_category: Joi.number().required()
     }),
 
     update: Joi.object({
@@ -11,4 +14,9 @@ const productSchema = {
     })
 }
 
-module.exports = productSchema
+exports.productCategorySchema = {
+    create: Joi.object({
+        name: Joi.string().required(),
+        description: Joi.string().required()
+    })
+}

@@ -6,9 +6,10 @@ function MasterIngredientRepository(db) {
     });
   };
 
-  const create = (name, unit_type, available_quantity, supplier_id, updated_by, transaction) => {
+  const create = (name, keyName, unit_type, available_quantity, supplier_id, updated_by, transaction) => {
     return db.ingredients.create({
       name,
+      key: keyName,
       unit_type,
       available_quantity,
       supplier_id,

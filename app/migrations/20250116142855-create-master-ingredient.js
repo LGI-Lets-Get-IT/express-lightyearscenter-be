@@ -12,6 +12,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
+      key: {
+        type: Sequelize.STRING(64)
+      },
       unit_type: {
         type: Sequelize.ENUM,
         values: ['ml', 'l', 'kg', 'g']

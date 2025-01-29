@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const productController = require("../controllers/products.controllers");
 const { validateInput } = require("../utils/inputValidator.utils");
-const productSchema = require("../validators/products.validators");
+const { productSchema } = require("../validators/products.validators");
 
 router.get("/", productController.getAllProducts);
 router.get('/:id', productController.getProductById);
