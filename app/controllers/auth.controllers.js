@@ -28,7 +28,7 @@ const customerLogin = async (req, res) => {
     );
   } catch (error) {
     await transaction.rollback()
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 };
 
@@ -65,7 +65,7 @@ const customerRegister = async (req, res) => {
         );
   } catch (error) {
     await transaction.rollback()
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 };
 

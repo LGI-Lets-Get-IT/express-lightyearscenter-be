@@ -14,7 +14,7 @@ const getAllPromotions = async (req, res) => {
       // allPromotionsData
     );
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 };
 
@@ -22,14 +22,14 @@ const createPromotion = async (req, res) => {
   try {
     
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 }
 const updatePromotion = async (req, res) => {
   try {
     
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 }
 
@@ -37,7 +37,7 @@ const deletePromotion = async (req, res) => {
   try {
     
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 }
 

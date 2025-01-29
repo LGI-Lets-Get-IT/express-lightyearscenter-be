@@ -14,7 +14,7 @@ const getAllOrders = async (req, res) => {
       allOrderData
     );
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 };
 
@@ -32,7 +32,7 @@ const createOrder = async (req, res) => {
       createdOrder
     );
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 };
 

@@ -15,10 +15,23 @@ const getAllProducts = async (req, res) => {
       allProducts
     );
   } catch (error) {
-    console.log('ERRORR', error)
     res.jsonFailed(error?.statusCode, error?.message);
   }
 };
+
+const getProductById = async (req, res) => {
+  try {
+    const productId = req.params.id
+    const product = await productService.fetchProductById(productId);
+
+    res.jsonSuccess(200, {
+      indonesian: "Data produk berhasil diambil",
+      english: "Product data fetched successfully"
+    }, product)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message)
+  }
+}
 
 const createProduct =  async (req, res) => {
   try {
@@ -37,5 +50,6 @@ const createProduct =  async (req, res) => {
 
 module.exports = {
   getAllProducts,
+  getProductById,
   createProduct
 };

@@ -8,6 +8,12 @@ const fetchAllCategories = async () => {
   return result;
 };
 
+const fetchCategoryById = async (categoryId) => {
+  const result = await productCategoryRepository.findOneById(categoryId)
+
+  return result;
+}
+
 const create = async (name, description) => {
   const tr = await db.sequelize.transaction()
   try {
@@ -31,7 +37,23 @@ const create = async (name, description) => {
   }
 };
 
+const updateById = async (categoryId, bodyData) => {
+  const tr = await db.sequelize.transaction()
+  try {
+    const { name, description, order } = bodyData
+    const result = await productCategoryRepository.update(categoryId, { name, description, order}, transaction)
+
+    await tr.commit()
+
+    return result;
+  } catch (error) {
+    await tr.rollback()
+  }
+}
+
 module.exports = {
   fetchAllCategories,
+  fetchCategoryById,
   create,
+  updateById,
 };

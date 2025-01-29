@@ -9,10 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // this.belongsTo(models.MasterProductCategory, {
-      //   foreignKey: "products_category_id",
-      //   key: "id",
-      // });
+      this.belongsTo(models.productCategories, {
+        foreignKey: 'product_category_id',
+        as: 'category'
+      })
     }
   }
   MasterProduct.init(
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: DataTypes.STRING,
       description: DataTypes.STRING,
-      base_price: DataTypes.INTEGER,
+      price: DataTypes.INTEGER,
       ingredients: DataTypes.JSON,
     },
     {

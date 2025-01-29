@@ -22,7 +22,7 @@ module.exports = {
       description: {
         type: Sequelize.STRING,
       },
-      base_price: {
+      price: {
         type: Sequelize.INTEGER,
       },
       ingredients: {

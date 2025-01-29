@@ -13,9 +13,25 @@ const getAllCategories = async (req, res) => {
       allCategories
     );
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 };
+
+const getCategoryById = async (req, res) => {
+  try {
+    const categoryId = req.params.id
+
+    const productCategory = await productCategoryService.fetchCategoryById(categoryId)
+    
+    console.log('productCategory', productCategory)
+    res.jsonSuccess(200, {
+      indonesian: "Kategori produk berhasil diambil",
+      english: "Product category fetched successfully"
+    }, productCategory)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message)
+  }
+} 
 
 const createCategory = async (req, res) => {
   try {
@@ -28,11 +44,26 @@ const createCategory = async (req, res) => {
       english: "Product category created successfully"
     }, createdCategory)
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message);
+  }
+}
+
+const updateCategory = async () => {
+  try {
+    const categoryId = req.params.id
+    const updatedCategory = await productCategoryService.updateById(categoryId, req.body)
+
+    res.jsonSuccess(200, {
+      indonesian: "Kategori produk berhasil diubah",
+      english: "Product category edited successfully"
+    }, updatedCategory)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message);
   }
 }
 
 module.exports = {
   getAllCategories,
+  getCategoryById,
   createCategory,
 };

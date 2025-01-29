@@ -4,12 +4,17 @@ const ingredientService = require('./ingredients.services')
 const customError = new Error()
 
 const fetchAllProducts = async () => {
-  const products = await productRepository.findAll();
-  const mappedStock = await ingredientService.getIngredientStock(products)
-  console.log('mappedStock', mappedStock)
-  
-  return products;
+  const products = await productRepository.findAllWithCategory();
+  const mappedProducts = await ingredientService.getIngredientStock(products)
+
+  return mappedProducts
 };
+
+const fetchProductById = async (productId) => {
+  const product = await productRepository.findOneById(productId)
+
+  return product;
+}
 
 const create = async (name, product_category, description, price, ingredients) => {
   const tr = await db.sequelize.transaction()
@@ -38,5 +43,6 @@ const create = async (name, product_category, description, price, ingredients) =
 
 module.exports = {
   fetchAllProducts,
+  fetchProductById,
   create,
 };
