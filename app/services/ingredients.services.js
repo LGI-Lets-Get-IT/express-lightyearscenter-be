@@ -16,8 +16,8 @@ const getIngredientStock = async (productsList) => {
     return acc;
   }, {});
 
-  let maxProducts = Infinity
   for(let product of productsList) {
+    let maxProducts = Infinity
     const parsedIngredients = JSON.parse(product?.ingredients)
 
     // stock bahan : { sugar: 20, choco_syrup: 50}. needed: { sugar: 10, choco_syrup: 5}. cuman bisa bikin 2 karena sugar sisa 20.
