@@ -8,6 +8,7 @@ on:
 jobs:
   build-image:
     uses: ./.github/workflows/docker-image.yml
+    secrets: inherit
   deploy-to-development:
     needs: build-image
     if: github.ref == 'refs/heads/development'
