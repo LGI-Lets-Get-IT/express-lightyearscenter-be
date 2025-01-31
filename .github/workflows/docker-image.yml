@@ -7,7 +7,7 @@ on:
     branches: [ "main", "development" ]
 
 jobs:
-  build-development-image:
+  build_development_image:
     if: github.ref == 'refs/heads/development'
     runs-on: ubuntu-latest
     steps:
