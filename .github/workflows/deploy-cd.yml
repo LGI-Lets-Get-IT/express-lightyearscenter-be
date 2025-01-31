@@ -6,7 +6,10 @@ on:
       - development
 
 jobs:
+  build-image:
+    uses: ./.github/workflows/docker-image.yml
   deploy-to-development:
+    needs: build-image
     if: github.ref == 'refs/heads/development'
     runs-on: ubuntu-latest
     steps:
