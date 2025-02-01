@@ -5,9 +5,10 @@ on:
     branches: [ "main", "development" ]
   pull_request:
     branches: [ "main", "development" ]
+  workflow_call:
 
 jobs:
-  build-development-image:
+  build_development_image:
     if: github.ref == 'refs/heads/development'
     runs-on: ubuntu-latest
     steps:
