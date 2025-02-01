@@ -1,6 +1,6 @@
 module.exports = (req, res, next) => {
   res.jsonSuccess = (statusCode, message, data, rest) => {
-    return res.status(statusCode).send({
+    return res.status(statusCode || 200).send({
       success: true,
       message,
       ...(data && { data }),
@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
   };
 
   res.jsonFailed = (statusCode, message, error) => {
-    return res.status(statusCode).send({
+    return res.status(statusCode || 500).send({
       success: false,
       message,
       ...(error && { error }),

@@ -20,9 +20,15 @@ if (process.env.NODE_ENV === "DEVELOPMENT") {
 require("./app/routes")(app);
 
 app.get("/api/health-check", (req, res) => {
-  res.status(200).json(`API is healthy, running on port ${PORT}`);
+  res.status(200).json({
+    message: `API is healthy and ready to serve.`
+  });
 });
 
+app.all('*', (req, res) => {
+  res.status(400).json({
+    message: 'Endpoint not found'})
+})
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
