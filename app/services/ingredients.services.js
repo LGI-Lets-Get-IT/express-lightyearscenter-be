@@ -61,8 +61,24 @@ const create = async (name, unit_type, available_quantity, supplier_id, updated_
   }
 };
 
+const updateById = async (ingredientId, availQty) => {
+  const tr = await db.sequelize.transaction()
+  try {
+    const result = await ingredientRepository.updateById(ingredientId, {
+      available_quantity: availQty
+    }, tr)
+    await tr.commit()
+
+    return result
+  } catch (error) {
+    await tr.rollback()
+    throw error
+  }
+}
+
 module.exports = {
   fetchAllIngredients,
-  create,
   getIngredientStock,
+  create,
+  updateById,
 };

@@ -17,9 +17,18 @@ function MasterIngredientRepository(db) {
     }, { transaction })
   }
 
+  const updateById = (id, bodyData, transaction) => {
+    return db.ingredients.update(bodyData, {
+      where: {
+        id
+      },
+    }, { transaction })
+  }
+
   return {
     findAll,
     create,
+    updateById,
   };
 }
 

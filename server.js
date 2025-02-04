@@ -26,7 +26,7 @@ app.get("/api/health-check", (req, res) => {
 });
 
 app.all('*', (req, res) => {
-  res.status(400).json({
+  res.status(404).json({
     message: 'Endpoint not found'})
 })
 const PORT = process.env.PORT || 3001;

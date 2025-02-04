@@ -41,8 +41,23 @@ const createIngredient =  async (req, res) => {
   }
 }
 
+const updateIngredientById = async (req, res) => {
+  try {
+    const ingredientId = req.params.id
+    const { available_quantity } = req.body
+    const updatedIngredient = await ingredientService.updateById(ingredientId, available_quantity)
+    res.jsonSuccess(200, {
+      indonesian: "Bahan produk berhasil diubah",
+      english: "Product ingredient updated successfully"
+    }, updatedIngredient)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
+
 module.exports = {
   getAllIngredients,
   getIngredientById,
+  updateIngredientById,
   createIngredient,
 };
