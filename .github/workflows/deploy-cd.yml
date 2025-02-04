@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - staging
       - development
 
 jobs:
@@ -26,6 +27,23 @@ jobs:
             docker image rm -f mrizalrizky/lumecoffee-backend-dev:latest || true
             docker run --name lumecoffee_pos_api-dev -d -p 3344:3344 mrizalrizky/lumecoffee-backend-dev:latest
             docker network connect lumecoffee_pos lumecoffee_pos_api-dev
+  deploy-to-staging:
+    needs: build-image
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT}}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker container rm -f lumecoffee_pos_api-staging || true
+            docker image rm -f mrizalrizky/lumecoffee-backend-staging:latest || true
+            docker run --name lumecoffee_pos_api-staging -d -p 3344:3344 mrizalrizky/lumecoffee-backend-staging:latest
+            docker network connect lumecoffee_pos lumecoffee_pos_api-staging
     # - name: Setup SSH Private Key
     #   run: |
     #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
