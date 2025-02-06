@@ -41,8 +41,30 @@ const create = async (name, product_category, description, price, ingredients) =
   }
 };
 
+const deleteById = async (productId) => {
+  const tr = await db.sequelize.transaction()
+  try {
+    const isProductDeleted = await productRepository.deleteById(productId, tr)
+    console.log('isProductDeleted', isProductDeleted)
+    if(!isProductDeleted) { 
+      customError.statusCode = 500;
+      customError.message = "Failed to delete product"
+
+      throw customError
+    }
+
+    await tr.commit()
+
+    return result;
+  } catch (error) {
+    await tr.rollback()
+    throw error
+  }
+}
+
 module.exports = {
   fetchAllProducts,
   fetchProductById,
   create,
+  deleteById,
 };

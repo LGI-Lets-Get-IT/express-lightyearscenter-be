@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.STRING,
       price: DataTypes.INTEGER,
       ingredients: DataTypes.JSON,
+      is_active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      }
     },
     {
       sequelize,

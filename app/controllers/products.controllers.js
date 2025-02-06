@@ -48,8 +48,19 @@ const createProduct =  async (req, res) => {
   }
 }
 
+const deleteProductById = async (req, res) => {
+  try {
+    const productId = req.params.id
+    const deletedProduct = await productService.deleteById(productId)
+    
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message)
+  }
+}
+
 module.exports = {
   getAllProducts,
   getProductById,
-  createProduct
+  createProduct,
+  deleteProductById,
 };

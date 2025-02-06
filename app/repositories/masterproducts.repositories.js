@@ -51,11 +51,20 @@ function MasterProductRepository(db) {
     }, { transaction })
   }
 
+  const deleteById = (id, transaction) => {
+    return db.products.destroy({
+      where: {
+        id
+      }
+    }, { transaction })
+  }
+
   return {
     findAll,
     findAllWithCategory,
     findOneById,
     create,
+    deleteById,
   };
 }
 

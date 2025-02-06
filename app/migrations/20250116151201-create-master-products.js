@@ -28,6 +28,9 @@ module.exports = {
       ingredients: {
         type: Sequelize.STRING,
       },
+      is_active: {
+        type: Sequelize.BOOLEAN
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
