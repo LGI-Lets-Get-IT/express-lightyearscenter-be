@@ -55,7 +55,7 @@ const deleteById = async (productId) => {
 
     await tr.commit()
 
-    return result;
+    return isProductDeleted;
   } catch (error) {
     await tr.rollback()
     throw error
