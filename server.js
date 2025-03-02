@@ -12,8 +12,8 @@ require("dotenv").config();
 
 app.set("trust proxy", 1);
 app.use(messageHandler);
-// app.use(cors(corsOptions));
-// app.use(credentials)
+app.use(cors(corsOptions));
+app.use(credentials)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
