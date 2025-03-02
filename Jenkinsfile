@@ -6,14 +6,14 @@ pipeline {
         nodejs 'NodeJS'
     }
     environment {
-        DOCKERHUB_REPO = 'mrizalrizky/lumecoffee-backend-jenkins'
+        DOCKERHUB_REPO = 'mrizalrizky/express-lightyearscenter-be'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
     }
 
     stages {
         stage('Checkout GitHub') {
             steps {
-                git branch: 'development', credentialsId: 'jenkins', url: 'https://github.com/LGI-Lets-Get-IT/natapos-be-express'
+                git branch: 'development', credentialsId: 'jenkins', url: 'https://github.com/LGI-Lets-Get-IT/express-lightyearscenter-be'
             }
         }
         stage('Install node dependencies') {
@@ -41,8 +41,8 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    sh "docker container rm -f lumecoffee_pos_jenkins-dev || true" 
-                    sh "docker run -d --name lumecoffee_pos_jenkins-dev -p 3345:3345 ${DOCKERHUB_REPO}:${BUILD_NUMBER}"
+                    sh "docker container rm -f thelightyearscdc-api-dev || true" 
+                    sh "docker run -d --name thelightyearscdc-dev -p 3344:3344 ${DOCKERHUB_REPO}:${BUILD_NUMBER}"
                     
                 }
             }

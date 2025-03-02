@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-  res.jsonSuccess = (statusCode, message, data, rest) => {
+  res.jsonSuccess = (statusCode = 200, message, data, rest) => {
     return res.status(statusCode || 200).send({
       success: true,
       message,

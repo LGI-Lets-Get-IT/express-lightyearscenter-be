@@ -1,0 +1,91 @@
+const db = require("../models");
+const schoolRepository = require("../repositories/schools.repositories")(db);
+const customError = new Error()
+
+const getAllSchools = async () => {
+  const schools = await schoolRepository.findAll();
+
+  console.log('SCHOOLS', schools)
+  return schools.map(school => ({
+    id: school.id,
+    name: school.name,
+    address: school.address,
+    phoneNumber: school.phoneNumber,
+    email: school.email,
+  }))
+};
+
+const getSchoolById = async (schoolId) => {
+  const school = await schoolRepository.findOneById(schoolId)
+
+  return school;
+}
+
+const createSchool = async (bodyData) => {
+  const tr = await db.sequelize.transaction()
+  try {
+    const createdSchool = await schoolRepository.create(bodyData, tr)
+
+    if(!createdSchool) {
+      customError.message = "Failed to create school data"
+      throw customError
+    }
+
+    await tr.commit()
+
+    return createdSchool;
+  } catch (error) {
+    await tr.rollback()
+    throw error;
+  }
+};
+
+const updateSchoolById = async (schoolId, bodyData) => {
+  const tr = await db.sequelize.transaction()
+  try {
+    const updatedSchool = await schoolRepository.updateById(schoolId, bodyData)
+
+    console.log('TESTT')
+    console.log('updatedSchool[0]', !updatedSchool[0])
+    if(!updatedSchool[0]) {
+      // customError.statusCode = 500
+      customError.message = "Failed to update school data"
+      throw customError
+    }
+
+    await tr.commit()
+
+    return updatedSchool
+  } catch (error) {
+    await tr.rollback()
+    throw error;
+  }
+}
+
+const deleteById = async (schoolId) => {
+  const tr = await db.sequelize.transaction()
+  try {
+    const deletedSchool = await schoolRepository.deleteById(schoolId, tr)
+    if(!deletedSchool) { 
+      customError.statusCode = 500;
+      customError.message = "Failed to delete school data"
+
+      throw customError
+    }
+
+    await tr.commit()
+
+    return deletedSchool;
+  } catch (error) {
+    await tr.rollback()
+    throw error
+  }
+}
+
+module.exports = {
+  getAllSchools,
+  getSchoolById,
+  createSchool,
+  updateSchoolById,
+  deleteById,
+};

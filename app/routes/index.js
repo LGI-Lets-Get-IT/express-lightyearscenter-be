@@ -6,35 +6,23 @@ const _routes = [
     version: '1'
   },
   {
-    path: "orders",
-    router: require("./orders.routes"),
+    path: "appointments",
+    router: require("./appointments.routes"),
     middlewares: [],
     version: "1",
   },
   {
-    path: "products",
-    router: require('./products.routes'),
+    path: "clients",
+    router: require("./appointments.routes"),
     middlewares: [],
     version: "1",
   },
   {
-    path: "product-categories",
-    router: require("./productCategory.routes"),
-    middlewares: [],
-    version: "1",
-  },
-  {
-    path: 'ingredients',
-    router: require('./ingredients.routes'),
+    path: 'schools',
+    router: require('./schools.routes'),
     middlewares: [],
     version: '1'
-  },
-  {
-    path: "promotions",
-    router: require("./promotions.routes"),
-    middlewares: [],
-    version: "1",
-  },
+  }
 ];
 
 module.exports = (app) => {
