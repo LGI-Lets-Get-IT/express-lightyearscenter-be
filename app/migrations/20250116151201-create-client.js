@@ -3,81 +3,83 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("clients", {
-      id: {
+      uuid: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
       },
       schoolId: {
         type: Sequelize.INTEGER,
-        field: 'school_id',
+        field: "school_id",
         references: {
-          model: 'schools',
-          key: 'id'
-        }
+          model: "schools",
+          key: "id",
+        },
       },
       fullName: {
         type: Sequelize.STRING(128),
-        field: 'full_name'
+        field: "full_name",
       },
       age: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       gender: {
         type: Sequelize.ENUM,
-        values: ['Male', 'Female']
+        values: ["Male", "Female"],
       },
       dateOfBirth: {
         type: Sequelize.DATE,
-        field: 'date_of_birth'
+        field: "date_of_birth",
       },
-      phoneNumber: {
-        type: Sequelize.STRING,
-        unique: true,
-        field: 'phone_number'
+      nationality: {
+        type: Sequelize.STRING(32),
       },
       guardianName: {
         type: Sequelize.STRING(128),
-        field: 'guardian_name'
+        field: "guardian_name",
       },
       guardianEmail: {
         type: Sequelize.STRING(128),
         unique: true,
-        field: 'guardian_email'
+        field: "guardian_email",
       },
       guardianPhone: {
         type: Sequelize.STRING(32),
-        field: 'guardian_phone'
+        field: "guardian_phone",
+      },
+      guardianNationality: {
+        type: Sequelize.STRING(32),
+        field: 'guardian_nationality'
       },
       guardianRelationship: {
         type: Sequelize.STRING(16),
-        field: 'guardian_relationship'
+        field: "guardian_relationship",
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       refreshToken: {
         type: Sequelize.STRING,
-        field: 'refresh_token'
+        field: "refresh_token",
       },
       isActive: {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
-        field: 'is_active'
+        field: "is_active",
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: 'created_at',
+        field: "created_at",
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: 'updated_at',
+        field: "updated_at",
       },
     });
   },
@@ -85,4 +87,3 @@ module.exports = {
     await queryInterface.dropTable("clients");
   },
 };
-

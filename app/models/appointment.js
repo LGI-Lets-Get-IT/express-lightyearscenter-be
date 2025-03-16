@@ -9,40 +9,40 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.employees, {
-        foreignKey: 'psychologist_id',
-        as: 'psychologist',
-      })
+        foreignKey: "psychologist_id",
+        as: "psychologist",
+      });
       this.belongsTo(models.clients, {
-        foreignKey: 'client_id',
-        as: 'client'
-      })
+        foreignKey: "client_id",
+        as: "client",
+      });
     }
   }
   Appointment.init(
     {
       psychologistId: {
         type: DataTypes.INTEGER,
-        field: 'psychologist_id',
+        field: "psychologist_id",
         references: {
           model: "Employee",
-          key: 'id',
-        }
+          key: "id",
+        },
       },
       clientId: {
-        type: DataTypes.INTEGER,
-        field: 'client_id',
+        type: DataTypes.UUID,
+        field: "client_id",
         references: {
           model: "Client",
-          key: 'id',
-        }
+          key: "uuid",
+        },
       },
       bookingTimeStart: {
         type: DataTypes.DATE,
-        field: 'booking_time_start'
+        field: "booking_time_start",
       },
       bookingTimeEnd: {
         type: DataTypes.DATE,
-        field: 'booking_time_end'
+        field: "booking_time_end",
       },
     },
     {

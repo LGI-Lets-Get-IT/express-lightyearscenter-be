@@ -5,7 +5,6 @@ const validateInput = (schema) => {
             ...req.body,
             ...req.query,
         }
-        console.log('dataToValidate', dataToValidate)
         const { error, value } = schema.validate(dataToValidate, { abortEarly: false, escapeHtml: true })
         
         if(error) {

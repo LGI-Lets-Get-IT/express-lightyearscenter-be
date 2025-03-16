@@ -1,51 +1,51 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('appointments', {
+    await queryInterface.createTable("appointments", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       psychologistId: {
         type: Sequelize.INTEGER,
-        field: 'psychologist_id',
+        field: "psychologist_id",
         references: {
           model: "employees",
-          key: 'id',
-        }
+          key: "id",
+        },
       },
       clientId: {
-        type: Sequelize.INTEGER,
-        field: 'client_id',
+        type: Sequelize.UUID,
+        field: "client_id",
         references: {
           model: "clients",
-          key: 'id',
-        }
+          key: "uuid",
+        },
       },
       bookingTimeStart: {
         type: Sequelize.DATE,
-        field: 'booking_time_start',
+        field: "booking_time_start",
       },
       bookingTimeEnd: {
         type: Sequelize.DATE,
-        field: 'booking_time_end',
+        field: "booking_time_end",
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: 'created_at',
+        field: "created_at",
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: 'updated_at',
-      }
+        field: "updated_at",
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('appointments');
-  }
+    await queryInterface.dropTable("appointments");
+  },
 };

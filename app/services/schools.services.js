@@ -5,7 +5,6 @@ const customError = new Error()
 const getAllSchools = async () => {
   const schools = await schoolRepository.findAll();
 
-  console.log('SCHOOLS', schools)
   return schools.map(school => ({
     id: school.id,
     name: school.name,

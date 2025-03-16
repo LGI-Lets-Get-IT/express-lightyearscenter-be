@@ -6,7 +6,7 @@ pipeline {
         nodejs 'NodeJS'
     }
     environment {
-        DOCKERHUB_REPO = 'mrizalrizky/express-lightyearscenter-be'
+        DOCKERHUB_REPO = 'mrizalrizky/thelightyearscdc-dev'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
     }
 
@@ -41,8 +41,8 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    sh "docker container rm -f thelightyearscdc-api-dev || true" 
-                    sh "docker run -d --name thelightyearscdc-dev -p 3344:3344 ${DOCKERHUB_REPO}:${BUILD_NUMBER}"
+                    sh "docker container rm -f thelightyearscdc-dev || true" 
+                    sh "docker run -d --name thelightyearscdc-dev -p 3345:3345 ${DOCKERHUB_REPO}:${BUILD_NUMBER}"
                     
                 }
             }

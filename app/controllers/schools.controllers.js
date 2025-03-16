@@ -28,9 +28,9 @@ const create =  async (req, res) => {
 
     const bodyData = {
       name,
-      pic_name: picName,
+      picName,
       address,
-      phone_number: phoneNumber,
+      phoneNumber,
       email,
     }
     const createdSchool = await schoolService.createSchool(bodyData)

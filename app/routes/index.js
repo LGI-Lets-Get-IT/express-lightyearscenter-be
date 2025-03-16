@@ -13,7 +13,7 @@ const _routes = [
   },
   {
     path: "clients",
-    router: require("./appointments.routes"),
+    router: require("./clients.routes"),
     middlewares: [],
     version: "1",
   },
@@ -22,7 +22,13 @@ const _routes = [
     router: require('./schools.routes'),
     middlewares: [],
     version: '1'
-  }
+  },
+  {
+    path: 'notifications',
+    router: require('./notifications.routes'),
+    middlewares: [],
+    version: '1',
+  },
 ];
 
 module.exports = (app) => {

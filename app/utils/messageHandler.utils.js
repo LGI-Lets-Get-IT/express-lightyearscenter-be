@@ -8,11 +8,11 @@ module.exports = (req, res, next) => {
     });
   };
 
-  res.jsonFailed = (statusCode, message, error) => {
+  res.jsonFailed = (statusCode, message, errors) => {
     return res.status(statusCode || 500).send({
       success: false,
       message,
-      ...(error && { error }),
+      ...(errors && { errors }),
     });
   };
 

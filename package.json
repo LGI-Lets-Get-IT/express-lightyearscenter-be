@@ -1,7 +1,7 @@
 {
-  "name": "lume-pos-api",
+  "name": "lightyears-cdc-api",
   "version": "1.0.0",
-  "description": "api for lume cafe pos",
+  "description": "api for the light years cdc",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
@@ -11,6 +11,7 @@
   "author": "RZL",
   "license": "ISC",
   "dependencies": {
+    "@joi/date": "^2.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -20,10 +21,12 @@
     "mysql2": "^3.11.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.13.3",
     "sequelize": "^6.37.3",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "morgan": "^1.10.0",
     "sequelize-cli": "^6.6.2"
   }
 }

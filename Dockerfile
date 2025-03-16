@@ -1,8 +1,8 @@
 FROM node:20 as build
 
-WORKDIR /usr/app
+WORKDIR /app
 COPY . .
 RUN npm install
 
 EXPOSE 3344
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
