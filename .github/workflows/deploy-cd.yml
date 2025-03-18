@@ -23,10 +23,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            docker container rm -f lumecoffee_pos_api-dev || true
-            docker image rm -f mrizalrizky/lumecoffee-backend-dev:latest || true
-            docker run --name lumecoffee_pos_api-dev -d -p 3344:3344 mrizalrizky/lumecoffee-backend-dev:latest
-            docker network connect lumecoffee_pos lumecoffee_pos_api-dev
+            docker container rm -f ${{ vars.CONTAINER_NAME_DEVELOPMENT }} || true
+            docker image rm -f ${{ vars.IMAGE_NAME_DEVELOPMENT }}:latest || true
+            docker run --name ${{ vars.CONTAINER_NAME_DEVELOPMENT }} -d -p 3344:3344 ${{ vars.IMAGE_NAME_DEVELOPMENT }}:latest
+            docker network connect thelightyears-kinderfield ${{ vars.CONTAINER_NAME_DEVELOPMENT }}
   deploy-to-staging:
     needs: build-image
     if: github.ref == 'refs/heads/staging'
@@ -40,10 +40,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            docker container rm -f lumecoffee_pos_api-staging || true
-            docker image rm -f mrizalrizky/lumecoffee-backend-staging:latest || true
-            docker run --name lumecoffee_pos_api-staging -d -p 3344:3344 mrizalrizky/lumecoffee-backend-staging:latest
-            docker network connect lumecoffee_pos lumecoffee_pos_api-staging
+            docker container rm -f ${{ vars.CONTAINER_NAME_STAGING }} || true
+            docker image rm -f ${{ vars.IMAGE_NAME_STAGING }}:latest || true
+            docker run --name ${{ vars.CONTAINER_NAME_STAGING }} -d -p 3344:3344 ${{ vars.IMAGE_NAME_STAGING }}:latest
+            docker network connect thelightyears-kinderfield ${{ vars.CONTAINER_NAME_STAGING }}
     # - name: Setup SSH Private Key
     #   run: |
     #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -69,7 +69,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            docker container rm -f lumecoffee_pos_api || true
-            docker image rm -f mrizalrizky/lumecoffee-backend:latest || true
-            docker run --name lumecoffee_pos_api -d -p 3344:3344 mrizalrizky/lumecoffee-backend:latest
-            docker network connect lumecoffee_pos lumecoffee_pos_api
+            docker container rm -f ${{ vars.CONTAINER_NAME }} || true
+            docker image rm -f ${{ vars.IMAGE_NAME }}:latest || true
+            docker run --name ${{ vars.CONTAINER_NAME }} -d -p 3344:3344 ${{ vars.IMAGE_NAMET }}:latest
+            docker network connect thelightyears-kinderfield ${{ vars.CONTAINER_NAME }}
