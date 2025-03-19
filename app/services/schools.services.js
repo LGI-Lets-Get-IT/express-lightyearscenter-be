@@ -11,6 +11,12 @@ const getAllSchools = async () => {
     address: school.address,
     phoneNumber: school.phoneNumber,
     email: school.email,
+    pic: {
+      full_name: school.picFullName,
+      phoneNumber: school.picPhoneNumber,
+      email: school.picEmail
+    },
+    isActive: school.isActive,
   }))
 };
 

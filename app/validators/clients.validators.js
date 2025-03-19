@@ -8,10 +8,9 @@ exports.clientSchema = {
   create: Joi.object({
     schoolId: Joi.number().required(),
     fullName: Joi.string().min(3).required(),
-    address: Joi.string().required(),
     nationality: Joi.string().required(),
     age: Joi.number().required(),
-    dateOfBirth: Joi.date().format("YYYY-MM-DD"),
+    dateOfBirth: Joi.date().format("YYYY-MM-DD").required(),
     gender: Joi.string().valid("Male", "Female").required(), // enum
     guardianName: Joi.string().min(3).required(),
     guardianPhone: Joi.string().required(),
@@ -25,7 +24,6 @@ exports.clientSchema = {
 
     schoolId: Joi.number().optional(),
     fullName: Joi.string().min(3).optional(),
-    address: Joi.string().optional(),
     nationality: Joi.string().optional(),
     age: Joi.number().optional(),
     dateOfBirth: Joi.date().format("YYYY-MM-DD"),

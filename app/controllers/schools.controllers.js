@@ -1,9 +1,9 @@
-const schoolService = require('../services/schools.services')
-const customError = new Error()
+const schoolService = require("../services/schools.services");
+const customError = new Error();
 
 const getAll = async (req, res) => {
   try {
-    const schools = await schoolService.getAllSchools()
+    const schools = await schoolService.getAllSchools();
 
     res.jsonSuccess(200, "Successfully fetched all schools data", schools);
   } catch (error) {
@@ -13,57 +13,61 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const { id: schoolId } = req.params
-    const school = await schoolService.getSchoolById(schoolId)
-    
-    res.jsonSuccess(200, "Successfully fetched school data", school)
-  } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message, error)
-  }
-}
+    const { id: schoolId } = req.params;
+    const school = await schoolService.getSchoolById(schoolId);
 
-const create =  async (req, res) => {
+    res.jsonSuccess(200, "Successfully fetched school data", school);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+};
+
+const create = async (req, res) => {
   try {
-    const { name, picName, address, phoneNumber, email } = req.body
+    const { schoolName, schoolAddress, schoolPhoneNumber, schoolEmail, picName, picPhoneNumber, picEmail } = req.body;
 
     const bodyData = {
-      name,
-      picName,
-      address,
-      phoneNumber,
-      email,
-    }
-    const createdSchool = await schoolService.createSchool(bodyData)
+      name: schoolName,
+      address: schoolAddress,
+      phoneNumber: schoolPhoneNumber,
+      email: schoolEmail,
+      picFullName: picName,
+      picPhoneNumber: picPhoneNumber,
+      picEmail: picEmail,
+    };
+    const createdSchool = await schoolService.createSchool(bodyData);
 
-    res.jsonSuccess(200, "Successfully created school data", createdSchool)
+    res.jsonSuccess(201, "Successfully created school data", createdSchool);
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message, error)
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 const updateById = async (req, res) => {
   try {
-    const { id: schoolId } = req.params
+    const { id: schoolId } = req.params;
 
-    const updatedSchool = await schoolService.updateSchoolById(schoolId, req.body)
-    res.jsonSuccess(200, "Successfully updated school data", updatedSchool)
+    const updatedSchool = await schoolService.updateSchoolById(
+      schoolId,
+      req.body
+    );
+    res.jsonSuccess(200, "Successfully updated school data", updatedSchool);
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message, error)
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 const deleteIds = async (req, res) => {
   try {
-    
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message, error)
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 module.exports = {
   create,
   getAll,
   getById,
   updateById,
-  deleteIds
+  deleteIds,
 };

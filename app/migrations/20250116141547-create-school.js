@@ -22,8 +22,25 @@ module.exports = {
       email: {
         type: Sequelize.STRING(128)
       },
+      picFullName: {
+        type: Sequelize.STRING(128),
+        field: 'pic_full_name',
+      },
+      picPhoneNumber: {
+        type: Sequelize.STRING(32),
+        field: 'pic_phone_number',
+      },
+      picEmail: {
+        type: Sequelize.STRING(128),
+        field: 'pic_email',
+      },
       password: {
         type: Sequelize.STRING,
+      },
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        field: 'is_active',
+        defaultValue: true,
       },
       createdAt: {
         allowNull: false,

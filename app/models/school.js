@@ -20,7 +20,24 @@ module.exports = (sequelize, DataTypes) => {
         field: 'phone_number',
       },
       email: DataTypes.STRING(128),
+      picFullName: {
+        type: DataTypes.STRING(128),
+        field: 'pic_full_name',
+      },
+      picPhoneNumber: {
+        type: DataTypes.STRING(32),
+        field: 'pic_phone_number',
+      },
+      picEmail: {
+        type: DataTypes.STRING(128),
+        field: 'pic_email',
+      },
       password: DataTypes.STRING,
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        field: 'is_active',
+        defaultValue: true,
+      },
     },
     {
       sequelize,
