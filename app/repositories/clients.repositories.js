@@ -13,12 +13,12 @@ function ClientRepository(db) {
     return db.clients.create(bodyData, { transaction })
   };
 
-  const updateById = (id, bodyData, transaction) => {
+  const updateById = (uuid, bodyData, transaction) => {
     return db.clients.update(bodyData, {
       returning: true,
       raw: true,
       where: {
-        id
+        uuid: uuid,
       },
     }, { transaction })
   }
