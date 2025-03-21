@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const appointmentController = require("../controllers/appointments.controllers");
-const { validateInput} = require("../utils/inputvalidator.utils");
+const { validateInput} = require("../utils/inputValidator.utils");
 const { appointmentSchema } = require("../validators/appointments.validators");
 
 router.post("/", validateInput(appointmentSchema.create), appointmentController.create);
