@@ -12,9 +12,15 @@ exports.appointmentSchema = {
     }),
     
     update: Joi.object({
+        appointmentId: Joi.number().required(),
+
         psychologistId: Joi.number().optional(),
         clientId: Joi.number().optional(),
         timeStart: Joi.date().greater('now').optional(),
         // timeEnd: Joi.date().greater('timeStart').optional(),
+    }),
+
+    delete: Joi.object({
+        appointmentIds: Joi.array().items(Joi.number()).required(),
     }),
 }

@@ -59,7 +59,11 @@ const updateById = async (req, res) => {
 
 const deleteIds = async (req, res) => {
   try {
-    
+    const { appointmentIds } = req.body
+    const deletedAppointments = await appointmentService.deleteAppointmentByIds(appointmentIds)
+
+    console.log('deletedAppointments,', deletedAppointments)
+    res.jsonSuccess(200, "Successfully deleted appointments data", deletedAppointments);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error)
   }

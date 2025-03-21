@@ -35,7 +35,7 @@ function AppointmentRepository(db) {
     return db.appointments.create(bodyData, { transaction });
   };
 
-  const update = (id, bodyData, transaction) => {
+  const updateById = (id, bodyData, transaction) => {
     return db.appointments.update(
       bodyData,
       {
@@ -47,11 +47,20 @@ function AppointmentRepository(db) {
     );
   };
 
+  const deleteByIds = (ids, transaction) => {
+    return db.appointments.destroy({
+      where: {
+        id: ids,
+      },
+    }, { transaction });
+  }
+
   return {
     findAll,
     findOneById,
     create,
-    update,
+    updateById,
+    deleteByIds,
   };
 }
 

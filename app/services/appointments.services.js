@@ -47,8 +47,26 @@ const updateAppointmentById = async (ingredientId, availQty) => {
   }
 };
 
+const deleteAppointmentByIds = async (appointmentIds) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const deletedAppointments = await appointmentRepository.deleteByIds(appointmentIds, tr);
+    if (!deletedAppointments) {
+      customError.message = "Failed to delete appointment data";
+      throw customError
+    }
+    await tr.commit();
+
+    return deletedAppointments;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
+}
+
 module.exports = {
   getAllAppointments,
   createAppointment,
   updateAppointmentById,
+  deleteAppointmentByIds,
 };

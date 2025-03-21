@@ -5,8 +5,8 @@ const { appointmentSchema } = require("../validators/appointments.validators");
 
 router.post("/", validateInput(appointmentSchema.create), appointmentController.create);
 router.get("/", appointmentController.getAll);
-router.get('/:id', appointmentController.getById);
-router.put('/:id', validateInput(appointmentSchema.update), appointmentController.updateById);
-router.delete('/', appointmentController.deleteIds);
+router.get('/:appointmentId', appointmentController.getById);
+router.put('/:appointmentId', validateInput(appointmentSchema.update), appointmentController.updateById);
+router.delete('/', validateInput(appointmentSchema.delete), appointmentController.deleteIds);
 
 module.exports = router;
