@@ -10,7 +10,8 @@ exports.clientSchema = {
     fullName: Joi.string().min(3).required(),
     nationality: Joi.string().required(),
     age: Joi.number().required(),
-    dateOfBirth: Joi.date().format("YYYY-MM-DD").required(),
+    // dateOfBirth: Joi.date().format("YYYY-MM-DD").required(),
+    dateOfBirth: Joi.date().required(),
     gender: Joi.string().valid("Male", "Female").required(), // enum
     guardianName: Joi.string().min(3).required(),
     guardianPhone: Joi.string().required(),
@@ -28,7 +29,8 @@ exports.clientSchema = {
     fullName: Joi.string().min(3).optional(),
     nationality: Joi.string().optional(),
     age: Joi.number().optional(),
-    dateOfBirth: Joi.date().format("YYYY-MM-DD"),
+    // dateOfBirth: Joi.date().format("YYYY-MM-DD"),
+    dateOfBirth: Joi.date(),
     gender: Joi.string().valid("Male", "Female").optional(), // enum
     guardianName: Joi.string().min(3).optional(),
     guardianPhone: Joi.string().optional(),
