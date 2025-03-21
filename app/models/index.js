@@ -27,6 +27,7 @@ db.schools = require("./school")(sequelize,Sequelize);
 db.clients = require('./client')(sequelize, Sequelize);
 db.appointments = require("./appointment")(sequelize, Sequelize);
 db.employees = require('./employee')(sequelize, Sequelize);
+db.clients = require('./client')(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

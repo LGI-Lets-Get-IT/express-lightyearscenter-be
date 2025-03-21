@@ -1,6 +1,7 @@
 const db = require("../models");
-const appointmentRepository = require("../repositories/appointments.repositories")(db);
-const customError = new Error()
+const appointmentRepository =
+  require("../repositories/appointments.repositories")(db);
+const customError = new Error();
 
 const getAllAppointments = async () => {
   const result = await appointmentRepository.findAll();
@@ -8,45 +9,43 @@ const getAllAppointments = async () => {
   return result;
 };
 
-
-const createAppointment = async (name, unit_type, available_quantity, supplier_id, updated_by) => {
-  const tr = await db.sequelize.transaction()
+const createAppointment = async (bodyData) => {
+  const tr = await db.sequelize.transaction();
   try {
-    const keyName = name.trim().replace(/\s+/g, '_').toLowerCase()
-    const result = await appointmentRepository.create(name, keyName, unit_type, available_quantity, supplier_id, updated_by, tr)
+    const createdAppointment = await appointmentRepository.create(bodyData, tr);
 
-    if(!result) {
-      customError.statusCode = 500
-      customError.message = {
-        indonesian: "Produk gagal dibuat",
-        english: "Failed to create product data"
-      }
-      throw customError
+    if (!createdAppointment) {
+      customError.message = "Failed to create appointment data";
+      throw customError;
     }
 
-    await tr.commit()
+    await tr.commit();
 
-    return result;
+    return createdAppointment;
   } catch (error) {
-    await tr.rollback()
+    await tr.rollback();
     throw error;
   }
 };
 
 const updateAppointmentById = async (ingredientId, availQty) => {
-  const tr = await db.sequelize.transaction()
+  const tr = await db.sequelize.transaction();
   try {
-    const result = await appointmentRepository.updateById(ingredientId, {
-      available_quantity: availQty
-    }, tr)
-    await tr.commit()
+    const result = await appointmentRepository.updateById(
+      ingredientId,
+      {
+        available_quantity: availQty,
+      },
+      tr
+    );
+    await tr.commit();
 
-    return result
+    return result;
   } catch (error) {
-    await tr.rollback()
-    throw error
+    await tr.rollback();
+    throw error;
   }
-}
+};
 
 module.exports = {
   getAllAppointments,

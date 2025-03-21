@@ -2,16 +2,19 @@ const Joi = require('joi')
 
 exports.appointmentSchema = {
     create: Joi.object({
-        psychologist_id: Joi.number().required(),
-        client_id: Joi.number().required(),
-        booking_time_start: Joi.date().greater('now').required(),
-        booking_time_end: Joi.date().greater('booking_time_start').required(),
+        psychologistId: Joi.number().required(),
+        client: Joi.string().uuid({
+            version: ['uuidv4'],
+        }).required(),
+        timeStart: Joi.date().greater('now').required(),
+        timeEnd: Joi.date().greater(Joi.ref('timeStart')).required(),
+        refCode: Joi.string().required(),
     }),
     
     update: Joi.object({
-        psychologist_id: Joi.number().optional(),
-        client_id: Joi.number().optional(),
-        booking_time_start: Joi.date().greater('now').optional(),
-        booking_time_end: Joi.date().greater('booking_time_start').optional(),
+        psychologistId: Joi.number().optional(),
+        clientId: Joi.number().optional(),
+        timeStart: Joi.date().greater('now').optional(),
+        // timeEnd: Joi.date().greater('timeStart').optional(),
     }),
 }

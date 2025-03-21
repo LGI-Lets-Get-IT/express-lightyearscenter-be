@@ -7,7 +7,6 @@ const getAll = async (req, res) => {
 
     res.jsonSuccess(200, "Successfully fetched all appointments data", appointments);
   } catch (error) {
-    console.log('ERROR', error)
     res.jsonFailed(error?.statusCode, error?.message);
   }
 };
@@ -26,14 +25,19 @@ const getById = async (req, res) => {
 
 const create =  async (req, res) => {
   try {
-    const { name, unit_type, available_quantity, supplier_id } = req.body
+    const { psychologistId, client, refCode, timeStart, timeEnd } = req.body
 
-    const createdProduct = await appointmentService.create(name, unit_type, available_quantity, supplier_id)
+    const bodyData = {
+      psychologistId,
+      clientId: client,
+      referenceCode: refCode,
+      bookingTimeStart: timeStart,
+      bookingTimeEnd: timeEnd
+    }
 
-    res.jsonSuccess(200, {
-      indonesian: "Bahan produk berhasil ditambahkan",
-      english: "Product ingredient created successfully"
-    }, createdProduct)
+    const createdAppointment = await appointmentService.createAppointment(bodyData)
+
+    res.jsonSuccess(201, "Successfully created new appointment data", createdAppointment);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error)
   }
