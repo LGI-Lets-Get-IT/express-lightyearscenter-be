@@ -20,7 +20,9 @@ exports.clientSchema = {
   }),
 
   update: Joi.object({
-    clientId: Joi.string().uuid().required(), //req.params.clientId
+    clientId: Joi.string().uuid({
+      version: ['uuidv4'],
+    }).required(), //req.params.clientId
 
     schoolId: Joi.number().optional(),
     fullName: Joi.string().min(3).optional(),
