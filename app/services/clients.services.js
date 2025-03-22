@@ -68,6 +68,8 @@ const updateClientById = async (clientId, bodyData) => {
     return { ...updatedClient[1][0] };
   } catch (error) {
     await tr.rollback();
+    console.log("ERROR UPDATE: ", error);
+
     throw error;
   }
 };
