@@ -9,6 +9,12 @@ const getAllAppointments = async () => {
   return result;
 };
 
+const getAppointmentsByClientUuid = async (clientUuid) => {
+  const result = await appointmentRepository.findByClientUuid(clientUuid);
+  
+  return result;
+}
+
 const createAppointment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -66,6 +72,7 @@ const deleteAppointmentByIds = async (appointmentIds) => {
 
 module.exports = {
   getAllAppointments,
+  getAppointmentsByClientUuid,
   createAppointment,
   updateAppointmentById,
   deleteAppointmentByIds,

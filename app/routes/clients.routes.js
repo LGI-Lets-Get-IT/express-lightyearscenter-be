@@ -5,8 +5,9 @@ const { clientSchema  } = require('../validators/clients.validators')
 
 router.post("/", validateInput(clientSchema.create), clientController.create);
 router.get("/", clientController.getAll);
-router.get('/:clientId', validateInput(clientSchema.view), clientController.getById);
-router.put('/:clientId', validateInput(clientSchema.update), clientController.updateById);
+router.get('/:clientUuid', validateInput(clientSchema.view), clientController.getByUuid);
+router.get('/:clientUuid/appointments', validateInput(clientSchema.view), clientController.getClientAppointmentsByUuid);
+router.put('/:clientUuid', validateInput(clientSchema.update), clientController.updateByUuid);
 router.delete('/', validateInput(clientSchema.delete), clientController.deleteIds);
 
 module.exports = router;

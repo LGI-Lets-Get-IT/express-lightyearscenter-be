@@ -11,13 +11,29 @@ const getAll = async (req, res) => {
   }
 };
 
-const getById = async (req, res) => {
+const getByUuid = async (req, res) => {
   try {
-    const { clientId } = req.params;
+    const { clientUuid } = req.params;
 
-    const client = await clientService.getClientById(clientId);
+    const client = await clientService.getClientByUuid(clientUuid);
 
     res.jsonSuccess(200, "Successfully fetched client data", client);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message);
+  }
+};
+
+const getClientAppointmentsByUuid = async (req, res) => {
+  try {
+    const { clientUuid } = req.params;
+
+    const clientAppointments = await clientService.getClientAppointments(clientUuid);
+
+    res.jsonSuccess(
+      200,
+      "Successfully fetched client appointments data",
+      clientAppointments
+    );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message);
   }
@@ -61,9 +77,9 @@ const create = async (req, res) => {
   }
 };
 
-const updateById = async (req, res) => {
+const updateByUuid = async (req, res) => {
   try {
-    const { clientId } = req.params;
+    const { clientUuid } = req.params;
     const {
       schoolId,
       fullName,
@@ -93,7 +109,7 @@ const updateById = async (req, res) => {
     };
 
     const updatedClient = await clientService.updateClientById(
-      clientId,
+      clientUuid,
       bodyData
     );
     res.jsonSuccess(200, "Successfully updated client data", updatedClient);
@@ -116,7 +132,8 @@ const deleteIds = async (req, res) => {
 module.exports = {
   create,
   getAll,
-  getById,
-  updateById,
+  getByUuid,
+  getClientAppointmentsByUuid,
+  updateByUuid,
   deleteIds,
 };

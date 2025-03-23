@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.employees, {
-        foreignKey: "psychologist_id",
+        foreignKey: "psychologistId",
         as: "psychologist",
       });
       this.belongsTo(models.clients, {
-        foreignKey: "client_id",
+        foreignKey: "clientId",
         as: "client",
       });
     }
@@ -29,11 +29,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       clientId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         field: "client_id",
         references: {
           model: "Client",
-          key: "uuid",
+          key: "id",
         },
       },
       bookingTimeStart: {

@@ -2,7 +2,7 @@ const Joi = require("joi").extend(require("@joi/date"));
 
 exports.clientSchema = {
   view: Joi.object({
-    clientId: Joi.string().required(),
+    clientUuid: Joi.string().required(),
   }),
 
   create: Joi.object({
@@ -10,7 +10,7 @@ exports.clientSchema = {
     fullName: Joi.string().min(3).required(),
     nationality: Joi.string().required(),
     age: Joi.number().required(),
-    // dateOfBirth: Joi.date().format("YYYY-MM-DD").required(),
+    dateOfBirth: Joi.date().format("YYYY-MM-DD").required(),
     dateOfBirth: Joi.date().required(),
     gender: Joi.string().valid("Male", "Female").required(), // enum
     guardianName: Joi.string().min(3).required(),
@@ -21,9 +21,7 @@ exports.clientSchema = {
   }),
 
   update: Joi.object({
-    clientId: Joi.string().uuid({
-      version: ['uuidv4'],
-    }).required(), //req.params.clientId
+    clientUuid: Joi.string().uuid().required(), //req.params.clientId
 
     schoolId: Joi.number().optional(),
     fullName: Joi.string().min(3).optional(),

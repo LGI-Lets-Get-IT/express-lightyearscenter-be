@@ -18,11 +18,11 @@ module.exports = {
         },
       },
       clientId: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         field: "client_id",
         references: {
           model: "clients",
-          key: "uuid",
+          key: "id",
         },
       },
       bookingTimeStart: {

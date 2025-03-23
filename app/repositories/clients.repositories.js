@@ -3,13 +3,46 @@ function ClientRepository(db) {
     return db.clients.findAll({
     });
   };
-  
+
   const findOneById = (id) => {
-    return db.clients.findByPk(id);
+    return db.clients.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+  
+  const findOneByUuid = (uuid) => {
+    return db.clients.findOne({
+
+      where: {
+        uuid,
+      },
+      attributes: [
+        'id',
+        'uuid',
+        'schoolId',
+        'fullName',
+        [db.sequelize.fn('TO_CHAR', db.sequelize.col('date_of_birth'), 'DD Mon YYYY'), 'dateOfBirth'],
+        'nationality',
+        'age',
+        'gender',
+        'guardianName',
+        'guardianNationality',
+        'guardianPhone',
+        'guardianEmail',
+        'guardianRelationship',
+      ],
+      include: [
+        {
+          model: db.appointments,
+          as: 'appointments',
+        }
+      ]
+    });
   };
 
   const create = (bodyData, transaction) => {
-    console.log('BODYDATA', bodyData)
     return db.clients.create(bodyData, { transaction })
   };
 
@@ -34,6 +67,7 @@ function ClientRepository(db) {
   return {
     findAll,
     findOneById,
+    findOneByUuid,
     create,
     updateById,
     deleteByIds,

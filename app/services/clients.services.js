@@ -1,5 +1,6 @@
 const db = require("../models");
 const clientRepository = require("../repositories/clients.repositories")(db);
+const appointmentService = require("../services/appointments.services")
 const customError = new Error();
 
 const getAllClients = async () => {
@@ -28,6 +29,26 @@ const getClientById = async (clientId) => {
   return client;
 };
 
+const getClientByUuid = async (clientUuid) => {
+  console.log("clientUuid", clientUuid);
+  const client = await clientRepository.findOneByUuid(clientUuid);
+
+  if (!client) {
+    customError.statusCode = 404;
+    customError.message = "Client data not found";
+
+    throw customError;
+  }
+  return client;
+};
+
+const getClientAppointments = async (clientUuid) => {
+  const clientAppointments = await appointmentService.getAppointmentsByClientUuid(
+    clientUuid
+  );
+
+  return clientAppointments;
+}
 const createClient = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -94,6 +115,8 @@ const deleteClientById = async (clientIds) => {
 module.exports = {
   getAllClients,
   getClientById,
+  getClientByUuid,
+  getClientAppointments,
   createClient,
   updateClientById,
   deleteClientById,
