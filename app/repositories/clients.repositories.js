@@ -2,7 +2,7 @@ function ClientRepository(db) {
   const findAll = () => {
     return db.clients.findAll({});
   };
-  
+
   const findOneById = (id) => {
     return db.clients.findOne({
       where: {
