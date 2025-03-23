@@ -38,6 +38,21 @@ exports.clientSchema = {
   }),
 
   delete: Joi.object({
-    clientIds: Joi.array().items(Joi.number()).required(),
+    clientIds: Joi.array()
+      .items(
+        Joi.string().uuid({
+          version: ["uuidv4"], // Ensures UUID is v4
+        })
+      )
+      .required(), // Ensure it's an array
   }),
+
+  // delete: Joi.object({
+  //   // clientIds: Joi.array().items(Joi.number()).required(),
+  //   clientIds: Joi.array()
+  //     .uuid({
+  //       version: ["uuidv4"],
+  //     })
+  //     .required(), //req.params.clientId
+  // }),
 };
