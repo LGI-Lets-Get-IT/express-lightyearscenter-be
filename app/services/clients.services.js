@@ -29,9 +29,8 @@ const getClientById = async (clientId) => {
   return client;
 };
 
-const getClientByUuid = async (clientUuid) => {
-  console.log("clientUuid", clientUuid);
-  const client = await clientRepository.findOneByUuid(clientUuid);
+const getClientByUuid = async (uuid) => {
+  const client = await clientRepository.findOneByUuid(uuid);
 
   if (!client) {
     customError.statusCode = 404;
@@ -42,9 +41,9 @@ const getClientByUuid = async (clientUuid) => {
   return client;
 };
 
-const getClientAppointments = async (clientUuid) => {
+const getClientAppointments = async (uuid) => {
   const clientAppointments = await appointmentService.getAppointmentsByClientUuid(
-    clientUuid
+    uuid
   );
 
   return clientAppointments;
@@ -68,18 +67,17 @@ const createClient = async (bodyData) => {
   }
 };
 
-const updateClientById = async (clientId, bodyData) => {
+const updateClientByUuid = async (uuid, bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
-    const updatedClient = await clientRepository.updateById(
-      clientId,
+    const updatedClient = await clientRepository.updateByUuid(
+      uuid,
       bodyData,
       tr
     );
-    console.log("updatedClient", updatedClient);
 
     if (!updatedClient[0]) {
-      // customError.statusCode = 500
+      customError.statusCode = 500
       customError.message = "Failed to update client data";
       throw customError;
     }
@@ -89,8 +87,6 @@ const updateClientById = async (clientId, bodyData) => {
     return { ...updatedClient[1][0] };
   } catch (error) {
     await tr.rollback();
-    console.log("ERROR UPDATE: ", error);
-
     throw error;
   }
 };
@@ -120,6 +116,6 @@ module.exports = {
   getClientByUuid,
   getClientAppointments,
   createClient,
-  updateClientById,
+  updateClientByUuid,
   deleteClientById,
 };

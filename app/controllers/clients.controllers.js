@@ -108,7 +108,7 @@ const updateByUuid = async (req, res) => {
       guardianRelationship,
     };
 
-    const updatedClient = await clientService.updateClientById(
+    const updatedClient = await clientService.updateClientByUuid(
       clientUuid,
       bodyData
     );

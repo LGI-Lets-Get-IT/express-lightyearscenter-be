@@ -45,7 +45,7 @@ function ClientRepository(db) {
     return db.clients.create(bodyData, { transaction })
   };
 
-  const updateById = (uuid, bodyData, transaction) => {
+  const updateByUuid = (uuid, bodyData, transaction) => {
     return db.clients.update(
       bodyData,
       {
@@ -59,7 +59,7 @@ function ClientRepository(db) {
     );
   };
 
-  const deleteByIds = (ids, transaction) => {
+  const deleteByUuids = (ids, transaction) => {
     return db.clients.destroy(
       {
         where: {
@@ -75,8 +75,8 @@ function ClientRepository(db) {
     findOneById,
     findOneByUuid,
     create,
-    updateById,
-    deleteByIds,
+    updateByUuid,
+    deleteByUuids,
   };
 }
 
