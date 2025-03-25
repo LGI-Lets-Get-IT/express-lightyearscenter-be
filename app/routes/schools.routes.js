@@ -6,7 +6,8 @@ const { schoolSchema } = require("../validators/schools.validators");
 // const { productSchema } = require("../validators/products.validators");
 
 router.get("/", schoolController.getAll);
-router.get('/:id', validateInput(schoolSchema.view), schoolController.getById);
+router.get('/:schoolId', validateInput(schoolSchema.view), schoolController.getById);
+// router.get('/:schoolId/clients', schoolController.getSchoolClientsById);
 router.post("/", validateInput(schoolSchema.create), schoolController.create);
 router.put("/:id", validateInput(schoolSchema.update), schoolController.updateById);
 router.delete("/:id", schoolController.deleteIds);

@@ -4,8 +4,40 @@ function SchoolRepository(db) {
   };
   
   const findOneById = (id) => {
+    console.log('ID', id)
     return db.schools.findByPk(id);
   };
+
+  const findClientsBySchoolId = (id) => {
+    return db.schools.findOne({
+      attributes: [
+        'id',
+        'name',
+      ],
+      where: {
+        id
+      },
+      include: [
+        {
+          model: db.clients,
+          as: "clients",
+          attributes: ['uuid', 'fullName', 'guardianName', 'guardianEmail', 'guardianPhone']
+        },
+      ],
+    })
+  }
+
+  const findOneSchoolByIdWithClients = (id) => {
+    return db.schools.findOne({
+      include: [
+        {
+          model: db.clients,
+          as: "clients",
+          attributes: ['uuid', 'fullName', 'guardianName', 'guardianEmail', 'guardianPhone']
+        },
+      ]
+    })
+  }
 
   const create = (bodyData, transaction) => {
     return db.schools.create(bodyData, { transaction })
@@ -23,6 +55,8 @@ function SchoolRepository(db) {
   return {
     findAll,
     findOneById,
+    findOneSchoolByIdWithClients,
+    findClientsBySchoolId,
     create,
     updateById,
   };

@@ -9,6 +9,12 @@ const getAllAppointments = async () => {
   return result;
 };
 
+const getAppointmentById = async (appointmentId) => {
+  const result = await appointmentRepository.findOneById(appointmentId)
+
+  return result;
+}
+
 const getAppointmentsByClientUuid = async (clientUuid) => {
   const result = await appointmentRepository.findByClientUuid(clientUuid);
   
@@ -72,6 +78,7 @@ const deleteAppointmentByIds = async (appointmentIds) => {
 
 module.exports = {
   getAllAppointments,
+  getAppointmentById,
   getAppointmentsByClientUuid,
   createAppointment,
   updateAppointmentById,

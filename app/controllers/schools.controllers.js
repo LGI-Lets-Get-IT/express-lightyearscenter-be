@@ -13,14 +13,25 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const { id: schoolId } = req.params;
-    const school = await schoolService.getSchoolById(schoolId);
+    const { schoolId } = req.params;
+    const school = await schoolService.getSchoolByIdWithClients(schoolId);
 
     res.jsonSuccess(200, "Successfully fetched school data", school);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
 };
+
+const getSchoolClientsById = async (req, res) => {
+  try {
+    const { schoolId } = req.params;
+    const schoolClients = await schoolService.getSchoolClientsById(schoolId)
+
+    res.jsonSuccess(200, "Successfully fetched school clients data", schoolClients);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+}
 
 const create = async (req, res) => {
   try {
@@ -68,6 +79,7 @@ module.exports = {
   create,
   getAll,
   getById,
+  getSchoolClientsById,
   updateById,
   deleteIds,
 };

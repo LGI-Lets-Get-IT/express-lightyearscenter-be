@@ -13,14 +13,12 @@ function ClientRepository(db) {
   
   const findOneByUuid = (uuid) => {
     return db.clients.findOne({
-
+      subQuery: false,
       where: {
         uuid,
       },
       attributes: [
-        'id',
         'uuid',
-        'schoolId',
         'fullName',
         [db.sequelize.fn('TO_CHAR', db.sequelize.col('date_of_birth'), 'DD Mon YYYY'), 'dateOfBirth'],
         'nationality',
@@ -31,11 +29,18 @@ function ClientRepository(db) {
         'guardianPhone',
         'guardianEmail',
         'guardianRelationship',
+        [db.sequelize.col('school.id'), 'schoolId'],
+        [db.sequelize.col('school.name'), 'schoolName'],
       ],
       include: [
         {
           model: db.appointments,
           as: 'appointments',
+        },
+        {
+          model: db.schools,
+          as: 'school',
+          attributes: []
         }
       ]
     });

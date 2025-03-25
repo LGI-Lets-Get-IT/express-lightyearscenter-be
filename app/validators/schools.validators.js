@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 exports.schoolSchema = {
   view: Joi.object({
-    id: Joi.number().required(),
+    schoolId: Joi.number().required(),
   }),
 
   create: Joi.object({

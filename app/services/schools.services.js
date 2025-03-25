@@ -26,6 +26,18 @@ const getSchoolById = async (schoolId) => {
   return school;
 }
 
+const getSchoolByIdWithClients = async (schoolId) => {
+  const school = await schoolRepository.findOneSchoolByIdWithClients(schoolId)
+
+  return school;
+}
+
+const getSchoolClientsById = async (schoolId) => {
+  const data = await schoolRepository.findClientsBySchoolId(schoolId)
+
+  return data;
+}
+
 const createSchool = async (bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
@@ -90,6 +102,8 @@ const deleteById = async (schoolId) => {
 module.exports = {
   getAllSchools,
   getSchoolById,
+  getSchoolByIdWithClients,
+  getSchoolClientsById,
   createSchool,
   updateSchoolById,
   deleteById,

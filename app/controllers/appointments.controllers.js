@@ -13,11 +13,10 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    
-    res.jsonSuccess(200, {
-      indonesian: "Bahan produk berhasil ditambah",
-      english: "Product ingredientts fetched successfully",
-    })
+    const { appointmentId } = req.params
+    const appointment = await appointmentService.getAppointmentById
+
+    res.jsonSuccess(200, "Successfully fetched appointment data", appointment)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message)
   }
