@@ -14,7 +14,7 @@ const getAll = async (req, res) => {
 const getById = async (req, res) => {
   try {
     const { appointmentId } = req.params
-    const appointment = await appointmentService.getAppointmentById
+    const appointment = await appointmentService.getAppointmentById(appointmentId)
 
     res.jsonSuccess(200, "Successfully fetched appointment data", appointment)
   } catch (error) {

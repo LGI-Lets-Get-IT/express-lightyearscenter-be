@@ -8,7 +8,6 @@ exports.appointmentSchema = {
         }).required(),
         timeStart: Joi.date().greater('now').required(),
         timeEnd: Joi.date().greater(Joi.ref('timeStart')).required(),
-        refCode: Joi.string().required(),
     }),
     
     update: Joi.object({

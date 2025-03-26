@@ -28,6 +28,10 @@ db.clients = require('./client')(sequelize, Sequelize);
 db.appointments = require("./appointment")(sequelize, Sequelize);
 db.employees = require('./employee')(sequelize, Sequelize);
 db.clients = require('./client')(sequelize, Sequelize);
+db.clientAssessments = require('./clientassessment')(sequelize, Sequelize);
+db.treatmentPlans = require('./treatmentplan')(sequelize, Sequelize);
+// db.treatmentProgress = require('./treatmentprogress')(sequelize, Sequelize);
+db.targetedBehaviors = require('./targetedbehavior')(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

@@ -32,12 +32,9 @@ const create = async (req, res) => {
   try {
     const { name, description } = req.body
   
-    const createdCategory = await productCategoryService.create(name, description)
+    const createdRole = await productCategoryService.create(name, description)
 
-    res.jsonSuccess(200, {
-      indonesian: "Kategori produk berhasil ditambah",
-      english: "Product category created successfully"
-    }, createdCategory)
+    res.jsonSuccess(201, "Successfully created mew role", createdRole)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message);
   }

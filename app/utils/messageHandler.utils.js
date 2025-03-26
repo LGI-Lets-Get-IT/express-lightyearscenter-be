@@ -9,6 +9,7 @@ module.exports = (req, res, next) => {
   };
 
   res.jsonFailed = (statusCode, message, errors) => {
+    console.log('ERROR', errors)
     return res.status(statusCode || 500).send({
       success: false,
       message,

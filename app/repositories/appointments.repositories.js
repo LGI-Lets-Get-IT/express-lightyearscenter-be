@@ -6,8 +6,8 @@ function AppointmentRepository(db) {
         [db.sequelize.col('client.uuid'), 'clientId'],
         [db.sequelize.col('client.full_name'), 'clientName'],
         [db.sequelize.col('psychologist.full_name'), 'psychologistName'],
-        [db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'DD Mon YYYY'), 'consultDate'],
-        [db.sequelize.fn('CONCAT', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'HH24:MI'), ' - ', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_end'), 'HH24:MI')), 'consultTime'],
+        [db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'DD Mon YYYY'), 'appointmentDate'],
+        [db.sequelize.fn('CONCAT', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'HH24:MI'), ' - ', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_end'), 'HH24:MI')), 'appointmentTime'],
       ],
       include: [
         {
@@ -28,7 +28,17 @@ function AppointmentRepository(db) {
     return db.appointments.findOne({
       where: {
         id,
-      }
+      },
+      include: [
+        {
+          model: db.clients,
+          as: 'client',
+        },
+        {
+          model: db.employees,
+          as: 'psychologist',
+        }
+      ]
     });
   };
 

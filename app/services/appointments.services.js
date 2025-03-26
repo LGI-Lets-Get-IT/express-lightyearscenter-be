@@ -11,6 +11,7 @@ const getAllAppointments = async () => {
 
 const getAppointmentById = async (appointmentId) => {
   const result = await appointmentRepository.findOneById(appointmentId)
+  console.log('result', result)
 
   return result;
 }
