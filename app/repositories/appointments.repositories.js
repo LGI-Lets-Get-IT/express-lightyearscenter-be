@@ -29,14 +29,21 @@ function AppointmentRepository(db) {
       where: {
         id,
       },
+      attributes: [
+        'id',
+        [db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'DD Mon YYYY'), 'appointmentDate'],
+        [db.sequelize.fn('CONCAT', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'HH24:MI'), ' - ', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_end'), 'HH24:MI')), 'appointmentTime'],
+      ],
       include: [
         {
           model: db.clients,
           as: 'client',
+          attributes: ['uuid', 'fullName', 'age', 'gender', 'dateOfBirth', 'nationality', 'guardianName', 'guardianEmail', 'guardianRelationship'],
         },
         {
           model: db.employees,
           as: 'psychologist',
+          attributes: [],
         }
       ]
     });

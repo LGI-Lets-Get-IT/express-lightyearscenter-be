@@ -25,6 +25,13 @@ module.exports = {
           key: "id",
         },
       },
+      title: {
+        type: Sequelize.STRING(64),
+      },
+      appointmentType: {
+        type: Sequelize.STRING(32),
+        field: 'appointment_type'
+      },
       bookingTimeStart: {
         type: Sequelize.DATE,
         field: "booking_time_start",

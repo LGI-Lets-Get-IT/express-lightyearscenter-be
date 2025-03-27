@@ -18,16 +18,28 @@ const _routes = [
     version: "1",
   },
   {
+    path: 'notifications',
+    router: require('./notifications.routes'),
+    middlewares: [],
+    version: '1',
+  },
+  {
     path: 'schools',
     router: require('./schools.routes'),
     middlewares: [],
     version: '1'
   },
   {
-    path: 'notifications',
-    router: require('./notifications.routes'),
+    path: 'treatments',
+    router: require('./treatmentTypes.routes'),
     middlewares: [],
-    version: '1',
+    version: '1'
+  },
+  {
+    path: 'treatment-plans',
+    router: require('./treatmentPlans.routes'),
+    middlewares: [],
+    version: '1'
   },
 ];
 

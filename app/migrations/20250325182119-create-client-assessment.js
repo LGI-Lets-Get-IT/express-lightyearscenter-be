@@ -25,12 +25,12 @@ module.exports = {
           model: 'clients',
         },
       },
-      testId: {
+      testTypeId: {
         type: Sequelize.INTEGER,
-        field: 'test_id',
+        field: 'test_type_id',
         references: {
           key: 'id',
-          model: 'master_tests'
+          model: 'test_types'
         },
       },
       result: Sequelize.TEXT,

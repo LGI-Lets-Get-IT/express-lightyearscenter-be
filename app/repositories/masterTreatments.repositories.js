@@ -1,21 +1,21 @@
 function MasterTreatmentRepository(db) {
   const findAll = () => {
-    return db.masterTreatments.findAll();
+    return db.treatmentTypes.findAll();
   };
 
   const findOneById = (id) => {
-    return db.masterTreatments.findByPk(id)
+    return db.treatmentTypes.findByPk(id)
   }
 
   const create = (name, description, transaction) => {
-    return db.masterTreatments.create({
+    return db.treatmentTypes.create({
       name,
       description,
     }, { transaction })
   }
 
   const updateById = (id, bodyData, transaction) => {
-    return db.masterTreatments.update(bodyData, {
+    return db.treatmentTypes.update(bodyData, {
       where: {
         id
       }

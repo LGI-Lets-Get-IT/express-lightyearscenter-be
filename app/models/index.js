@@ -19,10 +19,10 @@ if (config.use_env_variable) {
   );
 }
 
-db.masterRoles = require('./masterRole')(sequelize, Sequelize);
-db.masterPermissions = require('./masterPermission')(sequelize, Sequelize);
-db.masterTreatments = require("../models/masterTreatment")(sequelize, Sequelize);
-db.masterTests = require("../models/masterTest")(sequelize, Sequelize);
+db.roles = require('./role')(sequelize, Sequelize);
+db.permissions = require('./permission')(sequelize, Sequelize);
+db.treatmentTypes = require("./treatmentType")(sequelize, Sequelize);
+db.testTypes = require("./testType")(sequelize, Sequelize);
 db.schools = require("./school")(sequelize,Sequelize);
 db.clients = require('./client')(sequelize, Sequelize);
 db.appointments = require("./appointment")(sequelize, Sequelize);

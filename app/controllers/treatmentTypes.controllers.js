@@ -1,13 +1,12 @@
-const treatmentService = require('../services/masterTreatments.services')
+const treatmentTypeService = require('../services/treatmentTypes.services')
 
 const getAll = async (req, res) => {
   try {
     console.log('ERORR')
-    const treatments = await treatmentService.getAllTreatments()
+    const treatments = await treatmentTypeService.getAllTreatments()
 
-    res.jsonSuccess(200, "Successfully get all treatments data", treatments)
+    res.jsonSuccess(200, "Successfully get all treatment types data", treatments)
   } catch (error) {
-    console.log('ERROR', error)
     res.jsonFailed(error?.statusCode, error?.message);
   }
 };
@@ -32,7 +31,7 @@ const create = async (req, res) => {
   try {
     const { name, description } = req.body
   
-    const createdRole = await productCategoryService.create(name, description)
+    const createdRole = await roleService.create(name, description)
 
     res.jsonSuccess(201, "Successfully created mew role", createdRole)
   } catch (error) {

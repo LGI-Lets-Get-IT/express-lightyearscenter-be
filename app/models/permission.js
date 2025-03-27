@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class MasterTreatment extends Model {
+  class Permission extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,19 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  MasterTreatment.init({
-    name: DataTypes.STRING(128),
-    description: DataTypes.TEXT,
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      field: 'is_active',
-      defaultValue: true,
-    },
+  Permission.init({
+    name: DataTypes.STRING(64),
+    description: DataTypes.STRING(128),
   }, {
     sequelize,
-    modelName: 'MasterTreatment',
-    tableName: 'master_treatments',
+    modelName: 'Permission',
+    tableName: 'permissions',
     underscored: true,
   });
-  return MasterTreatment;
+  return Permission;
 };

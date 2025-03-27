@@ -33,12 +33,12 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Clients',
       },
     },
-    testId: {
+    testTypeId: {
       type: DataTypes.INTEGER,
-      field: 'test_id',
+      field: 'test_type_id',
       references: {
         key: 'id',
-        model: 'MasterTests'
+        model: 'TestType'
       },
     },
     result: {

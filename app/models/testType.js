@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class MasterRole extends Model {
+  class TestType extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,14 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  MasterRole.init({
-    name: DataTypes.STRING(64),
-    description: DataTypes.STRING(128),
+  TestType.init({
+    name: DataTypes.STRING(128),
+    description: DataTypes.TEXT,
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      field: 'is_active',
+      defaultValue: true,
+    },
   }, {
     sequelize,
-    modelName: 'MasterRole',
-    tableName: 'master_roles',
+    modelName: 'TestType',
+    tableName: 'test_types',
     underscored: true,
   });
-  return MasterRole;
+  return TestType;
 };

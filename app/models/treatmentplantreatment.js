@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class MasterTest extends Model {
+  class TreatmentPlanTreatment extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,19 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  MasterTest.init({
-    name: DataTypes.STRING(128),
-    description: DataTypes.TEXT,
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      field: 'is_active',
-      defaultValue: true,
-    },
+  TreatmentPlanTreatment.init({
+    treatmentPlanId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'MasterTest',
-    tableName: 'master_tests',
-    underscored: true,
+    modelName: 'TreatmentPlanTreatment',
   });
-  return MasterTest;
+  return TreatmentPlanTreatment;
 };
