@@ -2,12 +2,35 @@ function AppointmentRepository(db) {
   const findAll = () => {
     return db.appointments.findAll({
       attributes: [
-        'id',
-        [db.sequelize.col('client.uuid'), 'clientId'],
-        [db.sequelize.col('client.full_name'), 'clientName'],
-        [db.sequelize.col('psychologist.full_name'), 'psychologistName'],
-        [db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'DD Mon YYYY'), 'appointmentDate'],
-        [db.sequelize.fn('CONCAT', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'HH24:MI'), ' - ', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_end'), 'HH24:MI')), 'appointmentTime'],
+        "id",
+        [db.sequelize.col("client.uuid"), "clientId"],
+        [db.sequelize.col("client.full_name"), "clientName"],
+        [db.sequelize.col("psychologist.full_name"), "psychologistName"],
+        [
+          db.sequelize.fn(
+            "TO_CHAR",
+            db.sequelize.col("booking_time_start"),
+            "DD Mon YYYY"
+          ),
+          "appointmentDate",
+        ],
+        [
+          db.sequelize.fn(
+            "CONCAT",
+            db.sequelize.fn(
+              "TO_CHAR",
+              db.sequelize.col("booking_time_start"),
+              "HH24:MI"
+            ),
+            " - ",
+            db.sequelize.fn(
+              "TO_CHAR",
+              db.sequelize.col("booking_time_end"),
+              "HH24:MI"
+            )
+          ),
+          "appointmentTime",
+        ],
       ],
       include: [
         {
@@ -30,22 +53,56 @@ function AppointmentRepository(db) {
         id,
       },
       attributes: [
-        'id',
-        [db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'DD Mon YYYY'), 'appointmentDate'],
-        [db.sequelize.fn('CONCAT', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'HH24:MI'), ' - ', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_end'), 'HH24:MI')), 'appointmentTime'],
+        "id",
+        [
+          db.sequelize.fn(
+            "TO_CHAR",
+            db.sequelize.col("booking_time_start"),
+            "DD Mon YYYY"
+          ),
+          "appointmentDate",
+        ],
+        [
+          db.sequelize.fn(
+            "CONCAT",
+            db.sequelize.fn(
+              "TO_CHAR",
+              db.sequelize.col("booking_time_start"),
+              "HH24:MI"
+            ),
+            " - ",
+            db.sequelize.fn(
+              "TO_CHAR",
+              db.sequelize.col("booking_time_end"),
+              "HH24:MI"
+            )
+          ),
+          "appointmentTime",
+        ],
       ],
       include: [
         {
           model: db.clients,
-          as: 'client',
-          attributes: ['uuid', 'fullName', 'age', 'gender', 'dateOfBirth', 'nationality', 'guardianName', 'guardianEmail', 'guardianRelationship'],
+          as: "client",
+          attributes: [
+            "uuid",
+            "fullName",
+            "age",
+            "gender",
+            "dateOfBirth",
+            "nationality",
+            "guardianName",
+            "guardianEmail",
+            "guardianRelationship",
+            "guardianPhone",
+          ],
         },
         {
           model: db.employees,
-          as: 'psychologist',
+          as: "psychologist",
           attributes: [],
-        }
-      ]
+        },
+      ],
     });
   };
 
@@ -74,12 +131,15 @@ function AppointmentRepository(db) {
   };
 
   const deleteByIds = (ids, transaction) => {
-    return db.appointments.destroy({
-      where: {
-        id: ids,
+    return db.appointments.destroy(
+      {
+        where: {
+          id: ids,
+        },
       },
-    }, { transaction });
-  }
+      { transaction }
+    );
+  };
 
   return {
     findAll,
