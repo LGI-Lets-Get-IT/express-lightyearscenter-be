@@ -56,6 +56,8 @@ function AppointmentRepository(db) {
         "id",
         "title",
         "appointmentType",
+        "createdAt",
+        "clientId",
         [
           db.sequelize.fn(
             "TO_CHAR",
@@ -96,8 +98,10 @@ function AppointmentRepository(db) {
             "nationality",
             "guardianName",
             "guardianPhone",
+            "guardianNationality",
             "guardianEmail",
             "guardianRelationship",
+            "createdAt",
           ],
         },
         {
