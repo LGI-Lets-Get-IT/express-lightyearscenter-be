@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("master_tests", {
+    await queryInterface.createTable("permissions", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,15 +10,10 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING(128),
+        type: Sequelize.STRING(64),
       },
       description: {
-        type: Sequelize.TEXT,
-      },
-      isActive: {
-        type: Sequelize.BOOLEAN,
-        field: 'is_active',
-        defaultValue: true,
+        type: Sequelize.STRING(128),
       },
       createdAt: {
         allowNull: false,
@@ -33,7 +28,7 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("master_tests");
+    await queryInterface.dropTable("permissions");
   },
 };
 

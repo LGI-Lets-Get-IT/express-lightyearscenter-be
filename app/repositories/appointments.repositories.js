@@ -54,6 +54,8 @@ function AppointmentRepository(db) {
       },
       attributes: [
         "id",
+        "title",
+        "appointmentType",
         [
           db.sequelize.fn(
             "TO_CHAR",
@@ -79,6 +81,7 @@ function AppointmentRepository(db) {
           ),
           "appointmentTime",
         ],
+        [db.sequelize.col("psychologist.full_name"), "psychologistName"],
       ],
       include: [
         {
@@ -92,9 +95,9 @@ function AppointmentRepository(db) {
             "dateOfBirth",
             "nationality",
             "guardianName",
+            "guardianPhone",
             "guardianEmail",
             "guardianRelationship",
-            "guardianPhone",
           ],
         },
         {

@@ -27,13 +27,14 @@ module.exports = {
       },
       treatmentPlanId: {
         field: 'treatment_plan_id',
+        type: Sequelize.INTEGER,
         references: {
           key: 'id',
           model: 'treatment_plans',
         },
       },
       title: {
-        type:  Sequelize.STRING(64),
+        type: Sequelize.STRING(64),
       },
       currentSession: {
         field: 'current_session',

@@ -29,7 +29,7 @@ function ClientRepository(db) {
         'guardianPhone',
         'guardianEmail',
         'guardianRelationship',
-        [db.sequelize.col('school.id'), 'schoolId'],
+        // [db.sequelize.col('school.id'), 'schoolId'],
         [db.sequelize.col('school.name'), 'schoolName'],
       ],
       include: [
@@ -37,8 +37,9 @@ function ClientRepository(db) {
           model: db.appointments,
           as: 'appointments',
           attributes: [
-            // 'title',
-            // 'appointment_type',
+            'id',
+            'title',
+            'appointmentType',
             [db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'DD Mon YYYY'), 'appointmentDate'],
             [db.sequelize.fn('CONCAT', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'HH24:MI'), ' - ', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_end'), 'HH24:MI')), 'appointmentTime'],
           ]
