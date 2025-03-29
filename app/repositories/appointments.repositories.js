@@ -3,7 +3,8 @@ function AppointmentRepository(db) {
     return db.appointments.findAll({
       attributes: [
         "id",
-        [db.sequelize.col("client.uuid"), "clientId"],
+        "title",
+        [(db.sequelize.col("client.uuid"), "clientId")],
         [db.sequelize.col("client.full_name"), "clientName"],
         [db.sequelize.col("psychologist.full_name"), "psychologistName"],
         [
