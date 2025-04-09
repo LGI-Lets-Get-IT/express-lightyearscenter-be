@@ -1,12 +1,12 @@
 const router = require("express").Router();
-const AuthController = require("../controllers/auth.controllers");
+const authController = require("../controllers/auth.controllers");
 
-router.post("/login", AuthController.customerLogin);
-router.post("/register", AuthController.customerRegister);
-router.post('/google/login', AuthController.customerLoginWithGoogle);
-router.post('/employee/login', AuthController.employeeLogin);
-router.post('/logout', AuthController.userLogout);
-router.post("/forgot-password", AuthController.forgotPassword);
-router.post("/reset-password", AuthController.resetPassword);
+router.post("/login", authController.customerLogin);
+router.post("/register", authController.customerRegister);
+router.post('/google/login', authController.customerLoginWithGoogle);
+router.post('/employee/login', authController.employeeLogin);
+router.post('/logout', authController.userLogout);
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/reset-password", authController.resetPassword);
 
 module.exports = router;

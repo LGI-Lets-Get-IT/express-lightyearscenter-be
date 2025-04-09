@@ -1,13 +1,13 @@
 const db = require("../models");
-// const OrderService = require("../services/orders.services");
+const authService = require('../services/auth.services')
 
 const customerLogin = async (req, res) => {
     const transaction = await db.sequelize.transaction()
   try {
-    const { username, password} = req.body
+    const { email, password } = req.body
     const cookies = req.headers['cookie']
 
-    const loginData = await AuthService.login(cookies, username, password, transaction)
+    const loginData = await authService.login(cookies, username, password, transaction)
 
     res.cookie("token", loginData.refresh_token, {
         httpOnly: true,
@@ -44,7 +44,7 @@ const customerRegister = async (req, res) => {
     const transaction = await db.sequelize.transaction()
     try {
         const { full_name, username, email, phone_number, password } = req.body;
-        const data = await AuthService.register(
+        const data = await authService.register(
             full_name,
             username,
             email,

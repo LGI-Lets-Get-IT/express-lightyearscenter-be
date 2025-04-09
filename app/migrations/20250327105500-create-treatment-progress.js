@@ -9,6 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      appointmentId: {
+        field: 'appointment_id',
+        type: Sequelize.INTEGER,
+        references: {
+          key: 'id',
+          model: 'appointments'
+        }
+      },
       clientId: {
         field: 'client_id',
         type: Sequelize.INTEGER,

@@ -7,14 +7,12 @@ function TargetedBehaviorRepository(db) {
     return db.targetedBehaviors.findByPk(id)
   }
 
-  const create = (name, product_category, description, price, ingredients, transaction) => {
-    return db.targetedBehaviors.create({
-      name,
-      description,
-      ingredients,
-      product_category_id: product_category,
-      price,
-    }, { transaction })
+  const create = (bodyData, transaction) => {
+    return db.targetedBehaviors.create(bodyData, { transaction })
+  }
+
+  const bulkCreate = (bodyData, transaction) => {
+    return db.targetedBehaviors.bulkCreate(bodyData, { transaction })
   }
 
   const deleteById = (id, transaction) => {
@@ -29,6 +27,7 @@ function TargetedBehaviorRepository(db) {
     findAll,
     findOneById,
     create,
+    bulkCreate,
     deleteById,
   };
 }

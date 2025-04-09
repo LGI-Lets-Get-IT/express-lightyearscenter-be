@@ -14,6 +14,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TreatmentProgress.init({
+    appointmentId: {
+      field: 'appointment_id',
+      type: DataTypes.INTEGER,
+      references: {
+        key: 'id',
+        model: 'Appointment',
+      },
+    },
     clientId: {
       field: 'client_id',
       type: DataTypes.INTEGER,

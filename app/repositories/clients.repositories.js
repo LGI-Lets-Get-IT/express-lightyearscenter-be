@@ -18,6 +18,37 @@ function ClientRepository(db) {
         uuid,
       },
       attributes: [
+        'id',
+        'uuid',
+        'fullName',
+        [db.sequelize.fn('TO_CHAR', db.sequelize.col('date_of_birth'), 'DD Mon YYYY'), 'dateOfBirth'],
+        'nationality',
+        'age',
+        'gender',
+        'guardianName',
+        'guardianNationality',
+        'guardianPhone',
+        'guardianEmail',
+        'guardianRelationship',
+        [db.sequelize.col('school.name'), 'schoolName'],
+      ],
+      include: [
+        {
+          model: db.schools,
+          as: 'school',
+          attributes: []
+        }
+      ]
+    });
+  };
+
+  const findOneByUuidWithAppointments = (uuid) => {
+    return db.clients.findOne({
+      subQuery: false,
+      where: {
+        uuid,
+      },
+      attributes: [
         'uuid',
         'fullName',
         [db.sequelize.fn('TO_CHAR', db.sequelize.col('date_of_birth'), 'DD Mon YYYY'), 'dateOfBirth'],
@@ -86,6 +117,7 @@ function ClientRepository(db) {
     findAll,
     findOneById,
     findOneByUuid,
+    findOneByUuidWithAppointments,
     create,
     updateByUuid,
     deleteByUuids,

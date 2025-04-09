@@ -41,6 +41,18 @@ const getClientByUuid = async (uuid) => {
   return client;
 };
 
+const getClientByUuidWithAppointments = async (uuid) => {
+  const client = await clientRepository.findOneByUuidWithAppointments(uuid);
+
+  if (!client) {
+    customError.statusCode = 404;
+    customError.message = "Client data not found";
+
+    throw customError;
+  }
+  return client;
+};
+
 const getClientAppointments = async (uuid) => {
   const clientAppointments = await appointmentService.getAppointmentsByClientUuid(
     uuid
@@ -114,6 +126,7 @@ module.exports = {
   getAllClients,
   getClientById,
   getClientByUuid,
+  getClientByUuidWithAppointments,
   getClientAppointments,
   createClient,
   updateClientByUuid,

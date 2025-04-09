@@ -6,6 +6,15 @@ function AppointmentRepository(db) {
         [db.sequelize.col("client.uuid"), "clientId"],
         [db.sequelize.col("client.full_name"), "clientName"],
         [db.sequelize.col("psychologist.full_name"), "psychologistName"],
+        [db.sequelize.literal(`
+            CASE
+              WHEN now() < booking_time_start THEN 'Upcoming'
+              WHEN now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
+              WHEN now() > booking_time_end THEN 'Done'
+              ELSE 'Unknown'
+            END 
+          `), 'status'//
+        ],
         [
           db.sequelize.fn(
             "TO_CHAR",
@@ -58,6 +67,7 @@ function AppointmentRepository(db) {
         "appointmentType",
         "createdAt",
         "clientId",
+        [db.sequelize.col("psychologist.full_name"), "psychologistName"],
         [
           db.sequelize.fn(
             "TO_CHAR",
@@ -83,7 +93,16 @@ function AppointmentRepository(db) {
           ),
           "appointmentTime",
         ],
-        [db.sequelize.col("psychologist.full_name"), "psychologistName"],
+        [
+          db.sequelize.literal(`
+            CASE
+              WHEN now() < booking_time_start THEN 'Upcoming'
+              WHEN now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
+              WHEN now() > booking_time_end THEN 'Done'
+              ELSE 'Unknown'
+            END 
+          `), 'status'//
+        ],
       ],
       include: [
         {

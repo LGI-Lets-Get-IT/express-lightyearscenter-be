@@ -1,13 +1,12 @@
 const router = require("express").Router();
-const treatmentPlanController = require("../controllers/clients.controllers");
+const treatmentPlanController = require("../controllers/treatmentPlans.controllers");
 const { validateInput } = require("../utils/inputValidator.utils");
-const { clientSchema  } = require('../validators/clients.validators')
+const { treatmentPlanSchema } = require("../validators/treatmentPlans.validators");
 
-router.post("/", validateInput(clientSchema.create), treatmentPlanController.create);
+router.post("/", validateInput(treatmentPlanSchema.create), treatmentPlanController.create);
 router.get("/", treatmentPlanController.getAll);
-router.get('/:clientUuid', validateInput(clientSchema.view), treatmentPlanController.getByUuid);
-router.get('/:clientUuid/appointments', validateInput(clientSchema.view), treatmentPlanController.getClientAppointmentsByUuid);
-router.put('/:clientUuid', validateInput(clientSchema.update), treatmentPlanController.updateByUuid);
-router.delete('/', validateInput(clientSchema.delete), treatmentPlanController.deleteIds);
+router.get('/:planId', validateInput(treatmentPlanSchema.view), treatmentPlanController.getById);
+router.put('/:planId', validateInput(treatmentPlanSchema.update), treatmentPlanController.updateById);
+router.delete('/', validateInput(treatmentPlanSchema.delete), treatmentPlanController.deleteById);
 
 module.exports = router;
