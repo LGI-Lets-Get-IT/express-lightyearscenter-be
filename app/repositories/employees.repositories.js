@@ -28,7 +28,6 @@ function EmployeeRepository(db) {
   }
 
   const findOneByRefreshToken = (token) => {
-    console.log('TOKEN', token)
     return db.employees.findOne({
       where: {
         refreshToken: token,

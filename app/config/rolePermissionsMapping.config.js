@@ -51,5 +51,5 @@ module.exports = {
         // permissions.TREATMENT_SESSIONS.VIEW,
         // permissions.TREATMENT_SESSIONS.UPDATE,
         // permissions.TREATMENT_SESSIONS.DELETE,
-    ]
+    ],
 }

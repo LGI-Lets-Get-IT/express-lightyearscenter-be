@@ -38,11 +38,11 @@ const login = async (currentToken, email, password) => {
 
     const accessToken = generateAccessToken({
         id: userData?.id,
-        permissions: rolePermissionsMappingConfig[userData?.roleId]
-    }, { expiresIn: '60m' });
+        permissions: rolePermissionsMappingConfig[userData?.roleId] || []
+    }, { expiresIn: '15m' });
     const refreshToken = generateRefreshToken({
         id: userData?.id,
-        permissions: rolePermissionsMappingConfig[userData?.roleId]
+        permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     }, { expiresIn: '60m'});
 
     const updatedToken = userData.update({
@@ -56,7 +56,7 @@ const login = async (currentToken, email, password) => {
 
     return {
         user: {
-            id: userData?.id,
+            id: userData?.uuid ?? userData?.id,
             email: userData?.email ?? userData?.guardianEmail,
             fullName: userData?.fullName,
             role: userData?.role.name,
@@ -84,11 +84,11 @@ const logout = async (currentToken) => {
         }
     }
 
-    userData.update({
+    const updatedData = userData.update({
         refreshToken: null
     })
 
-    if (!logoutData) {
+    if (!updatedData) {
         customError.statusCode = 500;
         customError.message = "Failed to update token";
         throw customError;

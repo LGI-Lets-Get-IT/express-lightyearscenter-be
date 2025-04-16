@@ -23,8 +23,7 @@ const userLogin = async (req, res) => {
 
 const userLogout = async (req, res) => {
     try {
-      const cookie = req.headers["cookie"];
-      console.log('COOKIE', cookie)
+      const cookie = req.cookies.token;
 
       const logoutData = await authService.logout(cookie)
 

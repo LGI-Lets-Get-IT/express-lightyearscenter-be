@@ -6,9 +6,9 @@ const { validateInput} = require("../utils/inputValidator.utils");
 const { appointmentSchema } = require("../validators/appointments.validators");
 
 router.post("/", verifyPermission([permissions.APPOINTMENTS.CREATE]), validateInput(appointmentSchema.create), appointmentController.create);
-router.get("/", verifyPermission([permissions.APPOINTMENTS.VIEW]), appointmentController.getAll);
-router.get('/:appointmentId', verifyPermission([permissions.APPOINTMENTS.VIEW]), appointmentController.getById);
-router.put('/:appointmentId', verifyPermission([permissions.APPOINTMENTS.UPDATE]), validateInput(appointmentSchema.update), appointmentController.updateById);
-router.delete('/', verifyPermission([permissions.APPOINTMENTS.DELETE]), validateInput(appointmentSchema.delete), appointmentController.deleteIds);
+router.get("/", verifyPermission(permissions.APPOINTMENTS.VIEW), appointmentController.getAll);
+router.get('/:appointmentId', verifyPermission(permissions.APPOINTMENTS.VIEW), appointmentController.getById);
+router.put('/:appointmentId', verifyPermission(permissions.APPOINTMENTS.UPDATE), validateInput(appointmentSchema.update), appointmentController.updateById);
+router.delete('/', verifyPermission(permissions.APPOINTMENTS.DELETE), validateInput(appointmentSchema.delete), appointmentController.deleteIds);
 
 module.exports = router;
