@@ -10,6 +10,10 @@ function TreatmentPlanRepository(db) {
           model: db.clients,
           as: 'client',
         },
+        {
+          model: db.employees,
+          as: 'therapist',
+        },
       ]
     });
   };

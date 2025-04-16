@@ -1,87 +1,42 @@
 const db = require("../models");
 const authService = require('../services/auth.services')
 
-const customerLogin = async (req, res) => {
-    const transaction = await db.sequelize.transaction()
+const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body
     const cookies = req.headers['cookie']
 
-    const loginData = await authService.login(cookies, username, password, transaction)
+    const loginData = await authService.login(cookies, email, password)
 
-    res.cookie("token", loginData.refresh_token, {
-        httpOnly: true,
-        sameSite: "None",
-        secure: true,
-        maxAge: 60 * 60 * 1000,
-      });
+    res.cookie("token", loginData.refreshToken, {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 60 * 60 * 1000,
+    });
 
-      await transaction.commit()
-  
-    res.jsonSuccess(
-      200,
-      {
-        indonesian: "Data pesanan berhasil diambil",
-        english: "Order data fetched successfully",
-      },
-      loginData
-    );
+    res.jsonSuccess(200, "Login successful", loginData);
   } catch (error) {
-    await transaction.rollback()
-    res.jsonFailed(error?.statusCode, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
 };
-
-const customerLoginWithGoogle = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-} 
-
-const customerRegister = async (req, res) => {
-    const transaction = await db.sequelize.transaction()
-    try {
-        const { full_name, username, email, phone_number, password } = req.body;
-        const data = await authService.register(
-            full_name,
-            username,
-            email,
-            phone_number,
-            password,
-            transaction
-        );
-        
-        await transaction.commit();
-        
-        res.jsonSuccess(
-            201,
-            {
-                indonesian: "Order berhasil dibuat",
-                english: "Order created successfully",
-            },
-            createdOrder
-        );
-  } catch (error) {
-    await transaction.rollback()
-    res.jsonFailed(error?.statusCode, error?.message);
-  }
-};
-
-const employeeLogin = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-}
 
 const userLogout = async (req, res) => {
     try {
-        
+      const cookie = req.headers["cookie"];
+      console.log('COOKIE', cookie)
+
+      const logoutData = await authService.logout(cookie)
+
+      res.clearCookie('token', {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+      })
+
+      res.jsonSuccess(200, "Logout successful");
     } catch (error) {
-        
+      res.jsonFailed(error?.statusCode, error?.message, error);
     }
 } 
 
@@ -103,10 +58,7 @@ const resetPassword = async (req, res) => {
 
 
 module.exports = {
-  customerLogin,
-  customerLoginWithGoogle,
-  customerRegister,
-  employeeLogin,
+  userLogin,
   userLogout,
   forgotPassword,
   resetPassword

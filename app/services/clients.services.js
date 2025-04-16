@@ -44,6 +44,7 @@ const getClientByUuid = async (uuid) => {
 const getClientByUuidWithAppointments = async (uuid) => {
   const client = await clientRepository.findOneByUuidWithAppointments(uuid);
 
+  console.log('CLIENT APP', client)
   if (!client) {
     customError.statusCode = 404;
     customError.message = "Client data not found";
@@ -52,6 +53,12 @@ const getClientByUuidWithAppointments = async (uuid) => {
   }
   return client;
 };
+
+const getClientByEmail = async (email) => {
+  const client = await clientRepository.findOneByEmail(email);
+
+  return client;
+}
 
 const getClientAppointments = async (uuid) => {
   const clientAppointments = await appointmentService.getAppointmentsByClientUuid(
@@ -127,6 +134,7 @@ module.exports = {
   getClientById,
   getClientByUuid,
   getClientByUuidWithAppointments,
+  getClientByEmail,
   getClientAppointments,
   createClient,
   updateClientByUuid,

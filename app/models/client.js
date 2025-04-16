@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       password: DataTypes.STRING,
       refreshToken: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         field: "refresh_token",
       },
       isActive: {

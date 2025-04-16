@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { throwError } = require("./messageHandler.utils");
-const { CLIENT_RESPONSE } = require("../constants/message.constant");
+const customError = new Error();
 
 require("dotenv").config();
 
@@ -54,10 +53,14 @@ const generateRefreshToken = (payload, options) => {
  */
 const decodeToken = (token, secretKey) => {
   // Decode the token using the specified secret key
+  console.log('TOKEN', token)
   const decodedToken = jwt.verify(token, secretKey, (err, decoded) => {
     // If there is an error, throw an error with the INVALID_TOKEN message
+    console.log('ERR', err)
     if (err) {
-      throwError(CLIENT_RESPONSE.INVALID_TOKEN);
+      customError.statusCode = 404;
+      customError.message = "Invalid token or token expired";
+      throw customError;
     }
 
     // Return the decoded token payload

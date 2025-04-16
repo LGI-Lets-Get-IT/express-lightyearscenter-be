@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: DataTypes.STRING,
     refreshToken: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       field: 'refresh_token',
     },
     isActive: {

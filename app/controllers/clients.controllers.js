@@ -15,7 +15,7 @@ const getByUuid = async (req, res) => {
   try {
     const { clientUuid } = req.params;
 
-    const client = await clientService.getClientByUuid(clientUuid);
+    const client = await clientService.getClientByUuidWithAppointments(clientUuid);
 
     res.jsonSuccess(200, "Successfully fetched client data", client);
   } catch (error) {

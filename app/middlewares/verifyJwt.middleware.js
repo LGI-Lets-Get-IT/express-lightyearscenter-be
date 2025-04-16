@@ -1,34 +1,30 @@
-const { decodeToken } = require("../utils/jwt.utils");
-const {
-  throwError,
-  sendResponse,
-  jsonFailed,
-} = require("../utils/messageHandler.utils");
-const { CLIENT_RESPONSE } = require("../constants/message.constant");
+const { decodeToken, generateAccessToken } = require("../utils/jwt.utils");
+const permissionMapping = require('../config/rolePermissionsMapping.config')
+const customError = new Error();
 
 require("dotenv").config();
 
-const verifyJWT = (req, res, next) => {
+const verifyJwt = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization || req.headers.Authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-      throwError(CLIENT_RESPONSE.INVALID_TOKEN);
-    }
 
+    console.log('AUTHHEADER', authHeader)
+    if (!authHeader?.startsWith("Bearer ")) {
+      customError.statusCode = 404;
+      customError.message = "No token provided or invalid token";
+      throw customError;
+    }
+  
     const token = authHeader.split(" ")[1];
     const decodedToken = decodeToken(token, process.env.ACCESS_TOKEN_SECRET);
     if (decodedToken) {
       req.user = decodedToken._id;
-      req.groups = decodedToken.groups;
       req.permissions = decodedToken.permissions;
       next();
     }
   } catch (error) {
-    sendResponse(
-      res,
-      jsonFailed({ code: error.code, message: error.message }, error)
-    );
+    res.jsonFailed(error?.statusCode, error?.message, error)
   }
 };
 
-module.exports = verifyJWT;
+module.exports = verifyJwt;

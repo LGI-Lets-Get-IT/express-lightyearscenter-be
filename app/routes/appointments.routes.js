@@ -1,12 +1,14 @@
 const router = require("express").Router();
+const permissions = require("../constants/permissions.constant");
 const appointmentController = require("../controllers/appointments.controllers");
+const verifyPermission = require("../middlewares/verifyPermission.middleware");
 const { validateInput} = require("../utils/inputValidator.utils");
 const { appointmentSchema } = require("../validators/appointments.validators");
 
-router.post("/", validateInput(appointmentSchema.create), appointmentController.create);
-router.get("/", appointmentController.getAll);
-router.get('/:appointmentId', appointmentController.getById);
-router.put('/:appointmentId', validateInput(appointmentSchema.update), appointmentController.updateById);
-router.delete('/', validateInput(appointmentSchema.delete), appointmentController.deleteIds);
+router.post("/", verifyPermission([permissions.APPOINTMENTS.CREATE]), validateInput(appointmentSchema.create), appointmentController.create);
+router.get("/", verifyPermission([permissions.APPOINTMENTS.VIEW]), appointmentController.getAll);
+router.get('/:appointmentId', verifyPermission([permissions.APPOINTMENTS.VIEW]), appointmentController.getById);
+router.put('/:appointmentId', verifyPermission([permissions.APPOINTMENTS.UPDATE]), validateInput(appointmentSchema.update), appointmentController.updateById);
+router.delete('/', verifyPermission([permissions.APPOINTMENTS.DELETE]), validateInput(appointmentSchema.delete), appointmentController.deleteIds);
 
 module.exports = router;

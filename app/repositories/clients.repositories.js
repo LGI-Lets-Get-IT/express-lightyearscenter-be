@@ -67,12 +67,22 @@ function ClientRepository(db) {
         {
           model: db.appointments,
           as: 'appointments',
+          separate: true,
           attributes: [
             'id',
             'title',
             'appointmentType',
             [db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'DD Mon YYYY'), 'appointmentDate'],
             [db.sequelize.fn('CONCAT', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_start'), 'HH24:MI'), ' - ', db.sequelize.fn('TO_CHAR', db.sequelize.col('booking_time_end'), 'HH24:MI')), 'appointmentTime'],
+            [db.sequelize.literal(`
+              CASE
+                WHEN now() < booking_time_start THEN 'Upcoming'
+                WHEN now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
+                WHEN now() > booking_time_end THEN 'Done'
+                ELSE 'Unknown'
+              END 
+            `), 'status'
+            ],
           ]
         },
         {
@@ -82,6 +92,24 @@ function ClientRepository(db) {
         }
       ]
     });
+  };
+
+  const findOneByEmail = (email) => {
+    return db.clients.findOne({
+      // raw: true,
+      where: {
+        guardianEmail: email
+      }
+    })
+  };
+
+  const findOneByRefreshToken = (token) => {
+    return db.clients.findOne({
+      // raw: true,
+      where: {
+        refreshToken: token
+      }
+    })
   };
 
   const create = (bodyData, transaction) => {
@@ -118,6 +146,8 @@ function ClientRepository(db) {
     findOneById,
     findOneByUuid,
     findOneByUuidWithAppointments,
+    findOneByEmail,
+    findOneByRefreshToken,
     create,
     updateByUuid,
     deleteByUuids,

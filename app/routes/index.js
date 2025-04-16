@@ -1,3 +1,6 @@
+const verifyJwt = require('../middlewares/verifyJwt.middleware');
+const verifyPermission = require('../middlewares/verifyPermission.middleware');
+
 const _routes = [
   {
     path: 'auth',
@@ -8,37 +11,43 @@ const _routes = [
   {
     path: "appointments",
     router: require("./appointments.routes"),
-    middlewares: [],
+    middlewares: [verifyJwt],
     version: "1",
   },
   {
     path: "clients",
     router: require("./clients.routes"),
-    middlewares: [],
+    middlewares: [verifyJwt],
+    version: "1",
+  },
+  {
+    path: "employees",
+    router: require("./employees.routes"),
+    middlewares: [verifyJwt],
     version: "1",
   },
   {
     path: 'notifications',
     router: require('./notifications.routes'),
-    middlewares: [],
+    middlewares: [verifyJwt],
     version: '1',
   },
   {
     path: 'schools',
     router: require('./schools.routes'),
-    middlewares: [],
+    middlewares: [verifyJwt],
     version: '1'
   },
   {
     path: 'treatments',
     router: require('./treatmentTypes.routes'),
-    middlewares: [],
+    middlewares: [verifyJwt],
     version: '1'
   },
   {
     path: 'treatment-plans',
     router: require('./treatmentPlans.routes'),
-    middlewares: [],
+    middlewares: [verifyJwt],
     version: '1'
   },
 ];

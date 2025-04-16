@@ -13,11 +13,28 @@ function EmployeeRepository(db) {
 
   const findOneByEmail = (email) => {
     return db.employees.findOne({
+      // raw: true,
       where: {
         email,
       },
+      include: [
+        {
+          model: db.roles,
+          as: 'role',
+          attributes: ['name']
+        }
+      ]
     });
   }
+
+  const findOneByRefreshToken = (token) => {
+    console.log('TOKEN', token)
+    return db.employees.findOne({
+      where: {
+        refreshToken: token,
+      },
+    });
+  };
   
   const create = (bodyData, transaction) => {
     return db.employees.create(bodyData, { transaction })
@@ -42,6 +59,8 @@ function EmployeeRepository(db) {
   return {
     findAll,
     findOneById,
+    findOneByEmail,
+    findOneByRefreshToken,
     create,
     updateById,
     deleteById,
