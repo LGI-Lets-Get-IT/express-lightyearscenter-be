@@ -11,8 +11,10 @@ module.exports = {
         ...permissions.CLIENTS.ALL,
         ...permissions.SCHOOLS.ALL,
         ...permissions.EMPLOYEES.ALL,
+        permissions.DASHBOARD.VIEW,
     ],
     [PSYCHOLOGIST]: [
+        permissions.DASHBOARD,
         permissions.APPOINTMENTS.CREATE,
         permissions.APPOINTMENTS.VIEW,
         permissions.APPOINTMENTS.UPDATE,
@@ -39,6 +41,7 @@ module.exports = {
         permissions.TREATMENT_TYPES.VIEW,
     ],
     [STAFF]: [
+        permissions.DASHBOARD,
         ...permissions.APPOINTMENTS.ALL,
         // permissions.APPOINTMENTS.CREATE,
         // permissions.APPOINTMENTS.VIEW,
@@ -46,6 +49,7 @@ module.exports = {
         // permissions.APPOINTMENTS.DELETE,
     ],
     [THERAPIST]: [
+        permissions.DASHBOARD,
         ...permissions.TREATMENT_SESSIONS.ALL,
         permissions.APPOINTMENTS.VIEW,
         permissions.CLIENTS.VIEW,

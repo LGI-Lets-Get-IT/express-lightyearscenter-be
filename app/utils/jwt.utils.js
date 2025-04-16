@@ -20,7 +20,7 @@ const generateAccessToken = (payload, options) => {
   }
 
   // Sign the payload with the access token secret and options
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, options);
+  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, options);
 };
 
 /**
@@ -39,7 +39,7 @@ const generateRefreshToken = (payload, options) => {
   }
 
   // Sign the payload with the refresh token secret and options
-  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, options);
+  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, options);
 };
 
 /**
@@ -52,22 +52,16 @@ const generateRefreshToken = (payload, options) => {
  * @throws {Error} If the token is invalid.
  */
 const decodeToken = (token, secretKey) => {
-  // Decode the token using the specified secret key
-  console.log('TOKEN', token)
   const decodedToken = jwt.verify(token, secretKey, (err, decoded) => {
-    // If there is an error, throw an error with the INVALID_TOKEN message
-    console.log('ERR', err)
     if (err) {
       customError.statusCode = 404;
       customError.message = "Invalid token or token expired";
       throw customError;
     }
 
-    // Return the decoded token payload
     return decoded;
   });
 
-  // Return the decoded token
   return decodedToken;
 };
 module.exports = {
