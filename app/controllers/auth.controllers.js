@@ -4,7 +4,7 @@ const authService = require('../services/auth.services')
 const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body
-    const cookies = req.headers['cookie']
+    const cookies = req.cookies.token
 
     const loginData = await authService.login(cookies, email, password)
 

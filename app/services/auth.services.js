@@ -50,6 +50,7 @@ const login = async (currentToken, email, password) => {
     })
 
     if (!updatedToken) {
+        customError.statusCode = 500;
         customError.message = "Failed to update token";
         throw customError;
     }
