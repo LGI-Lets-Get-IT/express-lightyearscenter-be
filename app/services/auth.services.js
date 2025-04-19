@@ -3,7 +3,7 @@ const db = require('../models')
 const clientService = require('../services/clients.services')
 const employeeService = require('../services/employees.services')
 const roleConstant = require('../constants/roles.constant');
-const { generateAccessToken, generateRefreshToken } = require('../utils/jwt.utils');
+const { generateAccessToken, generateRefreshToken, decodeToken } = require('../utils/jwt.utils');
 const rolePermissionsMappingConfig = require('../config/rolePermissionsMapping.config');
 const employeeRepository = require('../repositories/employees.repositories')(db);
 const clientRepository = require('../repositories/clients.repositories')(db);
@@ -39,11 +39,11 @@ const login = async (currentToken, email, password) => {
     const accessToken = generateAccessToken({
         id: userData?.id,
         permissions: rolePermissionsMappingConfig[userData?.roleId] || []
-    }, { expiresIn: '15m' });
+    });
     const refreshToken = generateRefreshToken({
         id: userData?.id,
         permissions: rolePermissionsMappingConfig[userData?.roleId] || []
-    }, { expiresIn: '60m'});
+    });
 
     const updatedToken = userData.update({
         refreshToken: refreshToken
@@ -70,7 +70,7 @@ const login = async (currentToken, email, password) => {
 
 const logout = async (currentToken) => {
     if (!currentToken || currentToken == "undefined") {
-        customError.statusCode = 403;
+        customError.statusCode = 401;
         customError.message = "You are not logged in";
         throw customError;
     }
@@ -96,9 +96,42 @@ const logout = async (currentToken) => {
     }
 
     return updatedData;
-} 
+}
+
+const getRefreshToken = async (currentToken) => {
+    if (!currentToken) {
+        customError.message = "Token invalid";
+        throw customError
+    }
+
+    let userData = await clientRepository.findOneByRefreshToken(currentToken);
+    if(!userData) {
+        userData = await employeeRepository.findOneByRefreshToken(currentToken);
+        if(!userData) {
+            customError.statusCode = 404;
+            customError.message = "Token is invalid";
+            throw customError;
+        }
+    }
+
+    const decodedToken = decodeToken(currentToken, process.env.REFRESH_TOKEN_SECRET);
+    if (decodedToken.id !== userData.id) {
+        customError.message = "Token provided is not valid";
+        throw customError;
+    }
+
+    const newAccessToken = generateAccessToken({
+        id: userData?.id,
+        permissions: rolePermissionsMappingConfig[userData?.roleId] || []
+    });
+
+    return {
+        accessToken: newAccessToken
+    }
+}
 
 module.exports = {
     login,
     logout,
+    getRefreshToken,
 }

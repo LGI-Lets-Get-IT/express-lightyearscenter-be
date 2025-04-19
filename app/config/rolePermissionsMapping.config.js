@@ -53,6 +53,8 @@ module.exports = {
         ...permissions.TREATMENT_SESSIONS.ALL,
         permissions.APPOINTMENTS.VIEW,
         permissions.CLIENTS.VIEW,
+
+        ...permissions.TREATMENT_TYPES.ALL,
         // permissions.TREATMENT_SESSIONS.CREATE,
         // permissions.TREATMENT_SESSIONS.VIEW,
         // permissions.TREATMENT_SESSIONS.UPDATE,

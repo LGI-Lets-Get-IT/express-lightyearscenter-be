@@ -37,7 +37,18 @@ const userLogout = async (req, res) => {
     } catch (error) {
       res.jsonFailed(error?.statusCode, error?.message, error);
     }
-} 
+}
+
+const userRefreshToken = async (req, res) => {
+  try {
+    const currentToken = req.cookies.token;
+    const newTokenData = await authService.getRefreshToken(currentToken)
+    
+    res.jsonSuccess(200, "Successfully get new refresh token", newTokenData)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
 
 const forgotPassword = async (req, res) => {
     try {
@@ -59,6 +70,7 @@ const resetPassword = async (req, res) => {
 module.exports = {
   userLogin,
   userLogout,
+  userRefreshToken,
   forgotPassword,
   resetPassword
 };

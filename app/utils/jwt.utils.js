@@ -13,14 +13,14 @@ require("dotenv").config();
  * @returns {string} The access token.
  * @throws {Error} If the environment variable for the access token secret is not set.
  */
-const generateAccessToken = (payload, options) => {
+const generateAccessToken = (payload) => {
   // Check if the environment variable for the access token secret is set
   if (!process.env.ACCESS_TOKEN_SECRET) {
     throw new Error("ACCESS_TOKEN_SECRET environment variable not set");
   }
 
   // Sign the payload with the access token secret and options
-  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, options);
+  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '5m'});
 };
 
 /**
@@ -32,14 +32,14 @@ const generateAccessToken = (payload, options) => {
  * @returns {string} The refresh token.
  * @throws {Error} If the environment variable for the refresh token secret is not set.
  */
-const generateRefreshToken = (payload, options) => {
+const generateRefreshToken = (payload) => {
   // Check if the environment variable for the refresh token secret is set
   if (!process.env.REFRESH_TOKEN_SECRET) {
     throw new Error("REFRESH_TOKEN_SECRET environment variable not set");
   }
 
   // Sign the payload with the refresh token secret and options
-  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, options);
+  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '60m'});
 };
 
 /**
@@ -54,8 +54,8 @@ const generateRefreshToken = (payload, options) => {
 const decodeToken = (token, secretKey) => {
   const decodedToken = jwt.verify(token, secretKey, (err, decoded) => {
     if (err) {
-      customError.statusCode = 404;
-      customError.message = "Invalid token or token expired";
+      customError.statusCode = 401;
+      customError.message = "Token expired";
       throw customError;
     }
 

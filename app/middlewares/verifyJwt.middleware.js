@@ -8,10 +8,9 @@ const verifyJwt = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization || req.headers.Authorization;
 
-    console.log('AUTHHEADER', authHeader)
     if (!authHeader?.startsWith("Bearer ")) {
-      customError.statusCode = 404;
-      customError.message = "No token provided or invalid token";
+      customError.statusCode = 401;
+      customError.message = "Invalid token provided";
       throw customError;
     }
   
