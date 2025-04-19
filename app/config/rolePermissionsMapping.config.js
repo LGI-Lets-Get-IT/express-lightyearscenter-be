@@ -52,6 +52,7 @@ module.exports = {
         permissions.DASHBOARD.VIEW,
         ...permissions.TREATMENT_SESSIONS.ALL,
         permissions.APPOINTMENTS.VIEW,
+        permissions.APPOINTMENTS.UPDATE,
         permissions.CLIENTS.VIEW,
 
         ...permissions.TREATMENT_TYPES.ALL,
