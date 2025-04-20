@@ -10,16 +10,55 @@ function TreatmentPlanRepository(db) {
           model: db.clients,
           as: 'client',
         },
-        {
-          model: db.employees,
-          as: 'therapist',
-        },
+        // {
+        //   model: db.employees,
+        //   as: 'therapist',
+        // },
       ]
     });
   };
 
   const findOneById = (id) => {
-    return db.treatmentPlans.findByPk(id)
+    console.log('ID', id)
+    return db.treatmentPlans.findOne({
+      where: {
+        id
+      },
+      include: [
+        {
+          model: db.treatmentSessions,
+          as: 'sessions',
+          separate: true,
+          attributes: [
+            'id',
+            'title',
+            'currentSession',
+            'shortTermGoals',
+            'activities',
+            'progress',
+            [db.sequelize.col(`treatmentType.name`), 'treatmentName'],
+            [db.sequelize.col(`therapist.full_name`), 'therapistName'],
+          ],
+          include: [
+            {
+              model: db.appointments,
+              as: 'appointment',
+              attributes: [],
+            },
+            {
+              model: db.employees,
+              as: 'therapist',
+              attributes: [],
+            },
+            {
+              model: db.treatmentTypes,
+              as: 'treatmentType',
+              attributes: [],
+            }
+          ]
+        }
+      ]
+    })
   }
 
   const findAllByClientId = (clientId) => {

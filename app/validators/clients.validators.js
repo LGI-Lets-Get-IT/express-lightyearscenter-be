@@ -2,7 +2,7 @@ const Joi = require("joi").extend(require("@joi/date"));
 
 exports.clientSchema = {
   view: Joi.object({
-    clientUuid: Joi.string().required(),
+    clientUuid: Joi.string().uuid().required(),
   }),
 
   create: Joi.object({

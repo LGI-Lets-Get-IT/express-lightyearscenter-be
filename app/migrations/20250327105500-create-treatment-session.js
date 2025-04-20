@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('treatment_progress', {
+    await queryInterface.createTable('treatment_sessions', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -41,6 +41,14 @@ module.exports = {
           model: 'treatment_plans',
         },
       },
+      treatmentTypeId: {
+        field: 'treatment_type_id',
+        type: Sequelize.INTEGER,
+        references: {
+          key: 'id',
+          model: 'treatment_types',
+        },
+      },
       title: {
         type: Sequelize.STRING(64),
       },
@@ -71,6 +79,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('treatment_progress');
+    await queryInterface.dropTable('treatment_sessions');
   }
 };

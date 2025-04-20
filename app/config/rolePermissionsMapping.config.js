@@ -12,6 +12,7 @@ module.exports = {
         ...permissions.SCHOOLS.ALL,
         ...permissions.EMPLOYEES.ALL,
         permissions.DASHBOARD.VIEW,
+        permissions.SETTINGS.VIEW,
     ],
     [PSYCHOLOGIST]: [
         permissions.DASHBOARD.VIEW,
@@ -49,6 +50,8 @@ module.exports = {
         permissions.APPOINTMENTS.VIEW,
         // permissions.APPOINTMENTS.UPDATE,
         permissions.CLIENTS.VIEW,
+
+        permissions.SCHOOLS.VIEW,
 
         ...permissions.TREATMENT_TYPES.ALL,
     ],

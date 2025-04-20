@@ -3,17 +3,37 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class TreatmentProgress extends Model {
+  class TreatmentSession extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.appointments, {
+        foreignKey: 'appointmentId',
+        as: 'appointment',
+      });
+      this.belongsTo(models.clients, {
+        foreignKey: 'clientId',
+        as: 'client',
+      });
+      this.belongsTo(models.employees, {
+        foreignKey: 'therapistId',
+        as: 'therapist',
+      });
+      this.belongsTo(models.treatmentPlans, {
+        foreignKey: 'treatmentPlanId',
+        as: 'treatmentPlan',
+      });
+      this.belongsTo(models.treatmentTypes, {
+        foreignKey: 'treatmentTypeId',
+        as: 'treatmentType',
+      });
+
     }
   }
-  TreatmentProgress.init({
+  TreatmentSession.init({
     appointmentId: {
       field: 'appointment_id',
       type: DataTypes.INTEGER,
@@ -40,9 +60,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     treatmentPlanId: {
       field: 'treatment_plan_id',
+      type: DataTypes.INTEGER,
       references: {
         key: 'id',
         model: 'TreatmentPlan',
+      },
+    },
+    treatmentTypeId: {
+      field: 'treatment_type_id',
+      type: DataTypes.INTEGER,
+      references: {
+        key: 'id',
+        model: 'TreatmentType',
       },
     },
     title: DataTypes.STRING(64),
@@ -55,12 +84,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
     activities: DataTypes.ARRAY(DataTypes.STRING),
-    progress: DaataTypes.ARRAY(DataTypes.STRING),
+    progress: DataTypes.ARRAY(DataTypes.STRING),
   }, {
     sequelize,
-    modelName: 'TreatmentProgress',
-    tableName: 'treatment_progress',
+    modelName: 'TreatmentSession',
+    tableName: 'treatment_sessions',
     underscored: true,
   });
-  return TreatmentProgress;
+  return TreatmentSession;
 };

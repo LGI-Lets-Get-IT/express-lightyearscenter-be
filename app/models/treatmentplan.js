@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id',
         as: 'client',
       });
+      this.hasMany(models.treatmentSessions, {
+        foreignKey: 'treatmentPlanId',
+        as: 'sessions',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      })
     }
   }
   TreatmentPlan.init({
