@@ -20,7 +20,7 @@ const generateAccessToken = (payload) => {
   }
 
   // Sign the payload with the access token secret and options
-  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '5m'});
+  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '15s'});
 };
 
 /**
@@ -39,7 +39,7 @@ const generateRefreshToken = (payload) => {
   }
 
   // Sign the payload with the refresh token secret and options
-  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '60m'});
+  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '1m'});
 };
 
 /**
@@ -51,14 +51,20 @@ const generateRefreshToken = (payload) => {
  * @returns {Object} The decoded token payload.
  * @throws {Error} If the token is invalid.
  */
-const decodeToken = (token, secretKey) => {
+const decodeToken = (token, secretKey, tokenType = 'access') => {
   const decodedToken = jwt.verify(token, secretKey, (err, decoded) => {
-    if (err) {
+    if (err?.name == 'TokenExpiredError') {
       customError.statusCode = 401;
-      customError.message = "Token expired";
+      customError.message = tokenType === 'refresh'
+        ? "Refresh token expired. Please relogin."
+        : "Token expired. Please refresh the page.";
       throw customError;
     }
-
+    if (err) {
+      customError.statusCode = 401;
+      customError.message = "Invalid token.";
+      throw customError;
+    }
     return decoded;
   });
 

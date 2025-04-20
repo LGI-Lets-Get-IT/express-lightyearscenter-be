@@ -15,7 +15,7 @@ const verifyJwt = (req, res, next) => {
     }
   
     const token = authHeader.split(" ")[1];
-    const decodedToken = decodeToken(token, process.env.ACCESS_TOKEN_SECRET);
+    const decodedToken = decodeToken(token, process.env.ACCESS_TOKEN_SECRET, 'access');
     if (decodedToken) {
       req.user = decodedToken._id;
       req.permissions = decodedToken.permissions;

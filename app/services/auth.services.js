@@ -45,7 +45,7 @@ const login = async (currentToken, email, password) => {
         permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     });
 
-    const updatedToken = userData.update({
+    const updatedToken = await userData.update({
         refreshToken: refreshToken
     })
 
@@ -85,7 +85,7 @@ const logout = async (currentToken) => {
         }
     }
 
-    const updatedData = userData.update({
+    const updatedData = await userData.update({
         refreshToken: null
     })
 
@@ -100,7 +100,8 @@ const logout = async (currentToken) => {
 
 const getRefreshToken = async (currentToken) => {
     if (!currentToken) {
-        customError.message = "Token invalid";
+        customError.statusCode = 401;
+        customError.message = "Refresh token invalid.";
         throw customError
     }
 
@@ -109,14 +110,14 @@ const getRefreshToken = async (currentToken) => {
         userData = await employeeRepository.findOneByRefreshToken(currentToken);
         if(!userData) {
             customError.statusCode = 404;
-            customError.message = "Token is invalid";
+            customError.message = "Token not found";
             throw customError;
         }
     }
 
-    const decodedToken = decodeToken(currentToken, process.env.REFRESH_TOKEN_SECRET);
+    const decodedToken = decodeToken(currentToken, process.env.REFRESH_TOKEN_SECRET, 'refresh');
     if (decodedToken.id !== userData.id) {
-        customError.message = "Token provided is not valid";
+        customError.message = "Token is incorrect";
         throw customError;
     }
 
