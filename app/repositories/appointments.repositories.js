@@ -1,6 +1,10 @@
 function AppointmentRepository(db) {
   const findAll = () => {
     return db.appointments.findAll({
+      order: [
+        ['appointmentDate', 'DESC'],
+        ['status', 'DESC'],
+      ],
       attributes: [
         "id",
         'title',

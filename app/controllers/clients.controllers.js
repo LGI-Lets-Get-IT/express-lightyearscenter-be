@@ -1,4 +1,5 @@
 const clientService = require("../services/clients.services");
+const { differenceInYears } = require('date-fns')
 const customError = new Error();
 
 const getAll = async (req, res) => {
@@ -44,7 +45,6 @@ const create = async (req, res) => {
     const {
       schoolId,
       fullName,
-      childAge,
       childGender,
       childNationality,
       childDob,
@@ -58,7 +58,7 @@ const create = async (req, res) => {
     const bodyData = {
       schoolId,
       fullName,
-      age: childAge,
+      age: differenceInYears(Date.now(), childDob),
       gender: childGender,
       nationality: childNationality,
       dateOfBirth: childDob,
@@ -68,7 +68,6 @@ const create = async (req, res) => {
       guardianNationality,
       guardianRelationship,
     };
-
     const createdClient = await clientService.createClient(bodyData);
 
     res.jsonSuccess(201, "Successfully created new client", createdClient);
@@ -83,7 +82,6 @@ const updateByUuid = async (req, res) => {
     const {
       schoolId,
       fullName,
-      age,
       gender,
       nationality,
       dateOfBirth,
@@ -97,7 +95,7 @@ const updateByUuid = async (req, res) => {
     const bodyData = {
       schoolId,
       fullName,
-      age,
+      age: differenceInYears(Date.now(), dateOfBirth),
       gender,
       nationality,
       dateOfBirth,

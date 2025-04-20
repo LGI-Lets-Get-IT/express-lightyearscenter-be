@@ -41,11 +41,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(32),
         field: "appointment_type",
       },
-      timeStart: {
+      bookingTimeStart: {
         type: DataTypes.DATE,
         field: "booking_time_start",
       },
-      timeEnd: {
+      bookingTimeEnd: {
         type: DataTypes.DATE,
         field: "booking_time_end",
       },

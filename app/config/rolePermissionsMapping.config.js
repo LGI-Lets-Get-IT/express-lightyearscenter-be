@@ -15,30 +15,23 @@ module.exports = {
     ],
     [PSYCHOLOGIST]: [
         permissions.DASHBOARD.VIEW,
+        permissions.SETTINGS.VIEW,
+
         permissions.APPOINTMENTS.CREATE,
         permissions.APPOINTMENTS.VIEW,
         permissions.APPOINTMENTS.UPDATE,
 
         ...permissions.ASSESSMENTS.ALL,
-        // permissions.ASSESSMENTS.CREATE,
-        // permissions.ASSESSMENTS.VIEW,
-        // permissions.ASSESSMENTS.UPDATE,
-        // permissions.ASSESSMENTS.DELETE,
 
         ...permissions.TREATMENT_PLANS.ALL,
-        // permissions.TREATMENT_PLANS.CREATE,
-        // permissions.TREATMENT_PLANS.VIEW,
-        // permissions.TREATMENT_PLANS.UPDATE,
-        // permissions.TREATMENT_PLANS.DELETE,
 
         permissions.CLIENTS.VIEW,
         permissions.CLIENTS.UPDATE,
 
         permissions.SCHOOLS.VIEW,
 
-        permissions.TEST_TYPES.VIEW,
-
-        permissions.TREATMENT_TYPES.VIEW,
+        ...permissions.TEST_TYPES.ALL,
+        ...permissions.TREATMENT_TYPES.ALL,
     ],
     [STAFF]: [
         permissions.DASHBOARD.VIEW,
@@ -50,15 +43,13 @@ module.exports = {
     ],
     [THERAPIST]: [
         permissions.DASHBOARD.VIEW,
+        permissions.SETTINGS.VIEW,
+
         ...permissions.TREATMENT_SESSIONS.ALL,
         permissions.APPOINTMENTS.VIEW,
         // permissions.APPOINTMENTS.UPDATE,
         permissions.CLIENTS.VIEW,
 
         ...permissions.TREATMENT_TYPES.ALL,
-        // permissions.TREATMENT_SESSIONS.CREATE,
-        // permissions.TREATMENT_SESSIONS.VIEW,
-        // permissions.TREATMENT_SESSIONS.UPDATE,
-        // permissions.TREATMENT_SESSIONS.DELETE,
     ],
 }

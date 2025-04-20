@@ -66,20 +66,28 @@ const create = async (req, res) => {
 
 const updateById = async (req, res) => {
   try {
-    const ingredientId = req.params.id;
-    const { available_quantity } = req.body;
-    const updatedIngredient = await appointmentService.updateById(
-      ingredientId,
-      available_quantity
+    const appointmentId = req.params.id;
+    const {
+      psychologistId,
+      title,
+      appointmentType,
+      appointmentDate,
+      timeStart,
+      timeEnd,
+    } = req.body;
+    const bodyData = {
+      psychologistId,
+      title,
+      appointmentType,
+      appointmentDate,
+      timeStart,
+      timeEnd,
+    }
+    const updatedAppointment = await appointmentService.updateAppointmentById(
+      appointmentId,
+      bodyData
     );
-    res.jsonSuccess(
-      200,
-      {
-        indonesian: "Bahan produk berhasil diubah",
-        english: "Product ingredient updated successfully",
-      },
-      updatedIngredient
-    );
+    res.jsonSuccess(200, "Successfully updated appointment data", updatedAppointment);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
@@ -92,11 +100,7 @@ const deleteIds = async (req, res) => {
       appointmentIds
     );
 
-    res.jsonSuccess(
-      200,
-      "Successfully deleted appointments data",
-      deletedAppointments
-    );
+    res.jsonSuccess(200, "Successfully deleted appointments data", deletedAppointments);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }

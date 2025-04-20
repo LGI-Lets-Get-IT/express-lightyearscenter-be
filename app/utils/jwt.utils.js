@@ -20,7 +20,7 @@ const generateAccessToken = (payload) => {
   }
 
   // Sign the payload with the access token secret and options
-  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '15s'});
+  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '30m'});
 };
 
 /**
@@ -39,7 +39,7 @@ const generateRefreshToken = (payload) => {
   }
 
   // Sign the payload with the refresh token secret and options
-  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '1m'});
+  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '1d'});
 };
 
 /**

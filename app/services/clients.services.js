@@ -7,13 +7,6 @@ const getAllClients = async () => {
   const clients = await clientRepository.findAll();
 
   return clients;
-  // return clients.map(school => ({
-  //   id: school.id,
-  //   name: school.name,
-  //   address: school.address,
-  //   phoneNumber: school.phoneNumber,
-  //   email: school.email,
-  // }))
 };
 
 const getClientById = async (clientId) => {
@@ -44,7 +37,6 @@ const getClientByUuid = async (uuid) => {
 const getClientByUuidWithAppointments = async (uuid) => {
   const client = await clientRepository.findOneByUuidWithAppointments(uuid);
 
-  console.log('CLIENT APP', client)
   if (!client) {
     customError.statusCode = 404;
     customError.message = "Client data not found";

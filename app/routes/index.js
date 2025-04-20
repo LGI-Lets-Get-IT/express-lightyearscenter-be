@@ -1,3 +1,4 @@
+const { version } = require('joi');
 const verifyJwt = require('../middlewares/verifyJwt.middleware');
 const verifyPermission = require('../middlewares/verifyPermission.middleware');
 
@@ -13,6 +14,12 @@ const _routes = [
     router: require("./appointments.routes"),
     middlewares: [verifyJwt],
     version: "1",
+  },
+  {
+    path: 'assessments',
+    router: require('./assessments.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
   },
   {
     path: "clients",

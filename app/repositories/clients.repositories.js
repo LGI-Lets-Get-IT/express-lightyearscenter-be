@@ -68,6 +68,10 @@ function ClientRepository(db) {
           model: db.appointments,
           as: 'appointments',
           separate: true,
+          order: [
+            ['appointmentDate', 'DESC'],
+            ['status', 'DESC'],
+          ],
           attributes: [
             'id',
             'title',

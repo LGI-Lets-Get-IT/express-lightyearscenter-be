@@ -25,7 +25,6 @@ const create = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         const { clientId, status, page, limit } = req.query
-        console.log('clientId', clientId)
         let plans = null;
         if (!clientId) {
             plans = await treatmentPlanService.getAllPlans();
