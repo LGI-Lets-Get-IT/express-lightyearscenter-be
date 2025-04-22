@@ -57,6 +57,18 @@ const _routes = [
     middlewares: [verifyJwt],
     version: '1'
   },
+  {
+    path: 'treatment-types',
+    router: require('./treatmentTypes.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
+    path: 'test-types',
+    router: require('./testTypes.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
 ];
 
 module.exports = (app) => {

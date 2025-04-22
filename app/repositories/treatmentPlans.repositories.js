@@ -1,9 +1,10 @@
 function TreatmentPlanRepository(db) {
   const findAll = () => {
     return db.treatmentPlans.findAll({
-      group: ['TreatmentPlan.id', 'client.full_name', 'treatments.id', 'targetedBehaviors.id', 'psychologist.full_name'],
+      group: ['TreatmentPlan.id', 'client.uuid', 'client.full_name', 'treatments.id', 'targetedBehaviors.id', 'psychologist.full_name'],
       attributes: [
         'id',
+        [db.sequelize.col('client.uuid'), 'clientId'],
         [db.sequelize.col('client.full_name'), 'clientName'],
         [db.sequelize.col('psychologist.full_name'), 'plannedBy'],
         [db.sequelize.fn('COUNT', db.sequelize.col(`targetedBehaviors.id`)), 'totalTargetedBehaviors'],
