@@ -11,12 +11,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.clients, {
-        foreignKey: 'id',
+        foreignKey: 'clientId',
         as: 'client',
+      });
+      this.belongsTo(models.employees, {
+        foreignKey: 'psychologistId',
+        as: 'psychologist',
       });
       this.hasMany(models.treatmentSessions, {
         foreignKey: 'treatmentPlanId',
         as: 'sessions',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      });
+      this.hasMany(models.targetedBehaviors, {
+        foreignKey: 'treatmentPlanId',
+        as: 'targetedBehaviors',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      });
+      this.hasMany(models.treatmentPlanTreatments, {
+        foreignKey: 'treatmentPlanId',
+        as: 'treatments',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       })

@@ -54,5 +54,6 @@ module.exports = {
         permissions.SCHOOLS.VIEW,
 
         ...permissions.TREATMENT_TYPES.ALL,
+        permissions.TREATMENT_PLANS.VIEW,
     ],
 }

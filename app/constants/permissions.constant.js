@@ -12,6 +12,9 @@ const permissions = {
     VIEW: 'view_appointments',
     UPDATE: 'update_appointments',
     DELETE: 'delete_appointments',
+
+    UPLOAD: 'upload_file_appointments',
+    DOWNLOAD: 'download_file_appointments',
   },
   ASSESSMENTS: {
     CREATE: 'create_assessments',

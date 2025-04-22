@@ -1,19 +1,37 @@
 function TreatmentPlanRepository(db) {
   const findAll = () => {
     return db.treatmentPlans.findAll({
+      group: ['TreatmentPlan.id', 'client.full_name', 'treatments.id', 'targetedBehaviors.id', 'psychologist.full_name'],
       attributes: [
         'id',
-        [db.sequelize.col('client.full_name'), 'clientName']
+        [db.sequelize.col('client.full_name'), 'clientName'],
+        [db.sequelize.col('psychologist.full_name'), 'plannedBy'],
+        [db.sequelize.fn('COUNT', db.sequelize.col(`targetedBehaviors.id`)), 'totalTargetedBehaviors'],
+        [db.sequelize.literal('CAST(COUNT(treatments.id) AS INTEGER)'), 'totalTreatments'],
+        // [db.sequelize.literal('CAST(COUNT(targetedBehaviors.id) AS INTEGER)'), 'totalTargetedBehaviors'],
+        'consultDate',
       ],
       include: [
         {
           model: db.clients,
           as: 'client',
+          attributes: []
         },
-        // {
-        //   model: db.employees,
-        //   as: 'therapist',
-        // },
+        {
+          model: db.employees,
+          as: 'psychologist',
+          attributes: []
+        },
+        {
+          model: db.treatmentPlanTreatments,
+          as: 'treatments',
+          attributes: [],
+        },
+        {
+          model: db.targetedBehaviors,
+          as: 'targetedBehaviors',
+          attributes: [],
+        }
       ]
     });
   };
