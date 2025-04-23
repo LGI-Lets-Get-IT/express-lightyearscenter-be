@@ -17,7 +17,6 @@ const getById = async (req, res) => {
 
     const productCategory = await productCategoryService.fetchCategoryById(categoryId)
     
-    console.log('productCategory', productCategory)
     res.jsonSuccess(200, {
       indonesian: "Kategori produk berhasil diambil",
       english: "Product category fetched successfully"
@@ -29,11 +28,15 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { name, description } = req.body
+    const { therapyName, therapyDescription } = req.body
   
-    const createdRole = await roleService.create(name, description)
+    const bodyData = {
+      name: therapyName,
+      description: therapyDescription,
+    }
+    const createdRole = await treatmentTypeService.createTreatment(bodyData)
 
-    res.jsonSuccess(201, "Successfully created mew role", createdRole)
+    res.jsonSuccess(201, "Successfully created new therapy type data", createdRole)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message);
   }

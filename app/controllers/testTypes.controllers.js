@@ -27,11 +27,16 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { name, description } = req.body
+    const { testName, testDescription } = req.body
   
-    const createdRole = await roleService.create(name, description)
+    const bodyData = {
+      name: testName,
+      description: testDescription,
+    }
 
-    res.jsonSuccess(201, "Successfully created mew role", createdRole)
+    const createdTest = await testTypeService.createTestType(bodyData)
+
+    res.jsonSuccess(201, "Successfully created new test type", createdTest)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message);
   }

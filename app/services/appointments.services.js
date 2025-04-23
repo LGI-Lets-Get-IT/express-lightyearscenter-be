@@ -11,7 +11,12 @@ const getAllAppointments = async () => {
 
 const getAppointmentById = async (appointmentId) => {
   const result = await appointmentRepository.findOneById(appointmentId)
-  console.log('result', result)
+
+  // if (!result) {
+  //   customError.statusCode = 404;
+  //   customError.message = "Appointment not found";
+  //   throw customError;
+  // }
 
   return result;
 }
@@ -41,14 +46,11 @@ const createAppointment = async (bodyData) => {
   }
 };
 
-const updateAppointmentById = async (ingredientId, availQty) => {
+const updateAppointmentById = async (appointmentId, bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
     const result = await appointmentRepository.updateById(
-      ingredientId,
-      {
-        available_quantity: availQty,
-      },
+      appointmentId, bodyData,
       tr
     );
     await tr.commit();

@@ -14,10 +14,10 @@ const getTestTypeById = async (TestTypeId) => {
   return result;
 }
 
-const createTestType = async (name, description) => {
+const createTestType = async (bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const result = await testTypeRepository.create(name, description, tr)
+    const result = await testTypeRepository.create(bodyData, tr)
 
     if(!result) {
       customError.statusCode = 500
@@ -34,17 +34,17 @@ const createTestType = async (name, description) => {
   }
 };
 
-const updateTestTypeById = async (categoryId, bodyData) => {
+const updateTestTypeById = async (typeId, bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const { name, description, order } = bodyData
-    const result = await testTypeRepository.update(categoryId, { name, description, order}, transaction)
+    const result = await testTypeRepository.updateById(typeId, bodyData, transaction)
 
     await tr.commit()
 
     return result;
   } catch (error) {
     await tr.rollback()
+    throw error;
   }
 }
 

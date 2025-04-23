@@ -3,7 +3,6 @@ const treatmentRepository = require("../repositories/masterTreatments.repositori
 const customError = new Error()
 
 const getAllTreatments = async () => {
-  console.log('ASJDJDAADJJ')
   const result = await treatmentRepository.findAll();
 
   return result;
@@ -15,17 +14,14 @@ const getTreatmentById = async (treatmentId) => {
   return result;
 }
 
-const createTreatment = async (name, description) => {
+const createTreatment = async (bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const result = await treatmentRepository.create(name, description, tr)
+    const result = await treatmentRepository.create(bodyData, tr)
 
     if(!result) {
       customError.statusCode = 500
-      customError.message = {
-        indonesian: "Kategori produk gagal dibuat",
-        english: "Failed to create product category data"
-      }
+      customError.message = "Failed to create therapy type data"
       throw customError
     }
 
@@ -38,17 +34,17 @@ const createTreatment = async (name, description) => {
   }
 };
 
-const updateTreatmentById = async (categoryId, bodyData) => {
+const updateTreatmentById = async (typeId, bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const { name, description, order } = bodyData
-    const result = await treatmentRepository.update(categoryId, { name, description, order}, transaction)
+    const result = await treatmentRepository.updateById(typeId, bodyData, transaction)
 
     await tr.commit()
 
     return result;
   } catch (error) {
     await tr.rollback()
+    throw error;
   }
 }
 

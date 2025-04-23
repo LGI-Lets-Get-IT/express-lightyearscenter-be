@@ -7,11 +7,8 @@ function MasterTreatmentRepository(db) {
     return db.treatmentTypes.findByPk(id)
   }
 
-  const create = (name, description, transaction) => {
-    return db.treatmentTypes.create({
-      name,
-      description,
-    }, { transaction })
+  const create = (bodyData, transaction) => {
+    return db.treatmentTypes.create(bodyData, { transaction })
   }
 
   const updateById = (id, bodyData, transaction) => {

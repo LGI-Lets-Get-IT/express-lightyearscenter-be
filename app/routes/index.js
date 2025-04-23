@@ -34,6 +34,12 @@ const _routes = [
     version: "1",
   },
   {
+    path: 'files',
+    router: require('./files.routes'),
+    middlewares: [],
+    version: '1'
+  },
+  {
     path: 'notifications',
     router: require('./notifications.routes'),
     middlewares: [verifyJwt],
