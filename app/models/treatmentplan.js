@@ -47,6 +47,14 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
       },
     },
+    psychologistId: {
+      type: DataTypes.INTEGER,
+      field: 'psychologist_id',
+      references: {
+        model: 'Employee',
+        key: 'id',
+      },
+    },
     presentProblem: {
       type: DataTypes.TEXT,
       field: 'present_problem',
