@@ -1,25 +1,25 @@
-function TreatmentPlanTreatmentRepository(db) {
+function TreatmentProgramRepository(db) {
   const findAll = () => {
-    return db.treatmentPlanTreatments.findAll();
+    return db.treatmentPrograms.findAll();
   };
 
   const findOneById = (id) => {
-    return db.treatmentPlanTreatments.findByPk(id)
+    return db.treatmentPrograms.findByPk(id)
   }
 
   const create = (bodyData, transaction) => {
     console.log('BODYDATA', bodyData)
     console.log('BODYDATA', bodyData)
-    return db.treatmentPlanTreatments.create(bodyData, { transaction })
+    return db.treatmentPrograms.create(bodyData, { transaction })
   }
 
   const bulkCreate = (bodyData, transaction) => {
     console.log('BODYDATAAA', bodyData)
-    return db.treatmentPlanTreatments.bulkCreate(bodyData, { transaction })
+    return db.treatmentPrograms.bulkCreate(bodyData, { transaction })
   }
 
   const updateById = (id, bodyData, transaction) => {
-    return db.treatmentPlanTreatments.update(bodyData, {
+    return db.treatmentPrograms.update(bodyData, {
       where: {
         id,
       },
@@ -27,7 +27,7 @@ function TreatmentPlanTreatmentRepository(db) {
   }
 
   const deleteById = (id, transaction) => {
-    return db.treatmentPlanTreatments.destroy({
+    return db.treatmentPrograms.destroy({
       where: {
         id
       }
@@ -44,4 +44,4 @@ function TreatmentPlanTreatmentRepository(db) {
   };
 }
 
-module.exports = TreatmentPlanTreatmentRepository;
+module.exports = TreatmentProgramRepository;

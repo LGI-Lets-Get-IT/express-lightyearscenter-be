@@ -1,9 +1,9 @@
 const db = require("../models");
-const treatmentPlanTreatmentRepository = require("../repositories/treatmentPlanTreatments.repositories")(db);
+const treatmentProgramRepository = require("../repositories/treatmentProgram.repositories")(db);
 const customError = new Error()
 
 const getAllPlanTreatments = async () => {
-  const result = await treatmentPlanTreatmentRepository.findAll();
+  const result = await treatmentProgramRepository.findAll();
 
   return result;
 };
@@ -11,7 +11,7 @@ const getAllPlanTreatments = async () => {
 const createPlanTreatment = async (bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const result = await treatmentPlanTreatmentRepository.bulkCreate(bodyData, tr)
+    const result = await treatmentProgramRepository.bulkCreate(bodyData, tr)
 
     if(!result) {
       customError.statusCode = 500;
@@ -31,7 +31,7 @@ const createPlanTreatment = async (bodyData) => {
 const updatePlanTreatmentById = async (planId, bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const result = await treatmentPlanTreatmentRepository.updateById(planId, bodyData, tr)
+    const result = await treatmentProgramRepository.updateById(planId, bodyData, tr)
 
     await tr.commit()
 

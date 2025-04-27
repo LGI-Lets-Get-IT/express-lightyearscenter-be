@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'TreatmentPlan',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
     targetBehavior: {
       type: DataTypes.TEXT,

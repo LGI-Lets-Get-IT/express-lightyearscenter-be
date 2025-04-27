@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Treatment Plan - The Light Years</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    td, th {
+      border: 1px solid #ccc;
+      padding: 8px;
+      font-size: 14px;
+      vertical-align: top;
+    }
+    .section-title {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Treatment Plan</h2>
+
+<table>
+  <tr>
+    <th colspan="4" class="section-title">Child Information<br><span class="subtitle">Informasi Anak</span></th>
+  </tr>
+  <tr>
+    <td style="width: 25%">Name:<br><span class="subtitle">Nama</span></td>
+    <td style="width: 25%">{{client.fullName}}</td>
+    <td style="width: 25%">Consultation Date:<br><span class="subtitle">Tanggal Konsultasi</span></td>
+    <td style="width: 25%">{{consultDate}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">DOB:<br><span class="subtitle">Tanggal Lahir</span></td>
+    <td style="width: 25%">{{client.dateOfBirth}}</td>
+    <td style="width: 25%">School Name:<br><span class="subtitle">Nama Sekolah</span></td>
+    <td style="width: 25%">{{client.school.name}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Age:<br><span class="subtitle">Usia</span></td>
+    <td style="width: 25%">{{childAge}}</td>
+    <td style="width: 25%">Guardian's Name:<br><span class="subtitle">Nama Wali / Orang tua</span></td>
+    <td style="width: 25%">{{client.guardianName}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Relationship with the child:<br><span class="subtitle">Hubungan dengan anak</span></td>
+    <td style="width: 25%">{{client.guardianRelationship}}</td>
+    <td style="width: 25%">Guardian's Contact:<br><span class="subtitle">Kontak Wali</span></td>
+    <td style="width: 25%">
+        test
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th class="section-title">Presenting Problems<br><span class="subtitle">Permasalahan yang Dimiliki</span></th>
+  </tr>
+  <tr>
+    <td style="height: 100px;">{{presentProblem}}</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" class="section-title">Previous Assessments<br><span class="subtitle">Asesmen Sebelumnya</span></th>
+  </tr>
+  <tr style="text-align: center;">
+    <td style="width: 20%">Date<br><span class="subtitle">Tanggal</span></td>
+    <td>Outcome<br><span class="subtitle">Hasil</span></td>
+  </tr>
+  {{#each client.assessments}}
+  <tr>
+    <td>{{ created_at }}</td>
+    <td>{{ result }}</td>
+  </tr>
+  {{/each}}
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" class="section-title">In-Center Assessments<br><span class="subtitle">Asesmen Saat Ini</span></th>
+  </tr>
+  <tr style="text-align: center;">
+    <td style="width: 20%">Test<br><span class="subtitle">Tes</span></td>
+    <td>Outcome<br><span class="subtitle">Hasil</span></td>
+  </tr>
+  <tr>
+    <td>{{ assessmentDate }}</td>
+    <td>{{ result }}</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="4" class="section-title">Treatment Program<br><span class="subtitle">Program Terapi</span></th>
+  </tr>
+  <tr>
+    <td style="width: 25%">Treatment<br><span class="subtitle">Terapi</span></td>
+    {{#each programs}}
+    <td style="width: 25%">{{treatmentType.name}}</td>
+    {{/each}}
+  </tr>
+  <tr>
+    <td style="width: 25%">Aim of the treatment:<br><span class="subtitle">Fungsi Terapi</span></td>
+    {{#each programs}}
+    <td style="width: 25%">{{aimOfTreatment}}</td>
+    {{/each}}
+  </tr>
+  <tr>
+    <td style="width: 25%">Session Frequency:<br><span class="subtitle">Frekuensi</span></td>
+    {{#each programs}}
+    <td style="width: 25%">{{sessionFrequency}}</td>
+    {{/each}}
+  </tr>
+  <tr>
+    <td style="width: 25%">Duration:<br><span class="subtitle">Durasi</span></td>
+    {{#each programs}}
+    <td style="width: 25%">{{sessionDuration}} minutes</td>
+    {{/each}}
+  </tr>
+  <tr>
+    <td style="width: 25%">Therapist In Charge:<br><span class="subtitle">Terapis yang bertanggung jawab</span></td>
+    {{#each programs}}
+    <td style="width: 25%">{{therapist.full_name}}</td>
+    {{/each}}
+  </tr>
+</table>
+
+{{#each targetedBehaviors}}
+<table>
+  <tr>
+    <td style="width: 25%" style="text-align: justify;">Target Behavior {{@index}}:<br><span class="subtitle">Target Perilaku {{@index}}</span></td>
+    <td>{{targetBehavior}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Child's Current Ability:<br><span class="subtitle">Kemampuan anak saat ini</span></td>
+    <td>{{currentAbility}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Long Term Target:<br>(6 months)<br><span class="subtitle">Target jangka panjang</span></td>
+    <td>{{longTermTarget}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Short Term Target:<br>(3 months)<br><span class="subtitle">Target jangka pendek</span></td>
+    <td>{{shortTermTarget}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Media/Tools:<br><span class="subtitle">Media/Alat</span></td>
+    <td>{{mediaTools}}</td>
+  </tr>
+</table>
+{{/each}}
+
+<table>
+  <tr>
+    <th class="section-title">Collaboration plan with parents<br><span class="subtitle">Rencana kolaborasi dengan orang tua</span></th>
+  </tr>
+  <tr>
+    <td style="height: 100px;">{{parentPlan}}</td>
+  </tr>
+</table>
+
+</body>
+</html>

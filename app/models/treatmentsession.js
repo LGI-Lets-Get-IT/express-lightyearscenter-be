@@ -18,22 +18,34 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'clientId',
         as: 'client',
       });
-      this.belongsTo(models.employees, {
-        foreignKey: 'therapistId',
-        as: 'therapist',
-      });
       this.belongsTo(models.treatmentPlans, {
         foreignKey: 'treatmentPlanId',
         as: 'treatmentPlan',
       });
-      this.belongsTo(models.treatmentTypes, {
-        foreignKey: 'treatmentTypeId',
-        as: 'treatmentType',
+      this.belongsTo(models.treatmentPrograms, {
+        foreignKey: 'treatmentProgramId',
+        as: 'program',
       });
 
     }
   }
   TreatmentSession.init({
+    treatmentPlanId: {
+      field: 'treatment_plan_id',
+      type: DataTypes.INTEGER,
+      references: {
+        key: 'id',
+        model: 'TreatmentPlan',
+      },
+    },
+    treatmentProgramId: {
+      field: 'treatment_program_id',
+      type: DataTypes.INTEGER,
+      references: {
+        key: 'id',
+        model: 'TreatmentProgram',
+      },
+    },
     appointmentId: {
       field: 'appointment_id',
       type: DataTypes.INTEGER,
@@ -50,31 +62,23 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Client',
       },
     },
-    therapistId: {
-      field: 'therapist_id',
-      type: DataTypes.INTEGER,
-      references: {
-        key: 'id',
-        model: 'Employee',
-      },
-    },
-    treatmentPlanId: {
-      field: 'treatment_plan_id',
-      type: DataTypes.INTEGER,
-      references: {
-        key: 'id',
-        model: 'TreatmentPlan',
-      },
-    },
-    treatmentTypeId: {
-      field: 'treatment_type_id',
-      type: DataTypes.INTEGER,
-      references: {
-        key: 'id',
-        model: 'TreatmentType',
-      },
-    },
-    title: DataTypes.STRING(64),
+    // therapistId: {
+    //   field: 'therapist_id',
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     key: 'id',
+    //     model: 'Employee',
+    //   },
+    // },
+    // treatmentTypeId: {
+    //   field: 'treatment_type_id',
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     key: 'id',
+    //     model: 'TreatmentType',
+    //   },
+    // },
+    // title: DataTypes.STRING(64),
     currentSession: {
       field: 'current_session',
       type: DataTypes.INTEGER,

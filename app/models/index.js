@@ -30,7 +30,7 @@ db.employees = require('./employee')(sequelize, Sequelize);
 db.clients = require('./client')(sequelize, Sequelize);
 db.clientAssessments = require('./clientassessment')(sequelize, Sequelize);
 db.treatmentPlans = require('./treatmentplan')(sequelize, Sequelize);
-db.treatmentPlanTreatments = require('./treatmentplantreatment')(sequelize, Sequelize);
+db.treatmentPrograms = require('./treatmentprogram')(sequelize, Sequelize);
 db.treatmentSessions = require('./treatmentsession')(sequelize, Sequelize);
 db.targetedBehaviors = require('./targetedbehavior')(sequelize, Sequelize);
 

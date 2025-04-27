@@ -1,8 +1,8 @@
 const db = require("../models");
 const treatmentPlanRepository = require("../repositories/treatmentPlans.repositories")(db);
-const treatmentPlanTreatmentService = require('../services/treatmentPlanTreatments.services');
+const treatmentProgramService = require('../services/treatmentPrograms.services');
 const clientService = require('../services/clients.services');
-const treatmentPlanTreatmentRepository = require("../repositories/treatmentPlanTreatments.repositories")(db);
+const treatmentProgramRepository = require("../repositories/treatmentProgram.repositories")(db);
 const targetedBehaviorRepository = require("../repositories/targetedBehaviors.repositories")(db);
 const customError = new Error()
 
@@ -47,7 +47,7 @@ const createPlan = async (bodyData) => {
         treatmentPlanId: createdPlan.id,
       }
     });
-    const createdPrograms = await treatmentPlanTreatmentRepository.bulkCreate(mappedPrograms, tr);
+    const createdPrograms = await treatmentProgramRepository.bulkCreate(mappedPrograms, tr);
   
     const mappedTargets = bodyData.behaviorTargets.map((target) => {
       return {

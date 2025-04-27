@@ -9,6 +9,22 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      treatmentPlanId: {
+        field: 'treatment_plan_id',
+        type: Sequelize.INTEGER,
+        references: {
+          key: 'id',
+          model: 'treatment_plans',
+        },
+      },
+      treatmentProgramId: {
+        field: 'treatment_program_id',
+        type: Sequelize.INTEGER,
+        references: {
+          key: 'id',
+          model: 'treatment_programs',
+        },
+      },
       appointmentId: {
         field: 'appointment_id',
         type: Sequelize.INTEGER,
@@ -25,33 +41,25 @@ module.exports = {
           model: 'clients',
         },
       },
-      therapistId: {
-        field: 'therapist_id',
-        type: Sequelize.INTEGER,
-        references: {
-          key: 'id',
-          model: 'employees',
-        },
-      },
-      treatmentPlanId: {
-        field: 'treatment_plan_id',
-        type: Sequelize.INTEGER,
-        references: {
-          key: 'id',
-          model: 'treatment_plans',
-        },
-      },
-      treatmentTypeId: {
-        field: 'treatment_type_id',
-        type: Sequelize.INTEGER,
-        references: {
-          key: 'id',
-          model: 'treatment_types',
-        },
-      },
-      title: {
-        type: Sequelize.STRING(64),
-      },
+      // therapistId: {
+      //   field: 'therapist_id',
+      //   type: Sequelize.INTEGER,
+      //   references: {
+      //     key: 'id',
+      //     model: 'employees',
+      //   },
+      // },
+      // treatmentTypeId: {
+      //   field: 'treatment_type_id',
+      //   type: Sequelize.INTEGER,
+      //   references: {
+      //     key: 'id',
+      //     model: 'treatment_types',
+      //   },
+      // },
+      // title: {
+      //   type: Sequelize.STRING(64),
+      // },
       currentSession: {
         field: 'current_session',
         type: Sequelize.INTEGER,

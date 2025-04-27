@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "clientId",
         as: "client",
       });
+      this.hasMany(models.clientAssessments, {
+        foreignKey: 'appointmentId',
+        as: 'assessments'
+      })
     }
   }
   Appointment.init(

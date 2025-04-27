@@ -17,6 +17,14 @@ module.exports = {
           key: 'id',
         },
       },
+      psychologistId: {
+        type: Sequelize.INTEGER,
+        field: 'psychologist_id',
+        references: {
+          model: 'employees',
+          key: 'id',
+        },
+      },
       presentProblem: {
         type: Sequelize.TEXT,
         field: 'present_problem',

@@ -1,14 +1,14 @@
 function TreatmentPlanRepository(db) {
   const findAll = () => {
     return db.treatmentPlans.findAll({
-      group: ['TreatmentPlan.id', 'client.uuid', 'client.full_name', 'treatments.id', 'targetedBehaviors.id', 'psychologist.full_name'],
+      group: ['TreatmentPlan.id', 'client.uuid', 'client.full_name', 'programs.id', 'targetedBehaviors.id', 'psychologist.full_name'],
       attributes: [
         'id',
         [db.sequelize.col('client.uuid'), 'clientId'],
         [db.sequelize.col('client.full_name'), 'clientName'],
         [db.sequelize.col('psychologist.full_name'), 'plannedBy'],
         [db.sequelize.fn('COUNT', db.sequelize.col(`targetedBehaviors.id`)), 'totalTargetedBehaviors'],
-        [db.sequelize.literal('CAST(COUNT(treatments.id) AS INTEGER)'), 'totalTreatments'],
+        [db.sequelize.literal('CAST(COUNT(programs.id) AS INTEGER)'), 'totalTreatments'],
         // [db.sequelize.literal('CAST(COUNT(targetedBehaviors.id) AS INTEGER)'), 'totalTargetedBehaviors'],
         'consultDate',
       ],
@@ -24,8 +24,8 @@ function TreatmentPlanRepository(db) {
           attributes: []
         },
         {
-          model: db.treatmentPlanTreatments,
-          as: 'treatments',
+          model: db.treatmentPrograms,
+          as: 'programs',
           attributes: [],
         },
         {
@@ -38,25 +38,79 @@ function TreatmentPlanRepository(db) {
   };
 
   const findOneById = (id) => {
-    console.log('ID', id)
     return db.treatmentPlans.findOne({
+      attributes: [
+        'id',
+        'presentProblem',
+        'consultDate',
+        'parentPlan',
+      ],
       where: {
         id
       },
       include: [
+        {
+          model: db.clients,
+          as: 'client',
+          attributes: [
+            'uuid',
+            'fullName',
+            'guardianName',
+            'guardianRelationship',
+            'dateOfBirth',
+          ],
+          include: [
+            {
+              model: db.schools,
+              as: 'school',
+              attributes: [],
+            },
+            {
+              model: db.clientAssessments,
+              as: 'assessments',
+              attributes: [
+                'id',
+                'result',
+              ],
+              include: [
+                {
+                  model: db.appointments,
+                  as: 'appointment',
+                  attributes: ['bookingTimeStart']
+                }
+              ]
+            },
+          ],
+        },
+        {
+          model: db.treatmentPrograms,
+          as: 'programs',
+          separate: true,
+          attributes: [
+            'id',
+            'aimOfTreatment',
+            'sessionFrequency',
+            'sessionDuration',
+            [db.sequelize.col(`treatmentType.name`), 'treatmentName'],
+          ],
+          include: [
+            {
+              model: db.treatmentTypes,
+              as: 'treatmentType',
+              attributes: [],
+            },
+          ]
+        },
         {
           model: db.treatmentSessions,
           as: 'sessions',
           separate: true,
           attributes: [
             'id',
-            'title',
             'currentSession',
             'shortTermGoals',
             'activities',
             'progress',
-            [db.sequelize.col(`treatmentType.name`), 'treatmentName'],
-            [db.sequelize.col(`therapist.full_name`), 'therapistName'],
           ],
           include: [
             {
@@ -64,16 +118,6 @@ function TreatmentPlanRepository(db) {
               as: 'appointment',
               attributes: [],
             },
-            {
-              model: db.employees,
-              as: 'therapist',
-              attributes: [],
-            },
-            {
-              model: db.treatmentTypes,
-              as: 'treatmentType',
-              attributes: [],
-            }
           ]
         }
       ]

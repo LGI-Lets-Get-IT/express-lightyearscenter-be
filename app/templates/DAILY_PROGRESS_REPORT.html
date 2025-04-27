@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,38 +9,6 @@
       font-family: Arial, sans-serif;
       margin: 40px;
       background-color: #fff;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .logo {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .logo img {
-      width: auto;
-    }
-
-    .title {
-      font-size: 20px;
-      font-weight: bold;
-      color: #2f2f91;
-      margin: 5px 0;
-    }
-
-    .office {
-      text-align: right;
-      font-size: 12px;
-      color: #2f2f91;
-    }
-
-    .email {
-      color: #6e6e6e;
     }
 
     h2 {
@@ -99,18 +68,6 @@
   </style>
 </head>
 <body>
-  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-    <div style="display: flex; flex-direction: column;">
-      <img src="http://localhost:3344/TLY_LOGO_L.png" style="width: auto;" alt="TEST Logo" />
-    </div>
-    <div style="text-align: right; font-size: 12px; color: #2f2f91;">
-      <div><strong>OFFICE</strong></div>
-      <div>Jl. Prof. DR. Soepomo No.11A, RT.12/RW.3,</div>
-      <div>Tebet Bar., Kec. Tebet, Kota Jakarta Selatan,</div>
-      <div>DKI Jakarta 12810</div>
-      <div>Email: admin@thelightyearscdc.com</div>
-    </div>
-  </div>
   <h2>DAILY PROGRESS REPORT</h2>
 
   <div class="info">
@@ -121,26 +78,22 @@
   </div>
 
   <table>
-    <tr>
-      <th>Short-term goals</th>
-      <th>Activities</th>
-      <th>Progress</th>
-    </tr>
-    <tr>  
-      <td class="example">Example, Help a friend</td>
-      <td>Folding origami paper into a paper plane</td>
-      <td>XYZ was able to help a friend twice when they needed help, however, the teacher still needs to tell him to help.</td>
-    </tr>
-    <tr>
-      <td>Objective #1</td>
-      <td>Activities #1</td>
-      <td>Note #1</td>
-    </tr>
-    <tr>
-      <td>Objective #2</td>
-      <td>Activities #2</td>
-      <td>Note #2</td>
-    </tr>
+    <thead>
+      <tr>
+        <th>Short-term goals</th>
+        <th>Activities</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each short_term_goals}}
+      <tr>
+        <td>{{this}}</td>
+        <td>{{lookup ../activities @index}}</td>
+        <td>{{lookup ../progress @index}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
   </table>
 </body>
 </html>

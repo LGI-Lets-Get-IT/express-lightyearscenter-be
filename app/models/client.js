@@ -12,10 +12,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'clientId',
         as: 'appointments'
       });
+      this.hasMany(models.clientAssessments, {
+        foreignKey: 'clientId',
+        as: 'assessments'
+      });
       this.belongsTo(models.schools, {
         foreignKey: 'schoolId',
         as: 'school'
-      })
+      });
     }
   }
   Client.init(

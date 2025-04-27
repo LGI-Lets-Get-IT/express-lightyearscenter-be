@@ -1,6 +1,9 @@
 const Joi = require("joi");
 
 exports.filesSchema = {
+    generatePdf: Joi.object({
+        template: Joi.string().required(),
+    }),
     view: Joi.object({
         appointmentId: Joi.number().required(),
         uuid: Joi.string().uuid().required(),

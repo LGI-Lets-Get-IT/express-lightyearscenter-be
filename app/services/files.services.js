@@ -1,4 +1,7 @@
 const { google } = require('googleapis')
+const { generatePdf } = require('../utils/generatePdf.utils')
+const { treatmentSessions, employees, clients } = require('../models')
+const db = require('../models')
 
 const getAllFiles = async (appointmentId, uuid, clientName) => {
     const authClient = new google.auth.GoogleAuth({
@@ -27,6 +30,105 @@ const getAllFiles = async (appointmentId, uuid, clientName) => {
     return filesList.data.files
 }
 
+const generateDailyProgressReport = async () => {
+    const progressData = await treatmentSessions.findOne({
+        raw: true,
+        nest: true,
+        attributes: [
+            [db.sequelize.col(`client.full_name`), 'clientName'],
+            'activities',
+            'short_term_goals',
+            'progress'
+        ],
+        include: [
+            {
+                model: clients,
+                as: 'client',
+                attributes: [],
+            },
+        ]
+    })
+    const generatedFile = await generatePdf( 'DAILY_PROGRESS_REPORT', progressData)
+    return generatedFile
+}
+
+const generateTreatmentPlanDoc = async () => {
+    const planData = await db.treatmentPlans.findOne({
+        plain: true,
+        attributes: [
+            'consultDate',
+            'presentProblem',
+            'parentPlan',
+        ],
+        where: {
+            id: 1,
+        },
+        include: [
+            {
+                model: db.clients,
+                as: 'client',
+                attributes: [
+                    'fullName',
+                    'dateOfBirth',
+                    'guardianName',
+                    'guardianRelationship',
+                ],
+                include: [
+                    {
+                        model: db.clientAssessments,
+                        as: 'assessments',
+                        include: [
+                            {
+                                model: db.testTypes,
+                                as: 'testType'
+                            }
+                        ]
+                    },
+                    {
+                        model: db.schools,
+                        as: 'school',
+                        attributes: ['name'],
+                    },
+                ]
+            },
+            {
+                model: db.treatmentPrograms,
+                as: 'programs',
+                attributes: [
+                    'id',
+                    'aimOfTreatment',
+                    'sessionFrequency',
+                    'sessionDuration',
+                ],
+                include: [
+                    {
+                        model: db.employees,
+                        as: 'therapist',
+                        attributes: ['full_name'],
+                    },
+                    {
+                        model: db.treatmentTypes,
+                        as: 'treatmentType',
+                        attributes: ['name'],
+                    },
+                ]
+            },
+            {
+                model: db.targetedBehaviors,
+                as: 'targetedBehaviors',
+                // attributes: [],
+            }
+        ]
+    });
+    const test = planData.get({ plain: true})
+    console.log('test.', test.client.assessments)
+    console.log('PLANDATA PLAIN', planData.get({ plain: true }))
+    const generatedFile = await generatePdf('TREATMENT_PLAN_REPORT', planData.get({ plain: true }))
+    return generatedFile
+}
+
 module.exports = {
     getAllFiles,
+    generateDailyProgressReport,
+    generateTreatmentPlanDoc,
 }

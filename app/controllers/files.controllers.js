@@ -10,6 +10,48 @@ const getAll = async (req, res) => {
     }
 }
 
+const uploadAppointmentFile = async (req, res) => {
+    try {
+        const uploadedFile = await fileService.uploadAppointmentFile()
+        res.jsonSuccess(200, "Successfully uploaded file", uploadedFile)
+    } catch (error) {
+        res.jsonFailed(error?.statusCode, error?.message, error)
+    }
+}
+
+const generateDailyProgressReport = async (req, res) => {
+    try {
+        const generatedDoc = await fileService.generateDailyProgressReport();
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment',
+            'Content-Length': generatedDoc.length
+        });
+
+        res.status(200).end(generatedDoc)
+    } catch (error) {
+        res.jsonFailed(error?.statusCode, error?.message, error)
+    }
+}
+
+const generateTreatmentPlanReport = async (req, res) => {
+    try {
+        const generatedDoc = await fileService.generateTreatmentPlanDoc();
+        
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment',
+            'Content-Length': generatedDoc.length
+        });
+        res.status(200).end(generatedDoc)
+    } catch (error) {
+        res.jsonFailed(error?.statusCode, error?.message, error)
+    }
+}
+
 module.exports = {
     getAll,
+    uploadAppointmentFile,
+    generateDailyProgressReport,
+    generateTreatmentPlanReport,
 }

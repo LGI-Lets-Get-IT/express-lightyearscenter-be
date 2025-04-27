@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class TreatmentPlanTreatment extends Model {
+  class TreatmentProgram extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,10 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.treatmentPlans, {
         foreignKey: 'id',
         as: 'treatmentPlan',
-      })
+      });
+      this.belongsTo(models.treatmentTypes, {
+        foreignKey: 'treatmentTypeId',
+        as: 'treatmentType',
+      });
+      this.belongsTo(models.employees, {
+        foreignKey: 'therapistId',
+        as: 'therapist',
+      });
     }
   }
-  TreatmentPlanTreatment.init({
+  TreatmentProgram.init({
     treatmentPlanId: {
       field: 'treatment_plan_id',
       type: DataTypes.INTEGER,
@@ -55,9 +63,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'TreatmentPlanTreatment',
-    tableName: 'treatment_plan_treatments',
+    modelName: 'TreatmentProgram',
+    tableName: 'treatment_programs',
     underscored: true,
   });
-  return TreatmentPlanTreatment;
+  return TreatmentProgram;
 };
