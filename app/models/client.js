@@ -42,6 +42,8 @@ module.exports = (sequelize, DataTypes) => {
           model: "School",
           key: "id",
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
       },
       fullName: {
         type: DataTypes.STRING(128),
@@ -86,6 +88,11 @@ module.exports = (sequelize, DataTypes) => {
       refreshToken: {
         type: DataTypes.TEXT,
         field: "refresh_token",
+      },
+      allowShareData: {
+        type: DataTypes.BOOLEAN,
+        field: "is_active",
+        defaultValue: true,
       },
       isActive: {
         type: DataTypes.BOOLEAN,

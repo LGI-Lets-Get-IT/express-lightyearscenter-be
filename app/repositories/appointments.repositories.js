@@ -8,6 +8,7 @@ function AppointmentRepository(db) {
       attributes: [
         "id",
         'title',
+        'appointmentType',
         [db.sequelize.col("client.uuid"), "clientId"],
         [db.sequelize.col("client.full_name"), "clientName"],
         [db.sequelize.col("psychologist.full_name"), "psychologistName"],

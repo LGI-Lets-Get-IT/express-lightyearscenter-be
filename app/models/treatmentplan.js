@@ -21,20 +21,14 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.treatmentSessions, {
         foreignKey: 'treatmentPlanId',
         as: 'sessions',
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       });
       this.hasMany(models.targetedBehaviors, {
         foreignKey: 'treatmentPlanId',
         as: 'targetedBehaviors',
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       });
       this.hasMany(models.treatmentPrograms, {
         foreignKey: 'treatmentPlanId',
         as: 'programs',
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       })
     }
   }
@@ -46,6 +40,8 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Client',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     psychologistId: {
       type: DataTypes.INTEGER,
@@ -54,6 +50,8 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Employee',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     presentProblem: {
       type: DataTypes.TEXT,

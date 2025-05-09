@@ -15,7 +15,8 @@ module.exports = {
         references: {
           key: 'id',
           model: 'appointments'
-        }
+        },
+        onUpdate: 'CASCADE',
       },
       clientId: {
         type: Sequelize.INTEGER,
@@ -24,6 +25,7 @@ module.exports = {
           key: 'id',
           model: 'clients',
         },
+        onUpdate: 'CASCADE',
       },
       testTypeId: {
         type: Sequelize.INTEGER,
@@ -32,6 +34,7 @@ module.exports = {
           key: 'id',
           model: 'test_types'
         },
+        onUpdate: 'CASCADE',
       },
       result: Sequelize.TEXT,
       createdAt: {

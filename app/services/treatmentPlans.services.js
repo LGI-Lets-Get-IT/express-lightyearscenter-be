@@ -13,7 +13,29 @@ const getAllPlans = async () => {
 };
 
 const getPlanById = async (planId) => {
-  const result = await treatmentPlanRepository.findOneById(planId)
+  let planData = await treatmentPlanRepository.findOneById(planId)
+  planData = planData.get({ plain: true })
+  const mappedPrograms = planData.programs.map(program => {
+    const findSession = planData.sessions.filter(session => session.treatmentProgramId === program.id)
+    const remainingSession = findSession.length
+    const isCompleted = findSession.length >= program.sessionFrequency
+    return {
+      ...program,
+      isCompleted,
+      remainingSession,
+    }
+  });
+  const result = {
+    id: planData.id,
+    clientId: planData.clientId,
+    presentProblem: planData.presentProblem,
+    consultDate: planData.consultDate,
+    parentPlan: planData.parentPlan,
+    psychologistName: planData.psychologist.fullName,
+    programs: mappedPrograms,
+    targets: planData.targetedBehaviors,
+    sessions: planData.sessions,
+  };
 
   return result;
 }

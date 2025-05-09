@@ -16,6 +16,8 @@ module.exports = {
           model: 'clients',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       psychologistId: {
         type: Sequelize.INTEGER,
@@ -24,6 +26,8 @@ module.exports = {
           model: 'employees',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       presentProblem: {
         type: Sequelize.TEXT,

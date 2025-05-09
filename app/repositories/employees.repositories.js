@@ -1,7 +1,46 @@
 function EmployeeRepository(db) {
   const findAll = () => {
-    return db.employees.findAll();
+    return db.employees.findAll({
+      attributes: [
+        'id',
+        'fullName',
+        'phoneNumber',
+        'email',
+        [db.sequelize.col(`role.name`), 'roleName'],
+        'isActive',
+      ],
+      include: [
+        {
+          model: db.roles,
+          as: 'role',
+          attributes: [],
+        }
+      ]
+    });
   };
+
+  const findAllByRoleId = (roleId) => {
+    return db.employees.findAll({
+      where: {
+        roleId,
+      },
+      attributes: [
+        'id',
+        'fullName',
+        'phoneNumber',
+        'email',
+        [db.sequelize.col(`role.name`), 'roleName'],
+        'isActive',
+      ],
+      include: [
+        {
+          model: db.roles,
+          as: 'role',
+          attributes: [],
+        }
+      ]
+    });
+  }
 
   const findOneById = (id) => {
     return db.employees.findOne({
@@ -57,6 +96,7 @@ function EmployeeRepository(db) {
 
   return {
     findAll,
+    findAllByRoleId,
     findOneById,
     findOneByEmail,
     findOneByRefreshToken,

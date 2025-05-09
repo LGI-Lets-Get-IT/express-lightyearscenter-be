@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'Appointments'
       },
+      onUpdate: 'CASCADE',
     },
     clientId: {
       type: DataTypes.INTEGER,
@@ -40,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'Clients',
       },
+      onUpdate: 'CASCADE',
     },
     testTypeId: {
       type: DataTypes.INTEGER,
@@ -48,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'TestType'
       },
+      onUpdate: 'CASCADE',
     },
     result: {
       type: DataTypes.TEXT

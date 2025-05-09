@@ -64,6 +64,12 @@ const _routes = [
     version: '1'
   },
   {
+    path: 'treatment-sessions',
+    router: require('./treatmentSessions.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },  
+  {
     path: 'treatment-types',
     router: require('./treatmentTypes.routes'),
     middlewares: [verifyJwt],

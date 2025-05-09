@@ -37,6 +37,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'TreatmentPlan',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
     treatmentProgramId: {
       field: 'treatment_program_id',
@@ -45,6 +47,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'TreatmentProgram',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
     appointmentId: {
       field: 'appointment_id',
@@ -53,6 +57,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'Appointment',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     clientId: {
       field: 'client_id',
@@ -61,6 +67,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'Client',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     // therapistId: {
     //   field: 'therapist_id',

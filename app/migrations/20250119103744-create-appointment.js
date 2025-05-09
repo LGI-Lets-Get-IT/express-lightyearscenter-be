@@ -9,13 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      psychologistId: {
+      picId: {
         type: Sequelize.INTEGER,
-        field: "psychologist_id",
-        references: {
-          model: "employees",
-          key: "id",
-        },
+        field: "pic_id",
+      },
+      picType: {
+        type: Sequelize.STRING(64),
+        field: 'pic_type',
       },
       clientId: {
         type: Sequelize.INTEGER,
@@ -24,6 +24,8 @@ module.exports = {
           model: "clients",
           key: "id",
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       title: {
         type: Sequelize.STRING(64),

@@ -16,6 +16,8 @@ module.exports = {
           key: 'id',
           model: 'treatment_plans',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       targetBehavior: {
         type: Sequelize.TEXT,

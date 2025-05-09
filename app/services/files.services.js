@@ -20,14 +20,21 @@ const getAllFiles = async (appointmentId, uuid, clientName) => {
     })
 
     if (!folderId.data.files.length) {
-        throw new Error(`Fol    der "${folderName}" not found.`);
+        return;
     }
 
     const filesList = await driveApi.files.list({
         q: `'${folderId.data.files[0].id}' in parents`,
-        fields: 'files(id, name, mimeType, webViewLink, size, createdTime)',
+        fields: 'files(id, name, mimeType, webViewLink, size, createdTime, owners)',
     })
-    return filesList.data.files
+    return filesList.data.files.map(file => ({
+        name: file.name,
+        link: file.webViewLink,
+        uploader: file.owners[0].emailAddress,
+        size: file.size,
+        mimeType: file.mimeType,
+        createdTime: file.createdTime,
+    }))
 }
 
 const generateDailyProgressReport = async () => {
@@ -120,9 +127,6 @@ const generateTreatmentPlanDoc = async () => {
             }
         ]
     });
-    const test = planData.get({ plain: true})
-    console.log('test.', test.client.assessments)
-    console.log('PLANDATA PLAIN', planData.get({ plain: true }))
     const generatedFile = await generatePdf('TREATMENT_PLAN_REPORT', planData.get({ plain: true }))
     return generatedFile
 }

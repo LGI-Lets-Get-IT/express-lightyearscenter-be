@@ -1,11 +1,24 @@
 const db = require("../models");
 const employeeRepository = require("../repositories/employees.repositories")(db);
 const customError = new Error();
+const RoleConstant = require('../constants/roles.constant')
 
 const getAllEmployees = async () => {
   const employees = await employeeRepository.findAll();
 
   return employees
+}
+
+const getAllPsychologists = async () => {
+  const psychologists = await employeeRepository.findAllByRoleId(RoleConstant.PSYCHOLOGIST);
+
+  return psychologists
+}
+
+const getAllTherapists = async () => {
+  const psychologists = await employeeRepository.findAllByRoleId(RoleConstant.THERAPIST);
+
+  return psychologists
 }
 
 const getEmployeeByEmail = async (email) => {
@@ -48,6 +61,8 @@ const updateEmployeeToken = async (employeeId, token) => {
 
 module.exports = {
   getAllEmployees,
+  getAllTherapists,
+  getAllPsychologists,
   getEmployeeById,
   getEmployeeByEmail,
   createEmployee,

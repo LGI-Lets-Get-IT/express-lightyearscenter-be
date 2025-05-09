@@ -11,10 +11,28 @@ const getAll = async (req, res) => {
   }
 };
 
+const getAllByRolePsychologist = async (req, res) => {
+  try {
+    const psychologists = await employeeService.getAllPsychologists();
+    res.jsonSuccess(200, "Successfully fetched all psychologists data", psychologists)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
+
+const getAllByRoleTherapist = async (req, res) => {
+  try {
+    const therapists = await employeeService.getAllTherapists();
+    res.jsonSuccess(200, "Successfully fetched all therapists data", therapists)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
+
 const getById = async (req, res) => {
   try {
     const { employeeId } = req.params;
-    const employee = await employeeService.getSchoolByIdWithClients(employeeId);
+    const employee = await employeeService.getEmployeeById(employeeId);
 
     res.jsonSuccess(200, "Successfully fetched employee data", employee);
   } catch (error) {
@@ -67,6 +85,8 @@ const deleteIds = async (req, res) => {
 module.exports = {
   create,
   getAll,
+  getAllByRolePsychologist,
+  getAllByRoleTherapist,
   getById,
   updateById,
   deleteIds,

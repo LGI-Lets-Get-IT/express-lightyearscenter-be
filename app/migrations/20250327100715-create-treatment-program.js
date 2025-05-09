@@ -16,6 +16,8 @@ module.exports = {
           key: 'id',
           model: 'treatment_plans',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       treatmentTypeId: {
         field: 'treatment_type_id',
@@ -24,6 +26,8 @@ module.exports = {
           key: 'id',
           model: 'treatment_types',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       therapistId: {
         field: 'therapist_id',
@@ -32,6 +36,8 @@ module.exports = {
           key: 'id',
           model: 'employees',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       aimOfTreatment: {
         field: 'aim_of_treatment',

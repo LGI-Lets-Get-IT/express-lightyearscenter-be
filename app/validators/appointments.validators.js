@@ -4,8 +4,7 @@ exports.appointmentSchema = {
   create: Joi.object({
     title: Joi.string().required(),
     client: Joi.number().required(),
-    psychologistId: Joi.number().required(),
-    // psychologistName: Joi.string().required(),
+    picId: Joi.number().required(),
     appointmentDate: Joi.string().required(),
     appointmentTime: Joi.string().required(),
     appointmentType: Joi.string().required(),

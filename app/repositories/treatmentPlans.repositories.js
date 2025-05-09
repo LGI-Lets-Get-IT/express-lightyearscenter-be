@@ -41,6 +41,7 @@ function TreatmentPlanRepository(db) {
     return db.treatmentPlans.findOne({
       attributes: [
         'id',
+        'clientId',
         'presentProblem',
         'consultDate',
         'parentPlan',
@@ -49,6 +50,14 @@ function TreatmentPlanRepository(db) {
         id
       },
       include: [
+        {
+          model: db.employees,
+          as: 'psychologist',
+          attributes: [
+            'id',
+            'fullName'
+          ]
+        },
         {
           model: db.clients,
           as: 'client',
@@ -92,8 +101,14 @@ function TreatmentPlanRepository(db) {
             'sessionFrequency',
             'sessionDuration',
             [db.sequelize.col(`treatmentType.name`), 'treatmentName'],
+            [db.sequelize.col(`therapist.full_name`), 'therapistName'],
           ],
           include: [
+            {
+              model: db.employees,
+              as: 'therapist',
+              attributes: [],
+            },
             {
               model: db.treatmentTypes,
               as: 'treatmentType',
@@ -102,16 +117,22 @@ function TreatmentPlanRepository(db) {
           ]
         },
         {
+          model: db.targetedBehaviors,
+          as: 'targetedBehaviors',
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          order: [['id', 'ASC']],
+        },
+        {
           model: db.treatmentSessions,
           as: 'sessions',
           separate: true,
-          attributes: [
-            'id',
-            'currentSession',
-            'shortTermGoals',
-            'activities',
-            'progress',
-          ],
+          // attributes: [
+          //   'id',
+          //   'currentSession',
+          //   'shortTermGoals',
+          //   'activities',
+          //   'progress',
+          // ],
           include: [
             {
               model: db.appointments,
@@ -133,7 +154,6 @@ function TreatmentPlanRepository(db) {
   }
 
   const create = (bodyData, transaction) => {
-    console.log('body treatment plan', bodyData)
     return db.treatmentPlans.create(bodyData, { transaction })
   }
 

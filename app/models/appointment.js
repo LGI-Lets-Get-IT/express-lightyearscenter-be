@@ -24,13 +24,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   Appointment.init(
     {
-      psychologistId: {
+      picId: {
         type: DataTypes.INTEGER,
-        field: "psychologist_id",
-        references: {
-          model: "Employee",
-          key: "id",
-        },
+        field: "pic_id",
+      },
+      picType: {
+        type: DataTypes.STRING(64),
+        field: 'pic_type',
       },
       clientId: {
         type: DataTypes.INTEGER,
@@ -39,6 +39,8 @@ module.exports = (sequelize, DataTypes) => {
           model: "Client",
           key: "id",
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       title: DataTypes.STRING(64),
       appointmentType: {
