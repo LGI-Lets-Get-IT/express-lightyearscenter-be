@@ -36,7 +36,7 @@ const _routes = [
   {
     path: 'files',
     router: require('./files.routes'),
-    middlewares: [],
+    middlewares: [verifyJwt],
     version: '1'
   },
   {
