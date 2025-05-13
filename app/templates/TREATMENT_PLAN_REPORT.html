@@ -27,12 +27,22 @@
     }
     .section-title {
       background-color: #f2f2f2;
-      font-weight: bold;
-      text-align: center;
+      font-weight: normal;
+      text-align: left;
     }
     .subtitle {
+      font-style: italic;
+      font-weight: 300;
+      /* font-size: 12px; */
+    }
+    .subtitle-translation {
+      font-weight: 300;
+      font-style: italic;
+    }
+    .field-subtitle {
+      font-style: italic;
+      font-weight: 300;
       font-size: 12px;
-      color: gray;
     }
   </style>
 </head>
@@ -42,30 +52,30 @@
 
 <table>
   <tr>
-    <th colspan="4" class="section-title">Child Information<br><span class="subtitle">Informasi Anak</span></th>
+    <th colspan="4" class="section-title">Child Information | <span class="subtitle-translation">Informasi Anak</span></th>
   </tr>
-  <tr>
-    <td style="width: 25%">Name:<br><span class="subtitle">Nama</span></td>
+  <tr style="background-color: #f3f3f3;">
+    <td style="width: 25%">Name<br><span class="field-subtitle">Nama</span></td>
     <td style="width: 25%">{{client.fullName}}</td>
-    <td style="width: 25%">Consultation Date:<br><span class="subtitle">Tanggal Konsultasi</span></td>
+    <td style="width: 25%">Consultation Date<br><span class="field-subtitle">Tanggal Konsultasi</span></td>
     <td style="width: 25%">{{consultDate}}</td>
   </tr>
-  <tr>
-    <td style="width: 25%">DOB:<br><span class="subtitle">Tanggal Lahir</span></td>
+  <tr style="background-color: #f3f3f3;">
+    <td style="width: 25%">DOB<br><span class="field-subtitle">Tanggal Lahir</span></td>
     <td style="width: 25%">{{client.dateOfBirth}}</td>
-    <td style="width: 25%">School Name:<br><span class="subtitle">Nama Sekolah</span></td>
+    <td style="width: 25%">School Name<br><span class="field-subtitle">Nama Sekolah</span></td>
     <td style="width: 25%">{{client.school.name}}</td>
   </tr>
-  <tr>
-    <td style="width: 25%">Age:<br><span class="subtitle">Usia</span></td>
+  <tr style="background-color: #f3f3f3;">
+    <td style="width: 25%">Age<br><span class="field-subtitle">Usia</span></td>
     <td style="width: 25%">{{childAge}}</td>
-    <td style="width: 25%">Guardian's Name:<br><span class="subtitle">Nama Wali / Orang tua</span></td>
+    <td style="width: 25%">Guardian's Name<br><span class="field-subtitle">Nama Wali / Orang tua</span></td>
     <td style="width: 25%">{{client.guardianName}}</td>
   </tr>
-  <tr>
-    <td style="width: 25%">Relationship with the child:<br><span class="subtitle">Hubungan dengan anak</span></td>
+  <tr style="background-color: #f3f3f3;">
+    <td style="width: 25%">Relationship with the child<br><span class="field-subtitle">Hubungan dengan anak</span></td>
     <td style="width: 25%">{{client.guardianRelationship}}</td>
-    <td style="width: 25%">Guardian's Contact:<br><span class="subtitle">Kontak Wali</span></td>
+    <td style="width: 25%">Guardian's Contact<br><span class="field-subtitle">Kontak Wali</span></td>
     <td style="width: 25%">
         test
     </td>
@@ -74,7 +84,7 @@
 
 <table>
   <tr>
-    <th class="section-title">Presenting Problems<br><span class="subtitle">Permasalahan yang Dimiliki</span></th>
+    <th class="section-title" style="background-color: #d8d1e8">Presenting Problems | <span class="subtitle-translation">Permasalahan yang Dimiliki</span></th>
   </tr>
   <tr>
     <td style="height: 100px;">{{presentProblem}}</td>
@@ -83,11 +93,11 @@
 
 <table>
   <tr>
-    <th colspan="2" class="section-title">Previous Assessments<br><span class="subtitle">Asesmen Sebelumnya</span></th>
+    <th colspan="2" class="section-title" style="background-color: #b2a4d4;">Previous Assessments | <span class="subtitle-translation">Asesmen Sebelumnya</span></th>
   </tr>
   <tr style="text-align: center;">
-    <td style="width: 20%">Date<br><span class="subtitle">Tanggal</span></td>
-    <td>Outcome<br><span class="subtitle">Hasil</span></td>
+    <td style="width: 20%">Date | <span class="subtitle-translation">Tanggal</span></td>
+    <td>Outcome | <span class="subtitle-translation">Hasil</span></td>
   </tr>
   {{#each client.assessments}}
   <tr>
@@ -99,11 +109,11 @@
 
 <table>
   <tr>
-    <th colspan="2" class="section-title">In-Center Assessments<br><span class="subtitle">Asesmen Saat Ini</span></th>
+    <th colspan="2" class="section-title" style="background-color: #8c76c0;">In-Center Assessments | <span class="subtitle-translation">Asesmen Saat Ini</span></th>
   </tr>
   <tr style="text-align: center;">
-    <td style="width: 20%">Test<br><span class="subtitle">Tes</span></td>
-    <td>Outcome<br><span class="subtitle">Hasil</span></td>
+    <td style="width: 20%">Test | <span class="subtitle-translation">Tes</span></td>
+    <td>Outcome | <span class="subtitle-translation">Hasil</span></td>
   </tr>
   <tr>
     <td>{{ assessmentDate }}</td>
@@ -113,34 +123,34 @@
 
 <table>
   <tr>
-    <th colspan="4" class="section-title">Treatment Program<br><span class="subtitle">Program Terapi</span></th>
+    <th colspan="4" class="section-title" style="background-color: #e9cdcd;">Treatment Program | <span class="subtitle-translation">Program Terapi</span></th>
   </tr>
   <tr>
-    <td style="width: 25%">Treatment<br><span class="subtitle">Terapi</span></td>
+    <td style="width: 25%">Treatment<br><span class="field-subtitle">Terapi</span></td>
     {{#each programs}}
     <td style="width: 25%">{{treatmentType.name}}</td>
     {{/each}}
   </tr>
   <tr>
-    <td style="width: 25%">Aim of the treatment:<br><span class="subtitle">Fungsi Terapi</span></td>
+    <td style="width: 25%">Aim of the treatment<br><span class="field-subtitle">Fungsi Terapi</span></td>
     {{#each programs}}
     <td style="width: 25%">{{aimOfTreatment}}</td>
     {{/each}}
   </tr>
   <tr>
-    <td style="width: 25%">Session Frequency:<br><span class="subtitle">Frekuensi</span></td>
+    <td style="width: 25%">Session Frequency<br><span class="field-subtitle">Frekuensi</span></td>
     {{#each programs}}
     <td style="width: 25%">{{sessionFrequency}}</td>
     {{/each}}
   </tr>
   <tr>
-    <td style="width: 25%">Duration:<br><span class="subtitle">Durasi</span></td>
+    <td style="width: 25%">Duration<br><span class="field-subtitle">Durasi</span></td>
     {{#each programs}}
     <td style="width: 25%">{{sessionDuration}} minutes</td>
     {{/each}}
   </tr>
   <tr>
-    <td style="width: 25%">Therapist In Charge:<br><span class="subtitle">Terapis yang bertanggung jawab</span></td>
+    <td style="width: 25%">Therapist In Charge<br><span class="field-subtitle">Terapis yang bertanggung jawab</span></td>
     {{#each programs}}
     <td style="width: 25%">{{therapist.full_name}}</td>
     {{/each}}
@@ -150,7 +160,30 @@
 {{#each targetedBehaviors}}
 <table>
   <tr>
-    <td style="width: 25%" style="text-align: justify;">Target Behavior {{@index}}:<br><span class="subtitle">Target Perilaku {{@index}}</span></td>
+    <th colspan="4" class="section-title" style="background-color: #d59b9b;">Targeted Behavior | <span class="subtitle-translation">Target Perilaku</span></th>
+  </tr>
+  <tr>
+    <td style="width: 25%">Child's Current Ability<br><span class="field-subtitle">Kemampuan anak saat ini</span></td>
+    <td style="width: 25%">{{currentAbility}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Short Term Target:<br><span class="field-subtitle">Target jangka pendek</span></td>
+    <td style="width: 25%">{{aimOfTreatment}}</td>
+  </tr>
+  <tr>
+    <td style="width: 25%">Media/Tools:<br><span class="field-subtitle">Alat</span></td>
+    <td style="width: 25%">{{mediaTools}}</td>
+  </tr>
+</table>
+{{/each}}
+
+<!-- {{#each targetedBehaviors}}
+<table>
+  <tr>
+    <th class="section-title" style="background-color: #d59b9b;">Targeted Behavior | <span class="subtitle-translation">Target Perilaku {{@index}}</span></th>
+  </tr>
+  <tr stlye="background-color: #d59b9b">
+    <td style="width: 25%" style="text-align: justify; background-color: #d59b9b;">Targeted Behavior {{@index}}:<br><span class="subtitle">Target Perilaku {{@index}}</span></td>
     <td>{{targetBehavior}}</td>
   </tr>
   <tr>
@@ -158,23 +191,19 @@
     <td>{{currentAbility}}</td>
   </tr>
   <tr>
-    <td style="width: 25%">Long Term Target:<br>(6 months)<br><span class="subtitle">Target jangka panjang</span></td>
-    <td>{{longTermTarget}}</td>
-  </tr>
-  <tr>
     <td style="width: 25%">Short Term Target:<br>(3 months)<br><span class="subtitle">Target jangka pendek</span></td>
     <td>{{shortTermTarget}}</td>
   </tr>
   <tr>
-    <td style="width: 25%">Media/Tools:<br><span class="subtitle">Media/Alat</span></td>
+    <td style="width: 25%">Media:<br><span class="subtitle">Alat</span></td>
     <td>{{mediaTools}}</td>
   </tr>
 </table>
-{{/each}}
+{{/each}} -->
 
 <table>
   <tr>
-    <th class="section-title">Collaboration plan with parents<br><span class="subtitle">Rencana kolaborasi dengan orang tua</span></th>
+    <th class="section-title" style="background-color: #c56a6a;">Plan for collaborating with Parents | <span class="subtitle-translation">Rancangan kolaborasi dengan orang tua</span></th>
   </tr>
   <tr>
     <td style="height: 100px;">{{parentPlan}}</td>

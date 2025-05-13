@@ -36,10 +36,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       field: 'short_term_target',
     },
-    longTermTarget: {
-      type: DataTypes.TEXT,
-      field: 'long_term_target',
-    },
     mediaTools: {
       type: DataTypes.TEXT,
       field: 'media_tools',

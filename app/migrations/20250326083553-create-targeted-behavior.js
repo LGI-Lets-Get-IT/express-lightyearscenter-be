@@ -31,10 +31,6 @@ module.exports = {
         type: Sequelize.TEXT,
         field: 'short_term_target',
       },
-      longTermTarget: {
-        type: Sequelize.TEXT,
-        field: 'long_term_target',
-      },
       mediaTools: {
         type: Sequelize.TEXT,
         field: 'media_tools',

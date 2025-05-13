@@ -4,6 +4,12 @@ const verifyPermission = require('../middlewares/verifyPermission.middleware');
 
 const _routes = [
   {
+    path: 'dashboard',
+    router: require('./dashboard.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
     path: 'auth',
     router: require('./auth.routes'),
     middlewares: [],
@@ -36,7 +42,7 @@ const _routes = [
   {
     path: 'files',
     router: require('./files.routes'),
-    middlewares: [verifyJwt],
+    middlewares: [],
     version: '1'
   },
   {

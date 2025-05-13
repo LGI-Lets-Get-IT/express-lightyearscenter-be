@@ -1,130 +1,138 @@
 function TreatmentPlanRepository(db) {
   const findAll = () => {
     return db.treatmentPlans.findAll({
-      group: ['TreatmentPlan.id', 'client.uuid', 'client.full_name', 'programs.id', 'targetedBehaviors.id', 'psychologist.full_name'],
+      group: [
+        "TreatmentPlan.id",
+        "client.uuid",
+        "client.full_name",
+        "programs.id",
+        "targetedBehaviors.id",
+        "psychologist.full_name",
+      ],
       attributes: [
-        'id',
-        [db.sequelize.col('client.uuid'), 'clientId'],
-        [db.sequelize.col('client.full_name'), 'clientName'],
-        [db.sequelize.col('psychologist.full_name'), 'plannedBy'],
-        [db.sequelize.fn('COUNT', db.sequelize.col(`targetedBehaviors.id`)), 'totalTargetedBehaviors'],
-        [db.sequelize.literal('CAST(COUNT(programs.id) AS INTEGER)'), 'totalTreatments'],
+        "id",
+        [db.sequelize.col("client.uuid"), "clientId"],
+        [db.sequelize.col("client.full_name"), "clientName"],
+        [db.sequelize.col("psychologist.full_name"), "plannedBy"],
+        [
+          db.sequelize.fn("COUNT", db.sequelize.col(`targetedBehaviors.id`)),
+          "totalTargetedBehaviors",
+        ],
+        [
+          db.sequelize.literal("CAST(COUNT(programs.id) AS INTEGER)"),
+          "totalTreatments",
+        ],
         // [db.sequelize.literal('CAST(COUNT(targetedBehaviors.id) AS INTEGER)'), 'totalTargetedBehaviors'],
-        'consultDate',
+        "consultDate",
       ],
       include: [
         {
           model: db.clients,
-          as: 'client',
-          attributes: []
+          as: "client",
+          attributes: [],
         },
         {
           model: db.employees,
-          as: 'psychologist',
-          attributes: []
+          as: "psychologist",
+          attributes: [],
         },
         {
           model: db.treatmentPrograms,
-          as: 'programs',
+          as: "programs",
           attributes: [],
         },
         {
           model: db.targetedBehaviors,
-          as: 'targetedBehaviors',
+          as: "targetedBehaviors",
           attributes: [],
-        }
-      ]
+        },
+      ],
     });
   };
 
   const findOneById = (id) => {
     return db.treatmentPlans.findOne({
       attributes: [
-        'id',
-        'clientId',
-        'presentProblem',
-        'consultDate',
-        'parentPlan',
+        "id",
+        "clientId",
+        "presentProblem",
+        "consultDate",
+        "parentPlan",
       ],
       where: {
-        id
+        id,
       },
       include: [
         {
           model: db.employees,
-          as: 'psychologist',
-          attributes: [
-            'id',
-            'fullName'
-          ]
+          as: "psychologist",
+          attributes: ["id", "fullName"],
         },
         {
           model: db.clients,
-          as: 'client',
+          as: "client",
           attributes: [
-            'uuid',
-            'fullName',
-            'guardianName',
-            'guardianRelationship',
-            'dateOfBirth',
+            "uuid",
+            "fullName",
+            "guardianName",
+            "guardianPhone",
+            "guardianRelationship",
+            "dateOfBirth",
           ],
           include: [
             {
               model: db.schools,
-              as: 'school',
+              as: "school",
               attributes: [],
             },
             {
               model: db.clientAssessments,
-              as: 'assessments',
-              attributes: [
-                'id',
-                'result',
-              ],
+              as: "assessments",
+              attributes: ["id", "result"],
               include: [
                 {
                   model: db.appointments,
-                  as: 'appointment',
-                  attributes: ['bookingTimeStart']
-                }
-              ]
+                  as: "appointment",
+                  attributes: ["bookingTimeStart"],
+                },
+              ],
             },
           ],
         },
         {
           model: db.treatmentPrograms,
-          as: 'programs',
+          as: "programs",
           separate: true,
           attributes: [
-            'id',
-            'aimOfTreatment',
-            'sessionFrequency',
-            'sessionDuration',
-            [db.sequelize.col(`treatmentType.name`), 'treatmentName'],
-            [db.sequelize.col(`therapist.full_name`), 'therapistName'],
+            "id",
+            "aimOfTreatment",
+            "sessionFrequency",
+            "sessionDuration",
+            [db.sequelize.col(`treatmentType.name`), "treatmentName"],
+            [db.sequelize.col(`therapist.full_name`), "therapistName"],
           ],
           include: [
             {
               model: db.employees,
-              as: 'therapist',
+              as: "therapist",
               attributes: [],
             },
             {
               model: db.treatmentTypes,
-              as: 'treatmentType',
+              as: "treatmentType",
               attributes: [],
             },
-          ]
+          ],
         },
         {
           model: db.targetedBehaviors,
-          as: 'targetedBehaviors',
-          attributes: { exclude: ['createdAt', 'updatedAt'] },
-          order: [['id', 'ASC']],
+          as: "targetedBehaviors",
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+          order: [["id", "ASC"]],
         },
         {
           model: db.treatmentSessions,
-          as: 'sessions',
+          as: "sessions",
           separate: true,
           // attributes: [
           //   'id',
@@ -136,42 +144,49 @@ function TreatmentPlanRepository(db) {
           include: [
             {
               model: db.appointments,
-              as: 'appointment',
+              as: "appointment",
               attributes: [],
             },
-          ]
-        }
-      ]
-    })
-  }
+          ],
+        },
+      ],
+    });
+  };
 
   const findAllByClientId = (clientId) => {
     return db.treatmentPlans.findAll({
       where: {
         clientId: clientId,
       },
-    })
-  }
+    });
+  };
 
   const create = (bodyData, transaction) => {
-    return db.treatmentPlans.create(bodyData, { transaction })
-  }
+    return db.treatmentPlans.create(bodyData, { transaction });
+  };
 
   const updateById = (id, bodyData, transaction) => {
-    return db.treatmentPlans.update(bodyData, {
-      where: {
-        id,
+    return db.treatmentPlans.update(
+      bodyData,
+      {
+        where: {
+          id,
+        },
       },
-    }, { transaction })
-  }
+      { transaction }
+    );
+  };
 
   const deleteById = (id, transaction) => {
-    return db.treatmentPlans.destroy({
-      where: {
-        id
-      }
-    }, { transaction })
-  }
+    return db.treatmentPlans.destroy(
+      {
+        where: {
+          id,
+        },
+      },
+      { transaction }
+    );
+  };
 
   return {
     findAll,

@@ -11,7 +11,7 @@
       background-color: #fff;
     }
 
-    h2 {
+    h3 {
       text-align: center;
       margin-top: 40px;
     }
@@ -20,6 +20,10 @@
       margin-top: 30px;
       margin-bottom: 20px;
       font-size: 14px;
+      gap: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .info p {
@@ -34,12 +38,13 @@
     }
 
     th, td {
-      border: 1px solid #999;
+      border: 0.5px solid;
       padding: 12px;
       text-align: left;
       font-size: 14px;
       vertical-align: top;
       word-wrap: break-word;
+      font-weight: 300;
     }
 
     th:nth-child(1),
@@ -56,25 +61,17 @@
     td:nth-child(3) {
       width: 33.333%;
     }
-
-    th {
-      background-color: #f0f0f0;
-    }
-
-    .example {
-      font-style: italic;
-      color: #555;
-    }
   </style>
 </head>
 <body>
-  <h2>DAILY PROGRESS REPORT</h2>
+  <h3>DAILY PROGRESS REPORT</h3>
 
   <div class="info">
     <p>Date: {{ treatmentDate }}</p>
-    <p>Client Name: {{ clientName }}</p>
-    <p>Session: {{ currentSession }} of {{ totalSession }}</p>
-    <p>TIC: {{ therapistName }}</p>
+    <!-- <p>Client Name: {{ clientName }}</p> -->
+    <p>Therapy: {{ treatmentName }}</p>
+    <!-- <p>Session: {{ currentSession }} of {{ totalSession }}</p> -->
+    <p>Therapist: {{ therapistName }}</p>
   </div>
 
   <table>

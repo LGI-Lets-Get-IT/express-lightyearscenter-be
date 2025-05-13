@@ -9,7 +9,6 @@ exports.clientSchema = {
     schoolId: Joi.number().required(),
     fullName: Joi.string().min(3).required(),
     nationality: Joi.string().required(),
-    age: Joi.number().required(),
     dateOfBirth: Joi.date().format("YYYY-MM-DD").required(),
     dateOfBirth: Joi.date().required(),
     gender: Joi.string().valid("Male", "Female").required(), // enum

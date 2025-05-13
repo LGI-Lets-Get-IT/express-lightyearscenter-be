@@ -6,30 +6,34 @@ exports.treatmentPlanSchema = {
   }),
 
   create: Joi.object({
-    clientId: Joi.string().uuid().required(),
-    problem: Joi.string().required(),
-    consultDate: Joi.date().greater('now').required(),
+    clientId: Joi.number().required(),
+    psychologistId: Joi.number().required(),
+    presentProblem: Joi.string().required(),
+    consultDate: Joi.date().greater("now").required(),
     parentPlan: Joi.string().required(),
-    programs: Joi.array().items(Joi.object({
-      treatmentId: Joi.number().required(),
-      therapistId: Joi.number().required(),
-      treatmentAim: Joi.string().required(),
-      sessionFrequency: Joi.number().min(1).required(),
-      sessionDuration: Joi.number().min(1).required()
-    })),
-    behaviorTargets: Joi.array().items(Joi.object({
-      behavior: Joi.string().required(),
-      currentAbility: Joi.string().required(),
-      shortTarget: Joi.string().required(),
-      longTarget: Joi.string().required(),
-      mediaTools: Joi.string().required(),
-    })),
+    programs: Joi.array().items(
+      Joi.object({
+        treatmentId: Joi.number().required(),
+        therapistId: Joi.number().required(),
+        aimOfTreatment: Joi.string().required(),
+        sessionFrequency: Joi.number().min(1).required(),
+        sessionDuration: Joi.number().min(1).required(),
+      })
+    ),
+    targets: Joi.array().items(
+      Joi.object({
+        behavior: Joi.string().required(),
+        currentAbility: Joi.string().required(),
+        shortTermTarget: Joi.string().required(),
+        mediaTools: Joi.string().required(),
+      })
+    ),
   }),
 
   update: Joi.object({
     planId: Joi.number().optional(),
     problem: Joi.string().optional(),
-    consultDate: Joi.date().greater('now').optional(),
+    consultDate: Joi.date().greater("now").optional(),
     parentPlan: Joi.string().optional(),
   }),
 
