@@ -1,6 +1,6 @@
+exports.STAFF = 1;
+exports.PSYCHOLOGIST = 2;
+exports.THERAPIST = 3;
+exports.SPED_TEACHER = 4;
+exports.SCHOOL_PIC = 5;
 exports.SUPER_ADMIN = 998;
-exports.STAFF = 2;
-exports.PSYCHOLOGIST = 1;
-exports.THERAPIST = 4;
-exports.SCHOOL_ADMIN = 5;
-exports.SPED_TEACHER = 3;

@@ -73,7 +73,6 @@ function EmployeeRepository(db) {
       },
     });
   };
-  
   const create = (bodyData, transaction) => {
     return db.employees.create(bodyData, { transaction })
   };
