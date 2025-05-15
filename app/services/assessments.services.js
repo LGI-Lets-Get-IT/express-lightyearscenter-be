@@ -25,10 +25,10 @@ const getAssessmentById = async (assessmentId) => {
 const createAssessment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
-    const clientData = await clientService.getClientByUuid(bodyData.client)
+    // const clientData = await clientService.getClientByUuid(bodyData.client)
     const createdAssessment = await assessmentRepository.create({
       ...bodyData,
-      client: clientData.id
+      // client: clientData.id
     }, tr);
 
     if (!createdAssessment) {
@@ -39,7 +39,7 @@ const createAssessment = async (bodyData) => {
 
     await tr.commit();
 
-    return createdClient;
+    return createdAssessment;
   } catch (error) {
     await tr.rollback();
     throw error;
@@ -63,7 +63,7 @@ const updateAssessmentById = async (id, bodyData) => {
 
     await tr.commit();
 
-    return { ...updatedAssessment[1][0] };
+    return updatedAssessment;
   } catch (error) {
     await tr.rollback();
     throw error;
@@ -97,4 +97,3 @@ module.exports = {
   updateAssessmentById,
   deleteAssessmentById,
 };
- 

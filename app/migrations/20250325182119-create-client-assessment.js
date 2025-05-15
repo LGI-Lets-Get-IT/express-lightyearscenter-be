@@ -18,6 +18,14 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
       },
+      psychologistId: {
+        type: Sequelize.INTEGER,
+        field: 'psychologist_id',
+        references: {
+          key: 'id',
+          model: 'employees',
+        },
+      },
       clientId: {
         type: Sequelize.INTEGER,
         field: 'client_id',

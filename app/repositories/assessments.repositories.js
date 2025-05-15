@@ -5,7 +5,7 @@ function ClientRepository(db) {
         'id',
         [db.sequelize.col(`client.uuid`), 'clientId'],
         [db.sequelize.col(`client.full_name`), 'clientName'],
-        [db.sequelize.col(`appointment.psychologist.full_name`), 'assessedBy'],
+        [db.sequelize.col(`psychologist.full_name`), 'assessedBy'],
         [db.sequelize.col(`testType.name`), 'testName'],
         [db.sequelize.fn('TO_CHAR', db.sequelize.col(
           'appointment.booking_time_start'), 'DD Mon YYYY'),
@@ -17,13 +17,11 @@ function ClientRepository(db) {
           model: db.appointments,
           as: 'appointment',
           attributes: [],
-          include: [
-            {
-              model: db.employees,
-              as: 'psychologist',
-              attributes: []
-            }
-          ]
+        },
+        {
+          model: db.employees,
+          as: 'psychologist',
+          attributes: []
         },
         {
           model: db.clients,
@@ -56,7 +54,6 @@ function ClientRepository(db) {
     return db.clientAssessments.update(
       bodyData,
       {
-        returning: true,
         raw: true,
         where: {
           id,

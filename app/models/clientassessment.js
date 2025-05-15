@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'appointmentId',
         as: 'appointment'
       });
+      this.belongsTo(models.employees, {
+        foreignKey: 'psychologistId',
+        as: 'psychologist',
+      });
       this.belongsTo(models.clients, {
         foreignKey: 'clientId',
         as: 'client',
@@ -33,6 +37,14 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Appointments'
       },
       onUpdate: 'CASCADE',
+    },
+    psychologistId: {
+      type: DataTypes.INTEGER,
+      field: 'psychologist_id',
+      references: {
+        key: 'id',
+        model: 'Psychologist',
+      },
     },
     clientId: {
       type: DataTypes.INTEGER,

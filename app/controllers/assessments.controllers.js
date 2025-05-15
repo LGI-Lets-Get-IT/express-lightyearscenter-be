@@ -32,15 +32,17 @@ const create = async (req, res) => {
   try {
     const {
       appointmentId,
-      client,
+      clientId,
       psychologistId,
+      testId,
       result,
     } = req.body;
 
     const bodyData = {
       appointmentId,
-      client,
+      clientId,
       psychologistId,
+      testTypeId: testId,
       result,
     };
 
@@ -48,7 +50,7 @@ const create = async (req, res) => {
       bodyData
     );
 
-    res.jsonSuccess(201, "Successfully created new assessment data",createdAppointment);
+    res.jsonSuccess(201, "Successfully created new assessment data", createdAppointment);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
@@ -60,7 +62,6 @@ const updateById = async (req, res) => {
     const { available_quantity } = req.body;
     const updatedAssessment = await assessmentService.updateAssessmentById(
       assessmentId,
-      
     );
     res.jsonSuccess(200, "Successfully updated assessment data", updatedAssessment);
   } catch (error) {

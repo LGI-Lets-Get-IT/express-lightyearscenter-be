@@ -3,9 +3,9 @@ const Joi = require("joi");
 exports.assessmentSchema = {
   create: Joi.object({
     appointmentId: Joi.number().required(),
-    client: Joi.string().uuid().message('Client ID format is not valid').required(),
+    clientId: Joi.number().required(),
     psychologistId: Joi.number().required(),
-    testType: Joi.number().required(),
+    testId: Joi.number().required(),
     result: Joi.string().required(),
   }),
 

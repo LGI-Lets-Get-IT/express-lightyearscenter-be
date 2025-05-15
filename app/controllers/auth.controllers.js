@@ -12,7 +12,7 @@ const userLogin = async (req, res) => {
       httpOnly: true,
       sameSite: "None",
       secure: true,
-      maxAge: 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.jsonSuccess(200, "Login successful", loginData);
@@ -22,28 +22,27 @@ const userLogin = async (req, res) => {
 };
 
 const userLogout = async (req, res) => {
-    try {
-      const cookie = req.cookies.token;
+  try {
+    const cookie = req.cookies.token;
 
-      const logoutData = await authService.logout(cookie)
+    const logoutData = await authService.logout(cookie)
 
-      res.clearCookie('token', {
-        httpOnly: true,
-        sameSite: "None",
-        secure: true,
-      })
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+    })
 
-      res.jsonSuccess(200, "Logout successful");
-    } catch (error) {
-      res.jsonFailed(error?.statusCode, error?.message, error);
-    }
+    res.jsonSuccess(200, "Logout successful");
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
 }
 
 const userRefreshToken = async (req, res) => {
   try {
     const currentToken = req.cookies.token;
     const newTokenData = await authService.getRefreshToken(currentToken)
-    
     res.jsonSuccess(200, "Successfully get new refresh token", newTokenData)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error)
@@ -51,19 +50,19 @@ const userRefreshToken = async (req, res) => {
 }
 
 const forgotPassword = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
+  try {
+
+  } catch (error) {
+
+  }
 }
 
 const resetPassword = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
+  try {
+
+  } catch (error) {
+
+  }
 }
 
 
