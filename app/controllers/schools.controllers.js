@@ -56,10 +56,10 @@ const create = async (req, res) => {
 
 const updateById = async (req, res) => {
   try {
-    const { id: schoolId } = req.params;
+    const { id } = req.params;
 
     const updatedSchool = await schoolService.updateSchoolById(
-      schoolId,
+      id,
       req.body
     );
     res.jsonSuccess(200, "Successfully updated school data", updatedSchool);

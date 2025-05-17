@@ -43,7 +43,7 @@ const createSchool = async (bodyData) => {
   try {
     const createdSchool = await schoolRepository.create(bodyData, tr)
 
-    if(!createdSchool) {
+    if (!createdSchool) {
       customError.message = "Failed to create school data"
       throw customError
     }
@@ -60,11 +60,10 @@ const createSchool = async (bodyData) => {
 const updateSchoolById = async (schoolId, bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const updatedSchool = await schoolRepository.updateById(schoolId, bodyData)
+    const updatedSchool = await schoolRepository.updateById(schoolId, bodyData, tr)
 
-    console.log('TESTT')
     console.log('updatedSchool[0]', !updatedSchool[0])
-    if(!updatedSchool[0]) {
+    if (!updatedSchool[0]) {
       // customError.statusCode = 500
       customError.message = "Failed to update school data"
       throw customError
@@ -83,7 +82,7 @@ const deleteById = async (schoolId) => {
   const tr = await db.sequelize.transaction()
   try {
     const deletedSchool = await schoolRepository.deleteById(schoolId, tr)
-    if(!deletedSchool) { 
+    if (!deletedSchool) {
       customError.statusCode = 500;
       customError.message = "Failed to delete school data"
 

@@ -55,9 +55,11 @@ function TreatmentPlanRepository(db) {
       attributes: [
         "id",
         "clientId",
+        'psychologistId',
         "presentProblem",
         "consultDate",
         "parentPlan",
+        'updatedAt',
       ],
       where: {
         id,
@@ -108,7 +110,9 @@ function TreatmentPlanRepository(db) {
             "aimOfTreatment",
             "sessionFrequency",
             "sessionDuration",
+            [db.sequelize.col(`treatmentType.id`), "treatmentId"],
             [db.sequelize.col(`treatmentType.name`), "treatmentName"],
+            [db.sequelize.col(`therapist.id`), "therapistId"],
             [db.sequelize.col(`therapist.full_name`), "therapistName"],
           ],
           include: [
