@@ -1,17 +1,29 @@
 const db = require("../models");
 const appointmentRepository =
   require("../repositories/appointments.repositories")(db);
+const employeeService = require('./employees.services')
 const customError = new Error();
 
 const getAllAppointments = async () => {
   const result = await appointmentRepository.findAll();
 
-  return result;
+  const appointments = await Promise.all(result.map(async (appointment) => {
+    // console.log('APPOINTMENT', appointment.picId)
+    const picData = await employeeService.getEmployeeById(appointment.picId);
+    return {
+      ...appointment,
+      picName: picData?.fullName,
+    }
+  }))
+
+  return appointments;
 };
 
 const getAppointmentById = async (appointmentId) => {
   const result = await appointmentRepository.findOneById(appointmentId)
 
+  const picData = await employeeService.getEmployeeById(result.picId);
+  result.dataValues.picName = picData.fullName
   // if (!result) {
   //   customError.statusCode = 404;
   //   customError.message = "Appointment not found";
@@ -23,7 +35,7 @@ const getAppointmentById = async (appointmentId) => {
 
 const getAppointmentsByClientUuid = async (clientUuid) => {
   const result = await appointmentRepository.findByClientUuid(clientUuid);
-  
+
   return result;
 }
 

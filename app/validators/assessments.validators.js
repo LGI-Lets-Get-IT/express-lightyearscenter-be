@@ -1,6 +1,10 @@
 const Joi = require("joi");
 
 exports.assessmentSchema = {
+  view: Joi.object({
+    assessmentId: Joi.number().required(),
+  }),
+
   create: Joi.object({
     appointmentId: Joi.number().required(),
     clientId: Joi.number().required(),
@@ -12,11 +16,11 @@ exports.assessmentSchema = {
   update: Joi.object({
     assessmentId: Joi.number().required(),
 
-    appointmentId: Joi.number().optional(),
-    client: Joi.string().uuid().required(),
-    psychologistId: Joi.number().optional(),
-    testType: Joi.number().optional(),
-    result: Joi.string().optional(),
+    appointmentId: Joi.number().required(),
+    clientId: Joi.number().required(),
+    psychologistId: Joi.number().required(),
+    testId: Joi.number().required(),
+    result: Joi.string().required(),
   }),
 
   delete: Joi.object({

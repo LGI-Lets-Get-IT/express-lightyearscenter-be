@@ -3,11 +3,12 @@ const Joi = require("joi");
 exports.appointmentSchema = {
   create: Joi.object({
     title: Joi.string().required(),
-    client: Joi.number().required(),
+    clientId: Joi.number().required(),
     picId: Joi.number().required(),
+    picType: Joi.string().required(),
+    appointmentType: Joi.string().required(),
     appointmentDate: Joi.string().required(),
     appointmentTime: Joi.string().required(),
-    appointmentType: Joi.string().required(),
     timeStart: Joi.date().greater("now").required(),
     timeEnd: Joi.date().greater(Joi.ref("timeStart")).required(),
   }),

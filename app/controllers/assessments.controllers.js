@@ -3,12 +3,19 @@ const customError = new Error();
 
 const getAll = async (req, res) => {
   try {
-    const appointments = await assessmentService.getAllAssessments();
+
+    let assessments = [];
+    const { appointmentId } = req.query
+    if (appointmentId) {
+      assessments = await assessmentService.getAssessmentByAppointmentId(appointmentId);
+    } else {
+      assessments = await assessmentService.getAllAssessments();
+    }
 
     res.jsonSuccess(
       200,
       "Successfully fetched all assessments data",
-      appointments
+      assessments
     );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message);
@@ -27,6 +34,16 @@ const getById = async (req, res) => {
     res.jsonFailed(error?.statusCode, error?.message);
   }
 };
+
+const getByAppointmentId = async (req, res) => {
+  try {
+    const { appointmentId } = req.query
+    const assessments = await assessmentService.getAssessmentByAppointmentId(appointmentId)
+    res.jsonSuccess(200, "Successfully fetched appointment assessment data", assessments)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
 
 const create = async (req, res) => {
   try {
@@ -58,10 +75,18 @@ const create = async (req, res) => {
 
 const updateById = async (req, res) => {
   try {
-    const assessmentId = req.params.id;
-    const { available_quantity } = req.body;
+    const { assessmentId } = req.params;
+    const { appointmentId, clientId, psychologistId, testId, result } = req.body;
+    const bodyData = {
+      appointmentId,
+      clientId,
+      psychologistId,
+      testTypeId: testId,
+      result
+    }
     const updatedAssessment = await assessmentService.updateAssessmentById(
       assessmentId,
+      bodyData,
     );
     res.jsonSuccess(200, "Successfully updated assessment data", updatedAssessment);
   } catch (error) {
@@ -90,6 +115,7 @@ module.exports = {
   create,
   getAll,
   getById,
+  getByAppointmentId,
   updateById,
   deleteIds,
 };

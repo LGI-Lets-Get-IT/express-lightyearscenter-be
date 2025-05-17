@@ -45,6 +45,33 @@ function ClientRepository(db) {
     });
   }
 
+  const findAllByAppointmentId = (appointmentId) => {
+    return db.clientAssessments.findAll({
+      attributes: [
+        'id',
+        [db.sequelize.col(`testType.name`), 'testName'],
+        [db.sequelize.col(`psychologist.full_name`), 'assessedBy'],
+        [db.sequelize.col(`ClientAssessment.created_at`), 'assessmentDate'],
+        'result',
+      ],
+      where: {
+        appointment_id: appointmentId
+      },
+      include: [
+        {
+          model: db.employees,
+          as: 'psychologist',
+          attributes: [],
+        },
+        {
+          model: db.testTypes,
+          as: 'testType',
+          attributes: [],
+        }
+      ]
+    })
+  }
+
   const create = (bodyData, transaction) => {
     console.log('BODYDATAAA', bodyData)
     return db.clientAssessments.create(bodyData, { transaction })
@@ -77,6 +104,7 @@ function ClientRepository(db) {
   return {
     findAll,
     findOneById,
+    findAllByAppointmentId,
     create,
     updateById,
     deleteByIds,

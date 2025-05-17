@@ -22,6 +22,12 @@ const getAssessmentById = async (assessmentId) => {
   return assessment;
 };
 
+const getAssessmentByAppointmentId = async (appointmentId) => {
+  const assessments = await assessmentRepository.findAllByAppointmentId(appointmentId);
+
+  return assessments;
+}
+
 const createAssessment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -93,6 +99,7 @@ const deleteAssessmentById = async (assessmentIds) => {
 module.exports = {
   getAllAssessments,
   getAssessmentById,
+  getAssessmentByAppointmentId,
   createAssessment,
   updateAssessmentById,
   deleteAssessmentById,

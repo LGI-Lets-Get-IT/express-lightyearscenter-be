@@ -1,6 +1,7 @@
 function AppointmentRepository(db) {
   const findAll = () => {
     return db.appointments.findAll({
+      raw: true,
       order: [
         ['appointmentDate', 'DESC'],
         ['status', 'DESC'],
@@ -9,9 +10,10 @@ function AppointmentRepository(db) {
         "id",
         'title',
         'appointmentType',
+        'picId',
+        'picType',
         [db.sequelize.col("client.uuid"), "clientId"],
         [db.sequelize.col("client.full_name"), "clientName"],
-        [db.sequelize.col("psychologist.full_name"), "psychologistName"],
         [db.sequelize.literal(`
             CASE
               WHEN now() < booking_time_start THEN 'Upcoming'
@@ -53,11 +55,6 @@ function AppointmentRepository(db) {
           as: "client",
           attributes: [],
         },
-        {
-          model: db.employees,
-          as: "psychologist",
-          attributes: [],
-        },
       ],
     });
   };
@@ -71,9 +68,9 @@ function AppointmentRepository(db) {
         "id",
         "title",
         "appointmentType",
-        "createdAt",
+        'picId',
+        'picType',
         "clientId",
-        [db.sequelize.col("psychologist.full_name"), "psychologistName"],
         [
           db.sequelize.fn(
             "TO_CHAR",
@@ -109,6 +106,7 @@ function AppointmentRepository(db) {
             END 
           `), 'status'//
         ],
+        "createdAt",
       ],
       include: [
         {
@@ -126,13 +124,7 @@ function AppointmentRepository(db) {
             "guardianNationality",
             "guardianEmail",
             "guardianRelationship",
-            "createdAt",
           ],
-        },
-        {
-          model: db.employees,
-          as: "psychologist",
-          attributes: [],
         },
       ],
     });

@@ -8,8 +8,8 @@ exports.schoolSchema = {
   create: Joi.object({
     schoolName: Joi.string().min(3).required(),
     schoolAddress: Joi.string().min(3).required(),
-    schoolEmail: Joi.string().email().required(),
     schoolPhoneNumber: Joi.string().required(),
+    schoolEmail: Joi.string().email().required(),
     picName: Joi.string().min(3).required(),
     picEmail: Joi.string().email().required(),
     picPhoneNumber: Joi.string().required(),

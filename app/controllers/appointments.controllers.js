@@ -32,22 +32,24 @@ const create = async (req, res) => {
   try {
     const {
       title,
-      psychologistId,
-      client,
-      refCode,
+      clientId,
+      picId,
+      picType,
       timeStart,
       timeEnd,
+      appointmentDate,
       appointmentType,
     } = req.body;
 
     const bodyData = {
-      psychologistId,
-      title: title,
-      clientId: client,
-      referenceCode: refCode,
-      timeStart: timeStart,
-      timeEnd: timeEnd,
-      appointmentType: appointmentType,
+      title,
+      clientId,
+      picId,
+      picType,
+      appointmentType,
+      appointmentDate,
+      bookingTimeStart: timeStart,
+      bookingTimeEnd: timeEnd,
     };
 
     const createdAppointment = await appointmentService.createAppointment(
