@@ -3,8 +3,8 @@ const treatmentTypesController = require("../controllers/treatmentTypes.controll
 
 router.post("/", treatmentTypesController.create);
 router.get("/", treatmentTypesController.getAll);
-router.get("/:id", treatmentTypesController.getById);
-router.put('/:id', treatmentTypesController.updateById)
+router.get("/:treatmentTypeId", treatmentTypesController.getById);
+router.put('/:treatmentTypeId', treatmentTypesController.updateById)
 router.delete("/", treatmentTypesController.deleteIds);
 
 module.exports = router;

@@ -83,6 +83,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(16),
         field: "guardian_relationship",
       },
+      // problem: {
+      //   type: DataTypes.TEXT,
+      // },
       address: DataTypes.STRING,
       password: DataTypes.STRING,
       refreshToken: {

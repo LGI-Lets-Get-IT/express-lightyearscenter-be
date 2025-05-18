@@ -8,8 +8,8 @@ const getAllTestTypes = async () => {
   return result;
 };
 
-const getTestTypeById = async (TestTypeId) => {
-  const result = await testTypeRepository.findOneById(TestTypeId)
+const getTestTypeById = async (testTypeId) => {
+  const result = await testTypeRepository.findOneById(testTypeId)
 
   return result;
 }
@@ -19,7 +19,7 @@ const createTestType = async (bodyData) => {
   try {
     const result = await testTypeRepository.create(bodyData, tr)
 
-    if(!result) {
+    if (!result) {
       customError.statusCode = 500
       customError.message = "Failed to create test type data"
       throw customError
@@ -37,7 +37,7 @@ const createTestType = async (bodyData) => {
 const updateTestTypeById = async (typeId, bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const result = await testTypeRepository.updateById(typeId, bodyData, transaction)
+    const result = await testTypeRepository.updateById(typeId, bodyData, tr)
 
     await tr.commit()
 

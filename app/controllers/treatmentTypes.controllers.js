@@ -13,26 +13,23 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const categoryId = req.params.id
+    const { treatmentTypeId } = req.params
 
-    const productCategory = await productCategoryService.fetchCategoryById(categoryId)
-    
-    res.jsonSuccess(200, {
-      indonesian: "Kategori produk berhasil diambil",
-      english: "Product category fetched successfully"
-    }, productCategory)
+    const treatmentType = await treatmentTypeService.getTreatmentById(treatmentTypeId)
+
+    res.jsonSuccess(200, "Successfully fetched treatment type", treatmentType)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message)
   }
-} 
+}
 
 const create = async (req, res) => {
   try {
-    const { therapyName, therapyDescription } = req.body
-  
+    const { treatmentName, treatmentDescription } = req.body
+
     const bodyData = {
-      name: therapyName,
-      description: therapyDescription,
+      name: treatmentName,
+      description: treatmentDescription,
     }
     const createdRole = await treatmentTypeService.createTreatment(bodyData)
 
@@ -42,15 +39,18 @@ const create = async (req, res) => {
   }
 }
 
-const updateById = async () => {
+const updateById = async (req, res) => {
   try {
-    const categoryId = req.params.id
-    const updatedCategory = await productCategoryService.updateById(categoryId, req.body)
+    const { treatmentTypeId } = req.params
+    const { treatmentName, treatmentDescription } = req.body;
 
-    res.jsonSuccess(200, {
-      indonesian: "Kategori produk berhasil diubah",
-      english: "Product category edited successfully"
-    }, updatedCategory)
+    const bodyData = {
+      name: treatmentName,
+      description: treatmentDescription,
+    }
+    const updatedTreatment = await treatmentTypeService.updateTreatmentById(treatmentTypeId, bodyData)
+
+    res.jsonSuccess(200, "Successfully updated treatment type", updatedTreatment)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message);
   }
@@ -58,7 +58,7 @@ const updateById = async () => {
 
 const deleteIds = async (req, res) => {
   try {
-    
+
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error)
   }

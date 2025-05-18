@@ -14,10 +14,11 @@ const getAll = async (req, res) => {
   }
 };
 
-const uploadAppointmentFile = async (req, res) => {
+const uploadFile = async (req, res) => {
   try {
-    const uploadedFile = await fileService.uploadAppointmentFile();
-    res.jsonSuccess(200, "Successfully uploaded file", uploadedFile);
+    const { appointmentId } =
+      // const uploadedFile = await fileService.uploadFile(req.file)
+      res.jsonSuccess(200, "Successfully uploaded file", uploadedFile);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
@@ -56,7 +57,7 @@ const generateTreatmentPlanReport = async (req, res) => {
 
 module.exports = {
   getAll,
-  uploadAppointmentFile,
+  uploadFile,
   generateDailyProgressReport,
   generateTreatmentPlanReport,
 };

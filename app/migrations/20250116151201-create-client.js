@@ -63,6 +63,9 @@ module.exports = {
         type: Sequelize.STRING(16),
         field: "guardian_relationship",
       },
+      // problem: {
+      //   type: DataTypes.TEXT,
+      // },
       address: {
         type: Sequelize.STRING,
       },

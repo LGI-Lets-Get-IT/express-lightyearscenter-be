@@ -4,7 +4,11 @@ function TestTypeRepository(db) {
   };
 
   const findOneById = (id) => {
-    return db.testTypes.findByPk(id)
+    return db.testTypes.findOne({
+      where: {
+        id
+      }
+    })
   }
 
   const create = (bodyData, transaction) => {

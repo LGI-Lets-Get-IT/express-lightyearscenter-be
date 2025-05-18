@@ -19,7 +19,7 @@ const createTreatment = async (bodyData) => {
   try {
     const result = await treatmentRepository.create(bodyData, tr)
 
-    if(!result) {
+    if (!result) {
       customError.statusCode = 500
       customError.message = "Failed to create therapy type data"
       throw customError
@@ -37,7 +37,7 @@ const createTreatment = async (bodyData) => {
 const updateTreatmentById = async (typeId, bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const result = await treatmentRepository.updateById(typeId, bodyData, transaction)
+    const result = await treatmentRepository.updateById(typeId, bodyData, tr)
 
     await tr.commit()
 

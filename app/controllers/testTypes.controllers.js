@@ -12,23 +12,19 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const categoryId = req.params.id
+    const { testTypeId } = req.params
+    const testType = await testTypeService.getTestTypeById(testTypeId);
 
-    const productCategory = await productCategoryService.fetchCategoryById(categoryId)
-    
-    res.jsonSuccess(200, {
-      indonesian: "Kategori produk berhasil diambil",
-      english: "Product category fetched successfully"
-    }, productCategory)
+    res.jsonSuccess(200, "Successfully fetched test type", testType)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message)
   }
-} 
+}
 
 const create = async (req, res) => {
   try {
     const { testName, testDescription } = req.body
-  
+
     const bodyData = {
       name: testName,
       description: testDescription,
@@ -42,15 +38,19 @@ const create = async (req, res) => {
   }
 }
 
-const updateById = async () => {
+const updateById = async (req, res) => {
   try {
-    const categoryId = req.params.id
-    const updatedCategory = await productCategoryService.updateById(categoryId, req.body)
+    const { testTypeId } = req.params
+    const { testName, testDescription } = req.body;
 
-    res.jsonSuccess(200, {
-      indonesian: "Kategori produk berhasil diubah",
-      english: "Product category edited successfully"
-    }, updatedCategory)
+    const bodyData = {
+      name: testName,
+      description: testDescription
+    }
+
+    const updatedTest = await testTypeService.updateTestTypeById(testTypeId, bodyData)
+
+    res.jsonSuccess(200, "Successfully updated test data", updatedTest)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message);
   }
@@ -58,7 +58,7 @@ const updateById = async () => {
 
 const deleteIds = async (req, res) => {
   try {
-    
+
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error)
   }

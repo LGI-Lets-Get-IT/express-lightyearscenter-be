@@ -7,14 +7,16 @@ const permissions = {
     VIEW: 'view_settings',
   },
 
+  FILES: {
+    UPLOAD: 'upload_files',
+    DOWNLOAD: 'download_files',
+  },
+
   APPOINTMENTS: {
     CREATE: 'create_appointments',
     VIEW: 'view_appointments',
     UPDATE: 'update_appointments',
     DELETE: 'delete_appointments',
-
-    UPLOAD: 'upload_file_appointments',
-    DOWNLOAD: 'download_file_appointments',
   },
   ASSESSMENTS: {
     CREATE: 'create_assessments',
@@ -65,14 +67,13 @@ const permissions = {
     DELETE: 'delete_employees',
   },
 };
-  
-  // Auto-flatten for each module so we can spread (...permissions.APPOINTMENTS)
+
+// Auto-flatten for each module so we can spread (...permissions.APPOINTMENTS)
 for (const key in permissions) {
   permissions[key] = {
     ...permissions[key],
     ALL: Object.values(permissions[key]), // Optional: all in one array
   };
 }
-  
+
 module.exports = permissions;
-  
