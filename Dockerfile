@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 USER root
-RUN chown -R pptuser:pptuser /app
+RUN chown -R pptruser:pptruser /app
 
 # Switch to puppeteer's default non-root user
 USER pptruser
