@@ -16,6 +16,12 @@ const getAllPlans = async () => {
   return result;
 };
 
+const getAllPlansByQueryParams = async (queryParams) => {
+  const result = await treatmentPlanRepository.findAll(queryParams);
+
+  return result;
+}
+
 const getPlanById = async (planId) => {
   let planData = await treatmentPlanRepository.findOneById(planId);
   planData = planData.get({ plain: true });
@@ -154,6 +160,7 @@ const deletePlanById = async (planId) => {
 module.exports = {
   createPlan,
   getAllPlans,
+  getAllPlansByQueryParams,
   getPlanById,
   getAllPlansByClientId,
   updatePlanById,

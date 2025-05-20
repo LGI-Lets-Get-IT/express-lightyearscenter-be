@@ -1,7 +1,12 @@
 function AppointmentRepository(db) {
-  const findAll = () => {
+  const findAll = (queryParams) => {
+    let whereOptions;
+    if (queryParams) {
+      whereOptions = queryParams;
+    }
     return db.appointments.findAll({
       raw: true,
+      where: whereOptions,
       order: [
         ['appointmentDate', 'DESC'],
         ['status', 'DESC'],

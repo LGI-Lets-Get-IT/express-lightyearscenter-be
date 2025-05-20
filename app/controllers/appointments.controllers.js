@@ -1,9 +1,41 @@
 const appointmentService = require("../services/appointments.services");
-const customError = new Error();
+const clientService = require("../services/clients.services");
+const roleConstant = require("../constants/roles.constant");
+const rolesNameConstant = require("../constants/rolesName.constant");
 
 const getAll = async (req, res) => {
   try {
-    const appointments = await appointmentService.getAllAppointments();
+    let appointments = [];
+    if (req.user.role === rolesNameConstant.SUPER_ADMIN || req.user.role === rolesNameConstant.STAFF) {
+      appointments = await appointmentService.getAllAppointments();
+    } else if (req.user.role === roleConstant.PSYCHOLOGIST) {
+      const queryParams = {
+        picId: req.user.id,
+        picType: rolesNameConstant.PSYCHOLOGIST,
+      };
+
+      appointments = await appointmentService.getAllAppointmentsByQueryParams(
+        queryParams
+      );
+    } else if (req.user.role === rolesNameConstant.THERAPIST) {
+      const queryParams = {
+        picId: req.user.id,
+        picType: rolesNameConstant.THERAPIST,
+      };
+
+      appointments = await appointmentService.getAllAppointmentsByQueryParams(
+        queryParams
+      );
+    } else {
+      const findUser = await clientService.getClientByUuid(req.user.id)
+      const queryParams = {
+        clientId: findUser.id
+      };
+
+      appointments = await appointmentService.getAllAppointmentsByQueryParams(
+        queryParams
+      );
+    }
 
     res.jsonSuccess(
       200,

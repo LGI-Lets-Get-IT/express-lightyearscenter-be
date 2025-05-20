@@ -1,10 +1,23 @@
+const { differenceInYears } = require('date-fns/differenceInYears');
 const clientService = require('../services/clients.services');
+const employeeService = require('../services/employees.services');
 
 const getUserProfile = async (req, res) => {
     try {
-        const user = await clientService.getUserProfile(req.user.id)
+        let user = null;
+        if (req.user?.role) {
+            user = await employeeService.getEmployeeById(req.user.id);
+        } else {
+            user = await clientService.getUserProfile(req.user.id)
+        }
 
-        res.jsonSuccess(200, "Successfully fetched user profile", user)
+        const userProfile = {
+            ...user.dataValues,
+            ...(user.dataValues.dateOfBirth && { age: differenceInYears(new Date(), new Date(user.dataValues?.dateOfBirth)) }),
+            email: user.email || user.guardianEmail,
+        }
+
+        res.jsonSuccess(200, "Successfully fetched user profile", userProfile)
     } catch (error) {
         res.jsonFailed(error?.statusCode, error?.message, error);
     }

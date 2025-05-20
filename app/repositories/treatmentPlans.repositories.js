@@ -1,6 +1,12 @@
 function TreatmentPlanRepository(db) {
-  const findAll = () => {
+  const findAll = (queryParams) => {
+    let whereOptions;
+    if (queryParams) {
+      whereOptions = queryParams
+    }
+
     return db.treatmentPlans.findAll({
+      where: whereOptions,
       group: [
         "TreatmentPlan.id",
         "client.uuid",

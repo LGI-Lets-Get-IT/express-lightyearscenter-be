@@ -19,6 +19,19 @@ const getAllAppointments = async () => {
   return appointments;
 };
 
+const getAllAppointmentsByQueryParams = async (queryParams) => {
+  const result = await appointmentRepository.findAll(queryParams);
+  const appointments = await Promise.all(result.map(async (appointment) => {
+    const picData = await employeeService.getEmployeeById(appointment.picId);
+    return {
+      ...appointment,
+      picName: picData?.fullName,
+    }
+  }))
+
+  return appointments;
+}
+
 const getAppointmentById = async (appointmentId) => {
   const result = await appointmentRepository.findOneById(appointmentId)
 
@@ -93,6 +106,7 @@ const deleteAppointmentByIds = async (appointmentIds) => {
 
 module.exports = {
   getAllAppointments,
+  getAllAppointmentsByQueryParams,
   getAppointmentById,
   getAppointmentsByClientUuid,
   createAppointment,

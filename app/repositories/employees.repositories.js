@@ -44,9 +44,17 @@ function EmployeeRepository(db) {
 
   const findOneById = (id) => {
     return db.employees.findOne({
+      attributes: { exclude: ['password', 'refreshToken'] },
       where: {
         id,
       },
+      include: [
+        {
+          model: db.roles,
+          as: 'role',
+          attributes: ['name'],
+        }
+      ]
     });
   }
 

@@ -1,4 +1,6 @@
+const rolesNameConstant = require("../constants/rolesName.constant");
 const treatmentPlanService = require("../services/treatmentPlans.services");
+const clientService = require("../services/clients.services");
 
 const create = async (req, res) => {
   try {
@@ -12,7 +14,6 @@ const create = async (req, res) => {
       targets,
     } = req.body;
 
-    console.log("REQ.BODY", req.body);
     const bodyData = {
       clientId,
       psychologistId,
@@ -38,11 +39,25 @@ const create = async (req, res) => {
 const getAll = async (req, res) => {
   try {
     const { clientId, status, page, limit } = req.query;
-    let plans = null;
-    if (!clientId) {
+    let plans = [];
+    // if (!clientId) {
+    //   plans = await treatmentPlanService.getAllPlans();
+    // } else {
+    //   plans = await treatmentPlanService.getAllPlansByClientId(clientId);
+    // }
+    if (req.user.role === rolesNameConstant.SUPER_ADMIN) {
       plans = await treatmentPlanService.getAllPlans();
+    } else if (req.user.role === rolesNameConstant.PSYCHOLOGIST) {
+      plans = await treatmentPlanService.getAllPlansByQueryParams({
+        psychologistId: req.user.id,
+      })
+    } else if (req.user.role === rolesNameConstant.THERAPIST) {
+      // plans = await treatmentPlanService
     } else {
-      plans = await treatmentPlanService.getAllPlansByClientId(clientId);
+      const findUser = await clientService.getClientByUuid(req.user.id)
+      plans = await treatmentPlanService.getAllPlansByQueryParams({
+        clientId: findUser.id,
+      });
     }
 
     res.jsonSuccess(200, "Successfully fetched treatment plans data", plans);

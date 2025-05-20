@@ -7,13 +7,6 @@ const customError = new Error();
 
 const getUserProfile = async (uuid) => {
   const userProfile = await clientRepository.findOneByUuid(uuid);
-  const user = {
-    ...userProfile.dataValues,
-    age: differenceInYears(
-      new Date(),
-      new Date(userProfile?.dateOfBirth)
-    ),
-  }
 
   if (!userProfile) {
     customError.statusCode = 404;
@@ -22,7 +15,7 @@ const getUserProfile = async (uuid) => {
     throw customError;
   }
 
-  return user;
+  return userProfile;
 }
 
 const getAllClients = async () => {
@@ -45,6 +38,7 @@ const getClientById = async (clientId) => {
 };
 
 const getClientByUuid = async (uuid) => {
+  console.log('UUID', uuid)
   const client = await clientRepository.findOneByUuid(uuid);
 
   if (!client) {

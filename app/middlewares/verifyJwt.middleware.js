@@ -16,12 +16,12 @@ const verifyJwt = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
     const decodedToken = decodeToken(token, process.env.ACCESS_TOKEN_SECRET, 'access');
-    console.log('DECODEDTOKEN', decodedToken)
     if (decodedToken) {
       req.user = {
         id: decodedToken.id,
+        fullName: decodedToken.fullName,
         email: decodedToken.email,
-        role: decodedToken.role,
+        ...(decodedToken?.role && { role: decodedToken.role }),
       };
       req.permissions = decodedToken.permissions;
       next();

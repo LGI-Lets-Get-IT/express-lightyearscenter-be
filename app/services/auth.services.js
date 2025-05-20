@@ -38,11 +38,17 @@ const login = async (currentToken, email, password) => {
 
     const accessToken = generateAccessToken({
         id: userData?.uuid ?? userData?.id,
+        fullName: userData?.fullName,
+        email: userData?.email ?? userData?.guardianEmail,
+        ...(userData?.role && { role: userData?.role?.name }),
         // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
         permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
     });
     const refreshToken = generateRefreshToken({
         id: userData?.uuid ?? userData?.id,
+        fullName: userData?.fullName,
+        email: userData?.email ?? userData?.guardianEmail,
+        ...(userData?.role && { role: userData?.role?.name }),
         // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
         permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
     });
