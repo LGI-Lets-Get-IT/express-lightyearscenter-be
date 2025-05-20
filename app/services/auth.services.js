@@ -17,12 +17,12 @@ const login = async (currentToken, email, password) => {
     }
 
     let userData = await clientRepository.findOneByEmail(email);
-    if(!userData) {
+    if (!userData) {
         userData = await employeeRepository.findOneByEmail(email);
-        if(!userData) {
+        if (!userData) {
             customError.statusCode = 404;
             customError.message = "User data not found"
-            
+
             throw customError;
         }
     }
@@ -37,12 +37,14 @@ const login = async (currentToken, email, password) => {
     // }
 
     const accessToken = generateAccessToken({
-        id: userData?.id,
-        permissions: rolePermissionsMappingConfig[userData?.roleId] || []
+        id: userData?.uuid ?? userData?.id,
+        // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
+        permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
     });
     const refreshToken = generateRefreshToken({
-        id: userData?.id,
-        permissions: rolePermissionsMappingConfig[userData?.roleId] || []
+        id: userData?.uuid ?? userData?.id,
+        // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
+        permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
     });
 
     const updatedToken = await userData.update({
@@ -55,13 +57,14 @@ const login = async (currentToken, email, password) => {
         throw customError;
     }
 
+    console.log('USERDATA', userData?.uuid)
     return {
         user: {
             id: userData?.uuid ?? userData?.id,
             email: userData?.email ?? userData?.guardianEmail,
             fullName: userData?.fullName,
-            role: userData?.role.name,
-            permissions: rolePermissionsMappingConfig[userData?.roleId],
+            ...(userData?.role && { role: userData?.role?.name }),
+            permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
         },
         accessToken,
         refreshToken,
@@ -76,9 +79,9 @@ const logout = async (currentToken) => {
     }
 
     let userData = await clientRepository.findOneByRefreshToken(currentToken);
-    if(!userData) {
+    if (!userData) {
         userData = await employeeRepository.findOneByRefreshToken(currentToken);
-        if(!userData) {
+        if (!userData) {
             customError.statusCode = 404;
             customError.message = "Token is invalid or expired";
             throw customError;
@@ -106,9 +109,9 @@ const getRefreshToken = async (currentToken) => {
     }
 
     let userData = await clientRepository.findOneByRefreshToken(currentToken);
-    if(!userData) {
+    if (!userData) {
         userData = await employeeRepository.findOneByRefreshToken(currentToken);
-        if(!userData) {
+        if (!userData) {
             customError.statusCode = 404;
             customError.message = "Token not found";
             throw customError;

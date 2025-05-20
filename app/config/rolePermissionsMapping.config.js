@@ -2,6 +2,13 @@ const { SUPER_ADMIN, STAFF, THERAPIST, SCHOOL_ADMIN, PSYCHOLOGIST, CLIENT, SPED_
 const permissions = require('../constants/permissions.constant');
 
 module.exports = {
+    [CLIENT]: [
+        permissions.DASHBOARD.VIEW,
+        permissions.APPOINTMENTS.VIEW,
+        permissions.ASSESSMENTS.VIEW,
+        permissions.TREATMENT_PLANS.VIEW,
+        ...permissions.PROFILE.ALL,
+    ],
     [SUPER_ADMIN]: [
         permissions.DASHBOARD.VIEW,
         permissions.SETTINGS.VIEW,

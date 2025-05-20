@@ -1,7 +1,29 @@
+const bcrypt = require('bcrypt')
 const db = require("../models");
 const clientRepository = require("../repositories/clients.repositories")(db);
-const appointmentService = require("../services/appointments.services")
+const appointmentService = require("../services/appointments.services");
+const { differenceInYears } = require('date-fns/differenceInYears');
 const customError = new Error();
+
+const getUserProfile = async (uuid) => {
+  const userProfile = await clientRepository.findOneByUuid(uuid);
+  const user = {
+    ...userProfile.dataValues,
+    age: differenceInYears(
+      new Date(),
+      new Date(userProfile?.dateOfBirth)
+    ),
+  }
+
+  if (!userProfile) {
+    customError.statusCode = 404;
+    customError.message = "User profile not found";
+
+    throw customError;
+  }
+
+  return user;
+}
 
 const getAllClients = async () => {
   const clients = await clientRepository.findAll();
@@ -102,6 +124,27 @@ const updateClientByUuid = async (uuid, bodyData) => {
   }
 };
 
+const updateClientPasswordByUuid = async (uuid, password) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    // const isMatch = await bcrypt.compare(password, user.password)
+    // if (!isMatch) {
+    //   customError.message = "The current password you e"
+    // }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedClient = await clientRepository.updateByUuid(uuid, {
+      password: hashedPassword
+    }, tr)
+
+    await tr.commit()
+
+    return updatedClient
+  } catch (error) {
+    await tr.rollback()
+    throw error
+  }
+}
+
 const deleteClientById = async (clientIds) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -122,6 +165,7 @@ const deleteClientById = async (clientIds) => {
 };
 
 module.exports = {
+  getUserProfile,
   getAllClients,
   getClientById,
   getClientByUuid,
@@ -130,6 +174,6 @@ module.exports = {
   getClientAppointments,
   createClient,
   updateClientByUuid,
+  updateClientPasswordByUuid,
   deleteClientById,
 };
- 

@@ -45,9 +45,10 @@ const create = async (req, res) => {
     const {
       schoolId,
       fullName,
-      childGender,
-      childNationality,
-      childDob,
+      gender,
+      nationality,
+      dateOfBirth,
+      className,
       guardianName,
       guardianPhone,
       guardianEmail,
@@ -58,10 +59,11 @@ const create = async (req, res) => {
     const bodyData = {
       schoolId,
       fullName,
-      age: differenceInYears(Date.now(), childDob),
-      gender: childGender,
-      nationality: childNationality,
-      dateOfBirth: childDob,
+      age: differenceInYears(Date.now(), dateOfBirth),
+      gender,
+      nationality,
+      dateOfBirth,
+      className,
       guardianName,
       guardianEmail,
       guardianPhone,
@@ -116,6 +118,18 @@ const updateByUuid = async (req, res) => {
   }
 };
 
+const updatePasswordByUuid = async (req, res) => {
+  try {
+    const { clientUuid } = req.params
+    const { password } = req.body
+
+    const updatedClient = await clientService.updateClientPasswordByUuid(clientUuid, password)
+    res.jsonSuccess(200, "Successfully updated client password", updatedClient)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
+
 const deleteIds = async (req, res) => {
   try {
     const { clientIds } = req.body;
@@ -133,5 +147,6 @@ module.exports = {
   getByUuid,
   getClientAppointmentsByUuid,
   updateByUuid,
+  updatePasswordByUuid,
   deleteIds,
 };

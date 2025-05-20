@@ -49,7 +49,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(128),
         field: "full_name",
       },
-      age: DataTypes.INTEGER,
+      className: {
+        type: DataTypes.STRING(32),
+        field: 'class_name',
+      },
+      branchOrigin: {
+        type: DataTypes.STRING(64),
+        field: 'branch_origin',
+        allowNull: true,
+      },
       gender: {
         type: DataTypes.ENUM,
         values: ["Male", "Female"],
@@ -61,6 +69,9 @@ module.exports = (sequelize, DataTypes) => {
       nationality: {
         type: DataTypes.STRING(32),
         field: 'nationality',
+      },
+      problem: {
+        type: DataTypes.TEXT,
       },
       guardianName: {
         type: DataTypes.STRING(128),

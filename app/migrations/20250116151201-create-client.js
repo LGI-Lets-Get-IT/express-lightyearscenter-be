@@ -42,6 +42,18 @@ module.exports = {
       nationality: {
         type: Sequelize.STRING(32),
       },
+      className: {
+        type: Sequelize.STRING(32),
+        field: 'class_name',
+      },
+      branchOrigin: {
+        type: Sequelize.STRING(64),
+        field: 'branch_origin',
+        allowNull: true,
+      },
+      problem: {
+        type: Sequelize.TEXT,
+      },
       guardianName: {
         type: Sequelize.STRING(128),
         field: "guardian_name",
@@ -77,7 +89,7 @@ module.exports = {
         field: "refresh_token",
       },
       allowShareData: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         field: "is_active",
         defaultValue: true,
       },

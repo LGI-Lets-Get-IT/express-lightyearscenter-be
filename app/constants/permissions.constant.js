@@ -7,6 +7,11 @@ const permissions = {
     VIEW: 'view_settings',
   },
 
+  PROFILE: {
+    VIEW: 'view_profile',
+    UPDATE: 'update_profile',
+  },
+
   FILES: {
     UPLOAD: 'upload_files',
     DOWNLOAD: 'download_files',

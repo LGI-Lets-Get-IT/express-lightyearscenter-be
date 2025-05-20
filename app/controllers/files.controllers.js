@@ -16,9 +16,9 @@ const getAll = async (req, res) => {
 
 const uploadFile = async (req, res) => {
   try {
-    const { appointmentId } =
-      // const uploadedFile = await fileService.uploadFile(req.file)
-      res.jsonSuccess(200, "Successfully uploaded file", uploadedFile);
+    const { appointmentId, uuid, clientName } = req.body
+    const uploadedFile = await fileService.uploadFile(appointmentId, uuid, clientName, req.file)
+    res.jsonSuccess(200, "Successfully uploaded file", uploadedFile);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }

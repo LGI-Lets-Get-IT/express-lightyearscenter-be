@@ -9,14 +9,22 @@ exports.clientSchema = {
     schoolId: Joi.number().required(),
     fullName: Joi.string().min(3).required(),
     nationality: Joi.string().required(),
-    dateOfBirth: Joi.date().format("YYYY-MM-DD").required(),
     dateOfBirth: Joi.date().required(),
-    gender: Joi.string().valid("Male", "Female").required(), // enum
+    gender: Joi.string().valid("Male", "Female").required(),
+    className: Joi.string().required(),
+    problem: Joi.string().required(),
     guardianName: Joi.string().min(3).required(),
     guardianPhone: Joi.string().required(),
     guardianEmail: Joi.string().email().required(),
     guardianRelationship: Joi.string().required(),
     guardianNationality: Joi.string().required(),
+  }),
+
+  updatePassword: Joi.object({
+    clientUuid: Joi.string().uuid().required(),
+
+    password: Joi.string().min(8).required(),
+    passwordConfirm: Joi.string().valid(Joi.ref('password')).required(),
   }),
 
   update: Joi.object({

@@ -10,7 +10,7 @@ function ClientRepository(db) {
       },
     });
   }
-  
+
   const findOneByUuid = (uuid) => {
     return db.clients.findOne({
       subQuery: false,
@@ -23,7 +23,6 @@ function ClientRepository(db) {
         'fullName',
         [db.sequelize.fn('TO_CHAR', db.sequelize.col('date_of_birth'), 'DD Mon YYYY'), 'dateOfBirth'],
         'nationality',
-        'age',
         'gender',
         'guardianName',
         'guardianNationality',
@@ -31,6 +30,7 @@ function ClientRepository(db) {
         'guardianEmail',
         'guardianRelationship',
         [db.sequelize.col('school.name'), 'schoolName'],
+        'updatedAt',
       ],
       include: [
         {
@@ -62,6 +62,7 @@ function ClientRepository(db) {
         'guardianRelationship',
         // [db.sequelize.col('school.id'), 'schoolId'],
         [db.sequelize.col('school.name'), 'schoolName'],
+        'updatedAt',
       ],
       include: [
         {

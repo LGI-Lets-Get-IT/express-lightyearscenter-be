@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       refreshToken: {
-        type: Sequelize.TOKEN,
+        type: Sequelize.TEXT,
         field: 'refresh_token'
       },
       isActive: {

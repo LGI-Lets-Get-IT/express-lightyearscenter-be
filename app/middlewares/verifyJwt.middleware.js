@@ -13,11 +13,16 @@ const verifyJwt = (req, res, next) => {
       customError.message = "Invalid token provided";
       throw customError;
     }
-  
+
     const token = authHeader.split(" ")[1];
     const decodedToken = decodeToken(token, process.env.ACCESS_TOKEN_SECRET, 'access');
+    console.log('DECODEDTOKEN', decodedToken)
     if (decodedToken) {
-      req.user = decodedToken._id;
+      req.user = {
+        id: decodedToken.id,
+        email: decodedToken.email,
+        role: decodedToken.role,
+      };
       req.permissions = decodedToken.permissions;
       next();
     }

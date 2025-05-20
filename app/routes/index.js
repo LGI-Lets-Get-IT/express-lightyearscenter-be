@@ -4,6 +4,12 @@ const verifyPermission = require('../middlewares/verifyPermission.middleware');
 
 const _routes = [
   {
+    path: 'profile',
+    router: require('./profile.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
     path: 'dashboard',
     router: require('./dashboard.routes'),
     middlewares: [verifyJwt],
@@ -74,7 +80,7 @@ const _routes = [
     router: require('./treatmentSessions.routes'),
     middlewares: [verifyJwt],
     version: '1',
-  },  
+  },
   {
     path: 'treatment-types',
     router: require('./treatmentTypes.routes'),
