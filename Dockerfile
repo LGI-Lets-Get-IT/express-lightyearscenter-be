@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Add a non-root user
+USER root
 RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser && \
     mkdir -p /home/pptruser/Downloads && \
     mkdir -p /app && chown -R pptruser:pptruser /app /home/pptruser
