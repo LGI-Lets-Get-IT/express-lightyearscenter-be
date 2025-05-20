@@ -7,12 +7,11 @@ WORKDIR /app
 # Copy files as root
 COPY . .
 
-# Fix ownership so the non-root user can work with them
-RUN chown -R pptruser:pptruser /app
+USER root
+RUN chown -R pptuser:pptuser /app
 
 # Switch to puppeteer's default non-root user
 USER pptruser
-
 RUN npm install
 
 EXPOSE 3000
