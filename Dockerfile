@@ -46,7 +46,7 @@ RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser && \
 WORKDIR /app
 COPY . .
 
-USER pptruser
+USER root
 RUN npm install
 
 EXPOSE 3000
