@@ -27,7 +27,10 @@ const generatePdf = async (templateName, data) => {
     finalHtml += `<div style="page-break-before: always;"></div>` + tncContent;
   }
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
   const page = await browser.newPage();
 
   await page.setContent(finalHtml, { waitUntil: "networkidle0" });
