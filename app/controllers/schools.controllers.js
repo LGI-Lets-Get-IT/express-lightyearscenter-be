@@ -57,12 +57,23 @@ const create = async (req, res) => {
 const updateById = async (req, res) => {
   try {
     const { id } = req.params;
+    const { schoolName, schoolAddress, schoolPhoneNumber, schoolEmail, picName, picPhoneNumber, picEmail } = req.body;
+
+    const bodyData = {
+      name: schoolName,
+      address: schoolAddress,
+      phoneNumber: schoolPhoneNumber,
+      email: schoolEmail,
+      picFullName: picName,
+      picPhoneNumber: picPhoneNumber,
+      picEmail: picEmail,
+    };
 
     const updatedSchool = await schoolService.updateSchoolById(
       id,
-      req.body
+      bodyData
     );
-    res.jsonSuccess(200, "Successfully updated school data", updatedSchool);
+    res.jsonSuccess(200, "Successfully updated school data", true);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
