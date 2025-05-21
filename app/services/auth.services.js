@@ -129,6 +129,7 @@ const getRefreshToken = async (currentToken) => {
         throw customError;
     }
 
+    console.log('USERDATA IN GET REFRESH TOKEN', userData)
     const newAccessToken = generateAccessToken({
         id: userData?.id,
         id: userData?.uuid ?? userData?.id,

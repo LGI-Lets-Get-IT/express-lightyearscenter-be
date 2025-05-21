@@ -86,6 +86,7 @@ function TreatmentPlanRepository(db) {
             "guardianPhone",
             "guardianRelationship",
             "dateOfBirth",
+            'problem',
           ],
           include: [
             {

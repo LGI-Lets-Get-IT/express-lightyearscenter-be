@@ -3,6 +3,12 @@ function TargetedBehaviorRepository(db) {
     return db.targetedBehaviors.findAll();
   };
 
+  const findAllByCondition = (whereClause) => {
+    return db.targetedBehaviors.findAll({
+      where: whereClause,
+    });
+  };
+
   const findOneById = (id) => {
     return db.targetedBehaviors.findByPk(id)
   }
@@ -15,6 +21,14 @@ function TargetedBehaviorRepository(db) {
     return db.targetedBehaviors.bulkCreate(bodyData, { transaction })
   }
 
+  const updateById = (id, bodyData, transaction) => {
+    return db.targetedBehaviors.update(bodyData, {
+      where: {
+        id,
+      },
+    }, transaction)
+  }
+
   const deleteById = (id, transaction) => {
     return db.targetedBehaviors.destroy({
       where: {
@@ -25,9 +39,11 @@ function TargetedBehaviorRepository(db) {
 
   return {
     findAll,
+    findAllByCondition,
     findOneById,
     create,
     bulkCreate,
+    updateById,
     deleteById,
   };
 }
