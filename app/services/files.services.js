@@ -40,41 +40,68 @@ const getAllFiles = async (appointmentId, uuid, clientName) => {
 };
 
 const uploadFile = async (appointmentId, uuid, clientName, fileData) => {
-  const authClient = new google.auth.GoogleAuth({
-    keyFile: "./the-lightyears-cdc-0cb82813d8e5.json",
-    scopes: ["https://www.googleapis.com/auth/drive"],
-  });
+  const tr = await db.sequelize.transaction();
+  try {
+    const authClient = new google.auth.GoogleAuth({
+      keyFile: "./the-lightyears-cdc-0cb82813d8e5.json",
+      scopes: ["https://www.googleapis.com/auth/drive"],
+    });
 
-  const driveApi = google.drive({
-    version: "v3",
-    auth: authClient,
-  });
+    const driveApi = google.drive({
+      version: "v3",
+      auth: authClient,
+    });
 
-  const folderName = `Appointment_${appointmentId}/${clientName}_${uuid}`;
-  const folderMetadata = {
-    name: folderName,
-    mimeType: 'application/vnd.google-apps.folder',
-    parents: ['1vT39BW-fwBTjuq5g67Lm0RqYSoPDxX4z']
-  }
+    const folderName = `Appointment_${appointmentId}/${clientName}_${uuid}`;
+    const existingFolder = await driveApi.files.list({
+      q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
+      fields: "files(id, name)",
+      spaces: 'drive'
+    });
 
-  const createdFolder = await driveApi.files.create({
-    requestBody: folderMetadata,
-    fields: 'id, name'
-  });
+    let folderId;
+    if (existingFolder.data.files.length > 0) {
+      folderId = existingFolder.data.files[0].id;
+    } else {
+      const folderMetadata = {
+        name: folderName,
+        mimeType: 'application/vnd.google-apps.folder',
+        parents: ['1vT39BW-fwBTjuq5g67Lm0RqYSoPDxX4z']
+      }
 
-  const uploadedFile = await driveApi.files.create({
-    requestBody: {
-      name: fileData.originalname,
-      mimeType: fileData.mimetype,
-      parents: [`${createdFolder.data.id}`]
-    },
-    media: {
-      mimeType: fileData.mimetype,
-      body: Readable.from(fileData.buffer)
+      const createdFolder = await driveApi.files.create({
+        requestBody: folderMetadata,
+        fields: 'id, name'
+      });
+
+      folderId = createdFolder.data.id;
     }
-  })
 
-  return createdFolder.data
+    const uploadedFile = await driveApi.files.create({
+      requestBody: {
+        name: fileData.originalname,
+        mimeType: fileData.mimetype,
+        parents: [folderId]
+      },
+      media: {
+        mimeType: fileData.mimetype,
+        body: Readable.from(fileData.buffer)
+      }
+    })
+
+    await tr.commit()
+
+    return {
+      fileId: uploadedFile.data.id,
+      fileName: uploadedFile.data.name,
+      folderId: folderId,
+    }
+
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    await tr.rollback()
+    throw error
+  }
 }
 
 const generateDailyProgressReport = async () => {

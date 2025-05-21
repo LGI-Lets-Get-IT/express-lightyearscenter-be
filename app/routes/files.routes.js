@@ -5,7 +5,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.get("/", fileController.getAll);
-router.post("/upload", upload.single('file'), fileController.uploadFile);
+router.post("/", upload.single('file'), fileController.uploadFile);
 router.post(
   "/reports/daily-progress/generate",
   fileController.generateDailyProgressReport
