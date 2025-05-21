@@ -1,9 +1,9 @@
+const db = require("../models");
 const { Readable } = require('stream')
 const { google } = require("googleapis");
 const { generatePdf } = require("../utils/generatePdf.utils");
 const { treatmentSessions, employees, clients } = require("../models");
-const db = require("../models");
-const { file } = require("googleapis/build/src/apis/file");
+// const clientService = require("./clients.services");
 
 const getAllFiles = async (appointmentId, uuid, clientName) => {
   const authClient = new google.auth.GoogleAuth({

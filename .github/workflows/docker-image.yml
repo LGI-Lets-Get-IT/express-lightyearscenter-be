@@ -33,6 +33,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: .
+        file: Dockerfile.development
         push: true
         tags: ${{ vars.IMAGE_NAME_DEVELOPMENT }}:latest
         build-args: |
@@ -62,6 +63,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: .
+        file: Dockerfile.staging
         push: true
         tags: ${{ vars.IMAGE_NAME_STAGING }}:latest
         build-args: |
@@ -85,6 +87,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: .
+        file: Dockerfile
         push: true
         tags: ${{ vars.IMAGE_NAME_PRODUCTION }}:latest
         build-args: |
