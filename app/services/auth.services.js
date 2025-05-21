@@ -63,7 +63,6 @@ const login = async (currentToken, email, password) => {
         throw customError;
     }
 
-    console.log('USERDATA', userData?.uuid)
     return {
         user: {
             id: userData?.uuid ?? userData?.id,
@@ -132,7 +131,12 @@ const getRefreshToken = async (currentToken) => {
 
     const newAccessToken = generateAccessToken({
         id: userData?.id,
-        permissions: rolePermissionsMappingConfig[userData?.roleId] || []
+        id: userData?.uuid ?? userData?.id,
+        email: userData?.email ?? userData?.guardianEmail,
+        fullName: userData?.fullName,
+        ...(userData?.role && { role: userData?.role?.name }),
+        permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
+        // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     });
 
     return {

@@ -38,26 +38,31 @@ const getClientById = async (clientId) => {
 };
 
 const getClientByUuid = async (uuid) => {
-  console.log('UUID', uuid)
-  const client = await clientRepository.findOneByUuid(uuid);
+  const result = await clientRepository.findOneByUuid(uuid);
 
-  if (!client) {
+  if (!result) {
     customError.statusCode = 404;
     customError.message = "Client data not found";
 
     throw customError;
   }
+
   return client;
 };
 
 const getClientByUuidWithAppointments = async (uuid) => {
-  const client = await clientRepository.findOneByUuidWithAppointments(uuid);
+  const result = await clientRepository.findOneByUuidWithAppointments(uuid);
 
-  if (!client) {
+  if (!result) {
     customError.statusCode = 404;
     customError.message = "Client data not found";
 
     throw customError;
+  }
+
+  const client = {
+    ...result.dataValues,
+    age: differenceInYears(new Date(), new Date(result.dateOfBirth))
   }
   return client;
 };

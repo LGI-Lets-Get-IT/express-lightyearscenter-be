@@ -53,7 +53,6 @@ function ClientRepository(db) {
         'fullName',
         [db.sequelize.fn('TO_CHAR', db.sequelize.col('date_of_birth'), 'DD Mon YYYY'), 'dateOfBirth'],
         'nationality',
-        'age',
         'gender',
         'guardianName',
         'guardianNationality',
