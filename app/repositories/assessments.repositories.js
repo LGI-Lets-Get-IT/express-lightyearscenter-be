@@ -42,6 +42,34 @@ function ClientRepository(db) {
       where: {
         id,
       },
+      attributes: [
+        'id',
+        'result',
+        'createdAt',
+        'updatedAt',
+      ],
+      include: [
+        {
+          model: db.clients,
+          as: 'client',
+          attributes: ['id', 'fullName'],
+        },
+        {
+          model: db.employees,
+          as: 'psychologist',
+          attributes: ['id', 'fullName']
+        },
+        {
+          model: db.testTypes,
+          as: 'testType',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: db.appointments,
+          as: 'appointment',
+          attributes: ['id', 'title', 'appointmentType'],
+        }
+      ]
     });
   }
 

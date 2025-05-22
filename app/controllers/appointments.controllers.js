@@ -18,7 +18,6 @@ const getAll = async (req, res) => {
         queryParams
       );
     } else if (req.user.role === rolesNameConstant.THERAPIST) {
-      console.log('MASUK 2')
       const queryParams = {
         picId: req.user.id,
         picType: rolesNameConstant.THERAPIST,

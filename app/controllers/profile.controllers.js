@@ -1,6 +1,6 @@
-const { differenceInYears } = require('date-fns/differenceInYears');
 const clientService = require('../services/clients.services');
 const employeeService = require('../services/employees.services');
+const { getAge } = require('../utils/getAge.utils');
 
 const getUserProfile = async (req, res) => {
     try {
@@ -13,7 +13,7 @@ const getUserProfile = async (req, res) => {
 
         const userProfile = {
             ...user.dataValues,
-            ...(user.dataValues.dateOfBirth && { age: differenceInYears(new Date(), new Date(user.dataValues?.dateOfBirth)) }),
+            ...(user?.dateOfBirth && { age: getAge(user.dateOfBirth) }),
             email: user.email || user.guardianEmail,
         }
 
