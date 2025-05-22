@@ -27,14 +27,14 @@ const login = async (currentToken, email, password) => {
         }
     }
 
-    // const isPasswordMatch = await bcrypt.compare(
-    //     password,
-    //     userData.password
-    // );
-    // if (!isPasswordMatch) {
-    //     customError.message = "Password is incorrect";
-    //     throw customError;
-    // }
+    const isPasswordMatch = await bcrypt.compare(
+        password,
+        userData.password
+    );
+    if (!isPasswordMatch) {
+        customError.message = "Password is incorrect";
+        throw customError;
+    }
 
     const accessToken = generateAccessToken({
         id: userData?.uuid ?? userData?.id,
@@ -129,9 +129,7 @@ const getRefreshToken = async (currentToken) => {
         throw customError;
     }
 
-    console.log('USERDATA IN GET REFRESH TOKEN', userData)
     const newAccessToken = generateAccessToken({
-        id: userData?.id,
         id: userData?.uuid ?? userData?.id,
         email: userData?.email ?? userData?.guardianEmail,
         fullName: userData?.fullName,
