@@ -8,7 +8,7 @@ const getAll = async (req, res) => {
     let appointments = [];
     if (req.user.role === rolesNameConstant.SUPER_ADMIN || req.user.role === rolesNameConstant.STAFF) {
       appointments = await appointmentService.getAllAppointments();
-    } else if (req.user.role === roleConstant.PSYCHOLOGIST) {
+    } else if (req.user.role === rolesNameConstant.PSYCHOLOGIST) {
       const queryParams = {
         picId: req.user.id,
         picType: rolesNameConstant.PSYCHOLOGIST,
@@ -18,6 +18,7 @@ const getAll = async (req, res) => {
         queryParams
       );
     } else if (req.user.role === rolesNameConstant.THERAPIST) {
+      console.log('MASUK 2')
       const queryParams = {
         picId: req.user.id,
         picType: rolesNameConstant.THERAPIST,

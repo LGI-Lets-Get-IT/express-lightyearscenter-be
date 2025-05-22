@@ -44,7 +44,17 @@ function EmployeeRepository(db) {
 
   const findOneById = (id) => {
     return db.employees.findOne({
-      attributes: { exclude: ['password', 'refreshToken'] },
+      attributes: [
+        "id",
+        "roleId",
+        "fullName",
+        "phoneNumber",
+        "email",
+        "isActive",
+        [db.sequelize.col('role.name'), 'roleName'],
+        "createdAt",
+        "updatedAt",
+      ],
       where: {
         id,
       },
