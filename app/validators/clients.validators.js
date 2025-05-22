@@ -37,6 +37,7 @@ exports.clientSchema = {
     // dateOfBirth: Joi.date().format("YYYY-MM-DD"),
     dateOfBirth: Joi.date(),
     gender: Joi.string().valid("Male", "Female").optional(), // enum
+    problem: Joi.string().required(),
     guardianName: Joi.string().min(3).optional(),
     guardianPhone: Joi.string().optional(),
     guardianEmail: Joi.string().email().optional(),

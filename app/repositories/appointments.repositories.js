@@ -112,6 +112,7 @@ function AppointmentRepository(db) {
           `), 'status'//
         ],
         "createdAt",
+        'updatedAt',
       ],
       include: [
         {

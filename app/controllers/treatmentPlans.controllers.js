@@ -91,13 +91,24 @@ const getByClientId = async (req, res) => {
 const updateById = async (req, res) => {
   try {
     const { planId } = req.params;
-    const { clientId, problem, consultDate, parentPlan } = req.body;
+    const {
+      clientId,
+      psychologistId,
+      presentProblem,
+      consultDate,
+      parentPlan,
+      programs,
+      targets,
+    } = req.body;
 
     const bodyData = {
       clientId,
-      presentProblem: problem,
+      psychologistId,
+      presentProblem,
       consultDate,
       parentPlan,
+      programs,
+      targets,
     };
     const updatedPlan = await treatmentPlanService.updatePlanById(
       planId,

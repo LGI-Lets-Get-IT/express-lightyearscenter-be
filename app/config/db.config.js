@@ -2,10 +2,10 @@ require("dotenv").config();
 
 module.exports = {
   development: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
+    username: process.env.DB_USERNAME_DEV_STAGING,
+    password: process.env.DB_PASSWORD_DEV_STAGING,
+    database: process.env.DB_NAME_DEVELOPMENT,
+    host: process.env.DB_HOST_DEV_STAGING,
     dialect: process.env.DB_DIALECT,
     define: { aliases: false },
     pool: {
@@ -17,10 +17,10 @@ module.exports = {
     timezone: "+07:00",
   },
   staging: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
+    username: process.env.DB_USERNAME_DEV_STAGING,
+    password: process.env.DB_PASSWORD_DEV_STAGING,
+    database: process.env.DB_NAME_STAGING,
+    host: process.env.DB_HOST_DEV_STAGING,
     dialect: process.env.DB_DIALECT,
     define: { aliases: false },
     pool: {
@@ -32,10 +32,10 @@ module.exports = {
     timezone: "+07:00",
   },
   production: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
+    username: process.env.DB_USERNAME_PRODUCTION,
+    password: process.env.DB_PASSWORD_PRODUCTION,
+    database: process.env.DB_NAME_PRODUCTION,
+    host: process.env.DB_HOST_PRODUCTION,
     dialect: process.env.DB_DIALECT,
     define: { aliases: false },
     pool: {

@@ -2,9 +2,8 @@
 
 const Sequelize = require("sequelize");
 const process = require("process");
-const config = require("../config/db.config")[
-  process.env.NODE_ENV || "development"
-];
+const env = process.env.NODE_ENV || "development";
+const config = require("../config/db.config")[env];
 const db = {};
 
 let sequelize;
@@ -23,7 +22,7 @@ db.roles = require('./role')(sequelize, Sequelize);
 db.permissions = require('./permission')(sequelize, Sequelize);
 db.treatmentTypes = require("./treatmentType")(sequelize, Sequelize);
 db.testTypes = require("./testType")(sequelize, Sequelize);
-db.schools = require("./school")(sequelize,Sequelize);
+db.schools = require("./school")(sequelize, Sequelize);
 db.clients = require('./client')(sequelize, Sequelize);
 db.appointments = require("./appointment")(sequelize, Sequelize);
 db.employees = require('./employee')(sequelize, Sequelize);

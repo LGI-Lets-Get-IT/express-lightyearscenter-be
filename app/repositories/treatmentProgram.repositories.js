@@ -3,6 +3,12 @@ function TreatmentProgramRepository(db) {
     return db.treatmentPrograms.findAll();
   };
 
+  const findAllByCondition = (whereClause) => {
+    return db.treatmentPrograms.findAll({
+      where: whereClause
+    })
+  }
+
   const findOneById = (id) => {
     return db.treatmentPrograms.findByPk(id)
   }
@@ -26,6 +32,12 @@ function TreatmentProgramRepository(db) {
     }, { transaction })
   }
 
+  const updateByCondition = (whereClause, bodyData, transaction) => {
+    return db.treatmentPrograms.update(bodyData, {
+      where: whereClause,
+    }, { transaction })
+  }
+
   const deleteById = (id, transaction) => {
     return db.treatmentPrograms.destroy({
       where: {
@@ -36,10 +48,12 @@ function TreatmentProgramRepository(db) {
 
   return {
     findAll,
+    findAllByCondition,
     findOneById,
     create,
     bulkCreate,
     updateById,
+    updateByCondition,
     deleteById,
   };
 }

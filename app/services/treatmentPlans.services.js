@@ -43,6 +43,7 @@ const getPlanById = async (planId) => {
     id: planData.id,
     clientId: planData.clientId,
     clientName: planData.client.fullName,
+    clientProblem: planData.client.problem,
     guardianName: planData.client.guardianName,
     guardianPhone: planData.client.guardianPhone,
     presentProblem: planData.presentProblem,
@@ -105,7 +106,7 @@ const createPlan = async (bodyData) => {
 
     const mappedTargets = bodyData.targets.map((target) => {
       return {
-        targetBehavior: target.behavior,
+        targetBehavior: target.targetBehavior,
         shortTermTarget: target.shortTermTarget,
         currentAbility: target.currentAbility,
         mediaTools: target.mediaTools,
@@ -131,9 +132,103 @@ const updatePlanById = async (planId, bodyData) => {
   try {
     const result = await treatmentPlanRepository.updateById(
       planId,
-      bodyData,
+      {
+        clientId: bodyData.clientId,
+        psychologistId: bodyData.psychologistId,
+        presentProblem: bodyData.presentProblem,
+        consultDate: bodyData.consultDate,
+        parentPlan: bodyData.parentPlan,
+      },
       tr
     );
+
+    if (!result[0]) {
+      customError.statusCode = 500;
+      customError.message = "Failed to update treatment plan";
+      throw customError;
+    }
+
+    const existingPrograms = await treatmentProgramRepository.findAllByCondition({
+      treatmentPlanId: planId
+    });
+    const incomingPrograms = bodyData.programs || [];
+    console.log('existingPrograms', existingPrograms)
+
+    const programsToUpdate = incomingPrograms.filter(p => p.id);
+    const programsToCreate = incomingPrograms.filter(p => !p.id);
+    const incomingProgramIds = programsToUpdate.map(p => p.id);
+    const programsToDelete = existingPrograms.filter(p => !incomingProgramIds.includes(p.id));
+
+    // a. Delete removed programs
+    if (programsToDelete.length > 0) {
+      await treatmentProgramRepository.deleteById(programsToDelete.map(p => p.id), tr);
+    }
+
+    // b. Update existing programs
+    for (const program of programsToUpdate) {
+      await treatmentProgramRepository.updateById(program.id, {
+        therapistId: program.therapistId,
+        treatmentTypeId: program.treatmentId,
+        aimOfTreatment: program.aimOfTreatment,
+        sessionFrequency: program.sessionFrequency,
+        sessionDuration: program.sessionDuration,
+      }, tr);
+    }
+
+    // c. Create new programs
+    const newPrograms = programsToCreate.map(p => ({
+      treatmentPlanId: planId,
+      therapistId: p.therapistId,
+      treatmentTypeId: p.treatmentId,
+      aimOfTreatment: p.aimOfTreatment,
+      sessionFrequency: p.sessionFrequency,
+      sessionDuration: p.sessionDuration,
+    }));
+    if (newPrograms.length > 0) {
+      await treatmentProgramRepository.bulkCreate(newPrograms, tr);
+    }
+
+    // 3. Sync Targets (same as previous explanation)
+    const existingTargets = await targetedBehaviorRepository.findAllByCondition({
+      treatmentPlanId: planId,
+    });
+
+    console.log('existingTargets', existingTargets)
+
+    const incomingTargets = bodyData.targets || [];
+
+    const targetsToUpdate = incomingTargets.filter(t => t.id);
+    const targetsToCreate = incomingTargets.filter(t => !t.id);
+    const incomingTargetIds = targetsToUpdate.map(t => t.id);
+    console.log('incomingTargets', incomingTargets)
+    const targetsToDelete = existingTargets.filter(t => !incomingTargetIds.includes(t.id));
+
+    // a. Delete removed targets
+    if (targetsToDelete.length > 0) {
+      await targetedBehaviorRepository.deleteById(targetsToDelete.map(t => t.id), tr);
+    }
+
+    // b. Update existing targets
+    for (const target of targetsToUpdate) {
+      await targetedBehaviorRepository.updateById(target.id, {
+        targetBehavior: target.targetBehavior,
+        shortTermTarget: target.shortTermTarget,
+        currentAbility: target.currentAbility,
+        mediaTools: target.mediaTools,
+      }, tr);
+    }
+
+    // c. Create new targets
+    const newTargets = targetsToCreate.map(t => ({
+      treatmentPlanId: planId,
+      targetBehavior: t.targetBehavior,
+      shortTermTarget: t.shortTermTarget,
+      currentAbility: t.currentAbility,
+      mediaTools: t.mediaTools,
+    }));
+    if (newTargets.length > 0) {
+      await targetedBehaviorRepository.bulkCreate(newTargets, tr);
+    }
 
     await tr.commit();
 

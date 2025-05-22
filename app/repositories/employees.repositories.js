@@ -79,6 +79,13 @@ function EmployeeRepository(db) {
       where: {
         refreshToken: token,
       },
+      include: [
+        {
+          model: db.roles,
+          as: 'role',
+          attributes: ['name']
+        }
+      ]
     });
   };
   const create = (bodyData, transaction) => {
