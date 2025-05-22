@@ -3,7 +3,6 @@ const customError = new Error();
 
 const getAll = async (req, res) => {
   try {
-
     let assessments = [];
     const { appointmentId } = req.query
     if (appointmentId) {

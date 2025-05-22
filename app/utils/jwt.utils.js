@@ -20,7 +20,7 @@ const generateAccessToken = (payload) => {
   }
 
   // Sign the payload with the access token secret and options
-  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '30m'});
+  return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, { expiresIn: '60m' });
 };
 
 /**
@@ -39,7 +39,7 @@ const generateRefreshToken = (payload) => {
   }
 
   // Sign the payload with the refresh token secret and options
-  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '1d'});
+  return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, { expiresIn: '1d' });
 };
 
 /**
@@ -52,23 +52,38 @@ const generateRefreshToken = (payload) => {
  * @throws {Error} If the token is invalid.
  */
 const decodeToken = (token, secretKey, tokenType = 'access') => {
-  const decodedToken = jwt.verify(token, secretKey, (err, decoded) => {
+  try {
+    return jwt.verify(token, secretKey)
+  } catch (err) {
+    const customError = new Error();
     if (err?.name == 'TokenExpiredError') {
       customError.statusCode = 401;
       customError.message = tokenType === 'refresh'
         ? "Refresh token expired. Please relogin."
         : "Token expired. Please refresh the page.";
-      throw customError;
-    }
-    if (err) {
+    } else {
       customError.statusCode = 401;
       customError.message = "Invalid token.";
-      throw customError;
     }
-    return decoded;
-  });
+    throw customError;
+  }
+  // const decodedToken = jwt.verify(token, secretKey, (err, decoded) => {
+  //   if (err?.name == 'TokenExpiredError') {
+  //     customError.statusCode = 401;
+  //     customError.message = tokenType === 'refresh'
+  //       ? "Refresh token expired. Please relogin."
+  //       : "Token expired. Please refresh the page.";
+  //     throw customError;
+  //   }
+  //   if (err) {
+  //     customError.statusCode = 401;
+  //     customError.message = "Invalid token.";
+  //     throw customError;
+  //   }
+  //   return decoded;
+  // });
 
-  return decodedToken;
+  // return decodedToken;
 };
 module.exports = {
   generateAccessToken,

@@ -25,13 +25,15 @@ const getDashboardData = async (req, res) => {
                 totalAppointments = await appointmentService.getAllAppointmentsByQueryParams({
                     picId: user.id,
                     picType: rolesNameConstant.PSYCHOLOGIST,
-                })
+                });
+                totalAppointments = totalAppointments.length
                 break;
             case rolesNameConstant.THERAPIST:
                 totalAppointments = await appointmentService.getAllAppointmentsByQueryParams({
                     picId: user.id,
                     picType: rolesNameConstant.THERAPIST,
                 });
+                totalAppointments = totalAppointments.length
                 break;
             case rolesNameConstant.SPED_TEACHER:
                 // Fetch data for special education teacher

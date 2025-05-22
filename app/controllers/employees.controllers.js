@@ -81,9 +81,6 @@ const updateById = async (req, res) => {
   try {
     const { employeeId } = req.params;
 
-    console.log("req.body", req.body);
-    console.log("employeeId", employeeId);
-
     const updateEmployee = await employeeService.updateEmployeeById(
       employeeId,
       req.body
@@ -93,6 +90,17 @@ const updateById = async (req, res) => {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
 };
+
+const updatePasswordById = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const { password } = req.body
+    const updatedEmployee = await employeeService.updateEmployeePasswordById(employeeId, password);
+    res.jsonSuccess(200, "Successfully updated employee password", updatedEmployee);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+}
 
 const deleteIds = async (req, res) => {
   try {
@@ -108,5 +116,6 @@ module.exports = {
   getAllByRoleTherapist,
   getById,
   updateById,
+  updatePasswordById,
   deleteIds,
 };

@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const db = require("../models");
 const employeeRepository = require("../repositories/employees.repositories")(
   db
@@ -72,6 +73,23 @@ const updateEmployeeById = async (employeeId, bodyData) => {
   return employee;
 };
 
+const updateEmployeePasswordById = async (id, password) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedEmployee = await employeeRepository.updateById(id, {
+      password: hashedPassword
+    }, tr)
+
+    await tr.commit()
+
+    return updatedEmployee
+  } catch (error) {
+    await tr.rollback()
+    throw error
+  }
+}
+
 const updateEmployeeToken = async (employeeId, token) => {
   return await employeeRepository.updateById(employeeId, {
     refreshToken: token,
@@ -87,4 +105,5 @@ module.exports = {
   createEmployee,
   updateEmployeeToken,
   updateEmployeeById,
+  updateEmployeePasswordById,
 };

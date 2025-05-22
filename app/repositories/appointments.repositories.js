@@ -121,7 +121,13 @@ function AppointmentRepository(db) {
           attributes: [
             "uuid",
             "fullName",
-            "age",
+            [
+              db.sequelize.literal(`
+                date_part('year', age(current_date, "client"."date_of_birth")) || ' years ' ||
+                date_part('month', age(current_date, "client"."date_of_birth")) || ' months ' ||
+                date_part('days', age(current_date, "client"."date_of_birth")) || ' days'`),
+              'age'
+            ],
             "gender",
             "dateOfBirth",
             "nationality",

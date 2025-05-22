@@ -1,3 +1,4 @@
+const { differenceInYears } = require('date-fns')
 const db = require("../models");
 const appointmentRepository =
   require("../repositories/appointments.repositories")(db);
@@ -36,14 +37,12 @@ const getAppointmentById = async (appointmentId) => {
   const result = await appointmentRepository.findOneById(appointmentId)
 
   const picData = await employeeService.getEmployeeById(result.picId);
-  result.dataValues.picName = picData.fullName
-  // if (!result) {
-  //   customError.statusCode = 404;
-  //   customError.message = "Appointment not found";
-  //   throw customError;
-  // }
+  const appointment = {
+    ...result.dataValues,
+    picName: picData.fullName,
+  }
 
-  return result;
+  return appointment;
 }
 
 const getAppointmentsByClientUuid = async (clientUuid) => {

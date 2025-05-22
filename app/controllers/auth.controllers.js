@@ -10,9 +10,9 @@ const userLogin = async (req, res) => {
 
     res.cookie("token", loginData.refreshToken, {
       httpOnly: true,
-      sameSite: "None",
+      sameSite: "Strict",
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 60 * 60 * 1000,
     });
 
     res.jsonSuccess(200, "Login successful", loginData);
@@ -29,7 +29,7 @@ const userLogout = async (req, res) => {
 
     res.clearCookie('token', {
       httpOnly: true,
-      sameSite: "None",
+      sameSite: "Strict",
       secure: true,
     })
 

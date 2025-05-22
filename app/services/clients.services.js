@@ -126,10 +126,6 @@ const updateClientByUuid = async (uuid, bodyData) => {
 const updateClientPasswordByUuid = async (uuid, password) => {
   const tr = await db.sequelize.transaction();
   try {
-    // const isMatch = await bcrypt.compare(password, user.password)
-    // if (!isMatch) {
-    //   customError.message = "The current password you e"
-    // }
     const hashedPassword = await bcrypt.hash(password, 10);
     const updatedClient = await clientRepository.updateByUuid(uuid, {
       password: hashedPassword
