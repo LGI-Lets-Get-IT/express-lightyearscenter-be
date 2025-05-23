@@ -1,4 +1,5 @@
 const employeeService = require("../services/employees.services");
+const generateRandomPassword = require("../utils/generatePassword.utils");
 const customError = new Error();
 
 const getAll = async (req, res) => {
@@ -68,6 +69,7 @@ const create = async (req, res) => {
       picFullName: picName,
       picPhoneNumber: picPhoneNumber,
       picEmail: picEmail,
+      password: await generateRandomPassword(),
     };
     const createdEmployee = await employeeService.createEmployee(bodyData);
 
@@ -94,13 +96,20 @@ const updateById = async (req, res) => {
 const updatePasswordById = async (req, res) => {
   try {
     const { employeeId } = req.params;
-    const { password } = req.body
-    const updatedEmployee = await employeeService.updateEmployeePasswordById(employeeId, password);
-    res.jsonSuccess(200, "Successfully updated employee password", updatedEmployee);
+    const { password } = req.body;
+    const updatedEmployee = await employeeService.updateEmployeePasswordById(
+      employeeId,
+      password
+    );
+    res.jsonSuccess(
+      200,
+      "Successfully updated employee password",
+      updatedEmployee
+    );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 const deleteIds = async (req, res) => {
   try {

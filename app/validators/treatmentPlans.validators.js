@@ -57,6 +57,6 @@ exports.treatmentPlanSchema = {
   }),
 
   delete: Joi.object({
-    planId: Joi.array().items(Joi.number()).required(),
+    planIds: Joi.array().items(Joi.number()).required(),
   }),
 };

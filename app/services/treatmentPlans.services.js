@@ -20,7 +20,7 @@ const getAllPlansByQueryParams = async (queryParams) => {
   const result = await treatmentPlanRepository.findAll(queryParams);
 
   return result;
-}
+};
 
 const getPlanById = async (planId) => {
   let planData = await treatmentPlanRepository.findOneById(planId);
@@ -41,16 +41,18 @@ const getPlanById = async (planId) => {
   });
   const result = {
     id: planData.id,
-    clientId: planData.clientId,
-    clientName: planData.client.fullName,
-    clientProblem: planData.client.problem,
-    guardianName: planData.client.guardianName,
-    guardianPhone: planData.client.guardianPhone,
+    client: planData.client,
+    // clientId: planData.clientId,
+    // clientName: planData.client.fullName,
+    // clientProblem: planData.client.problem,
+    // guardianName: planData.client.guardianName,
+    // guardianPhone: planData.client.guardianPhone,
     presentProblem: planData.presentProblem,
     consultDate: format(planData.consultDate, "dd MMM yyyy"),
     parentPlan: planData.parentPlan,
-    psychologistId: planData.psychologistId,
-    psychologistName: planData.psychologist.fullName,
+    psychologist: planData.psychologist,
+    // psychologistId: planData.psychologistId,
+    // psychologistName: planData.psychologist.fullName,
     totalPrograms: planData.programs.length ?? 0,
     totalTargets: planData.targetedBehaviors.length ?? 0,
     programsDone,
@@ -148,35 +150,44 @@ const updatePlanById = async (planId, bodyData) => {
       throw customError;
     }
 
-    const existingPrograms = await treatmentProgramRepository.findAllByCondition({
-      treatmentPlanId: planId
-    });
+    const existingPrograms =
+      await treatmentProgramRepository.findAllByCondition({
+        treatmentPlanId: planId,
+      });
     const incomingPrograms = bodyData.programs || [];
-    console.log('existingPrograms', existingPrograms)
 
-    const programsToUpdate = incomingPrograms.filter(p => p.id);
-    const programsToCreate = incomingPrograms.filter(p => !p.id);
-    const incomingProgramIds = programsToUpdate.map(p => p.id);
-    const programsToDelete = existingPrograms.filter(p => !incomingProgramIds.includes(p.id));
+    const programsToUpdate = incomingPrograms.filter((p) => p.id);
+    const programsToCreate = incomingPrograms.filter((p) => !p.id);
+    const incomingProgramIds = programsToUpdate.map((p) => p.id);
+    const programsToDelete = existingPrograms.filter(
+      (p) => !incomingProgramIds.includes(p.id)
+    );
 
     // a. Delete removed programs
     if (programsToDelete.length > 0) {
-      await treatmentProgramRepository.deleteById(programsToDelete.map(p => p.id), tr);
+      await treatmentProgramRepository.deleteById(
+        programsToDelete.map((p) => p.id),
+        tr
+      );
     }
 
     // b. Update existing programs
     for (const program of programsToUpdate) {
-      await treatmentProgramRepository.updateById(program.id, {
-        therapistId: program.therapistId,
-        treatmentTypeId: program.treatmentId,
-        aimOfTreatment: program.aimOfTreatment,
-        sessionFrequency: program.sessionFrequency,
-        sessionDuration: program.sessionDuration,
-      }, tr);
+      await treatmentProgramRepository.updateById(
+        program.id,
+        {
+          therapistId: program.therapistId,
+          treatmentTypeId: program.treatmentId,
+          aimOfTreatment: program.aimOfTreatment,
+          sessionFrequency: program.sessionFrequency,
+          sessionDuration: program.sessionDuration,
+        },
+        tr
+      );
     }
 
     // c. Create new programs
-    const newPrograms = programsToCreate.map(p => ({
+    const newPrograms = programsToCreate.map((p) => ({
       treatmentPlanId: planId,
       therapistId: p.therapistId,
       treatmentTypeId: p.treatmentId,
@@ -189,37 +200,48 @@ const updatePlanById = async (planId, bodyData) => {
     }
 
     // 3. Sync Targets (same as previous explanation)
-    const existingTargets = await targetedBehaviorRepository.findAllByCondition({
-      treatmentPlanId: planId,
-    });
+    const existingTargets = await targetedBehaviorRepository.findAllByCondition(
+      {
+        treatmentPlanId: planId,
+      }
+    );
 
-    console.log('existingTargets', existingTargets)
+    console.log("existingTargets", existingTargets);
 
     const incomingTargets = bodyData.targets || [];
 
-    const targetsToUpdate = incomingTargets.filter(t => t.id);
-    const targetsToCreate = incomingTargets.filter(t => !t.id);
-    const incomingTargetIds = targetsToUpdate.map(t => t.id);
-    console.log('incomingTargets', incomingTargets)
-    const targetsToDelete = existingTargets.filter(t => !incomingTargetIds.includes(t.id));
+    const targetsToUpdate = incomingTargets.filter((t) => t.id);
+    const targetsToCreate = incomingTargets.filter((t) => !t.id);
+    const incomingTargetIds = targetsToUpdate.map((t) => t.id);
+    console.log("incomingTargets", incomingTargets);
+    const targetsToDelete = existingTargets.filter(
+      (t) => !incomingTargetIds.includes(t.id)
+    );
 
     // a. Delete removed targets
     if (targetsToDelete.length > 0) {
-      await targetedBehaviorRepository.deleteById(targetsToDelete.map(t => t.id), tr);
+      await targetedBehaviorRepository.deleteById(
+        targetsToDelete.map((t) => t.id),
+        tr
+      );
     }
 
     // b. Update existing targets
     for (const target of targetsToUpdate) {
-      await targetedBehaviorRepository.updateById(target.id, {
-        targetBehavior: target.targetBehavior,
-        shortTermTarget: target.shortTermTarget,
-        currentAbility: target.currentAbility,
-        mediaTools: target.mediaTools,
-      }, tr);
+      await targetedBehaviorRepository.updateById(
+        target.id,
+        {
+          targetBehavior: target.targetBehavior,
+          shortTermTarget: target.shortTermTarget,
+          currentAbility: target.currentAbility,
+          mediaTools: target.mediaTools,
+        },
+        tr
+      );
     }
 
     // c. Create new targets
-    const newTargets = targetsToCreate.map(t => ({
+    const newTargets = targetsToCreate.map((t) => ({
       treatmentPlanId: planId,
       targetBehavior: t.targetBehavior,
       shortTermTarget: t.shortTermTarget,

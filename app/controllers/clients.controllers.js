@@ -1,6 +1,6 @@
 const clientService = require("../services/clients.services");
-const { differenceInYears } = require('date-fns')
-const customError = new Error();
+const { differenceInYears } = require("date-fns");
+const generateRandomPassword = require("../utils/generatePassword.utils");
 
 const getAll = async (req, res) => {
   try {
@@ -16,7 +16,9 @@ const getByUuid = async (req, res) => {
   try {
     const { clientUuid } = req.params;
 
-    const client = await clientService.getClientByUuidWithAppointments(clientUuid);
+    const client = await clientService.getClientByUuidWithAppointments(
+      clientUuid
+    );
 
     res.jsonSuccess(200, "Successfully fetched client data", client);
   } catch (error) {
@@ -28,7 +30,9 @@ const getClientAppointmentsByUuid = async (req, res) => {
   try {
     const { clientUuid } = req.params;
 
-    const clientAppointments = await clientService.getClientAppointments(clientUuid);
+    const clientAppointments = await clientService.getClientAppointments(
+      clientUuid
+    );
 
     res.jsonSuccess(
       200,
@@ -71,6 +75,7 @@ const create = async (req, res) => {
       guardianPhone,
       guardianNationality,
       guardianRelationship,
+      password: await generateRandomPassword(),
     };
     const createdClient = await clientService.createClient(bodyData);
 
@@ -122,15 +127,18 @@ const updateByUuid = async (req, res) => {
 
 const updatePasswordByUuid = async (req, res) => {
   try {
-    const { clientUuid } = req.params
-    const { password } = req.body
+    const { clientUuid } = req.params;
+    const { password } = req.body;
 
-    const updatedClient = await clientService.updateClientPasswordByUuid(clientUuid, password)
-    res.jsonSuccess(200, "Successfully updated client password", updatedClient)
+    const updatedClient = await clientService.updateClientPasswordByUuid(
+      clientUuid,
+      password
+    );
+    res.jsonSuccess(200, "Successfully updated client password", updatedClient);
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message, error)
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 const deleteIds = async (req, res) => {
   try {
