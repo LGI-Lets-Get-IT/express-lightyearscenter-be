@@ -59,9 +59,12 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-
+    const { email } = req.body;
+    const updatedUser = await authService.resetPassword(email);
+    
+    res.jsonSuccess(200, "Successfully reset password", updatedUser)
   } catch (error) {
-
+    res.jsonFailed(error?.statusCode, error?.message, error)
   }
 }
 
