@@ -2,12 +2,13 @@ const treatmentSessionService = require('../services/treatmentSessions.services'
 
 const create = async (req, res) => {
     try {
-        const { clientId, planId, programId, sessions } = req.body;
+        const { clientId, appointmentId, planId, programId, sessions } = req.body;
 
         const bodyData = {
-            clientId,
             treatmentPlanId: planId,
             treatmentProgramId: programId,
+            appointmentId,
+            clientId,
             sessions
         }
 

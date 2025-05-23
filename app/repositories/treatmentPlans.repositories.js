@@ -2,7 +2,7 @@ function TreatmentPlanRepository(db) {
   const findAll = (queryParams) => {
     let whereOptions;
     if (queryParams) {
-      whereOptions = queryParams
+      whereOptions = queryParams;
     }
 
     return db.treatmentPlans.findAll({
@@ -61,11 +61,11 @@ function TreatmentPlanRepository(db) {
       attributes: [
         "id",
         "clientId",
-        'psychologistId',
+        "psychologistId",
         "presentProblem",
         "consultDate",
         "parentPlan",
-        'updatedAt',
+        "updatedAt",
       ],
       where: {
         id,
@@ -80,13 +80,14 @@ function TreatmentPlanRepository(db) {
           model: db.clients,
           as: "client",
           attributes: [
+            "id",
             "uuid",
             "fullName",
             "guardianName",
             "guardianPhone",
             "guardianRelationship",
             "dateOfBirth",
-            'problem',
+            "problem",
           ],
           include: [
             {
@@ -144,7 +145,7 @@ function TreatmentPlanRepository(db) {
         {
           model: db.treatmentSessions,
           as: "sessions",
-          separate: true,
+          // separate: true,
           // attributes: [
           //   'id',
           //   'currentSession',
@@ -156,7 +157,27 @@ function TreatmentPlanRepository(db) {
             {
               model: db.appointments,
               as: "appointment",
-              attributes: [],
+              attributes: ["id", "title", "appointmentType"],
+            },
+            {
+              model: db.treatmentPrograms,
+              as: "program",
+              // attributes: [
+              //   [db.sequelize.col(`treatmentType.name`), "treatmentName"],
+              //   [db.sequelize.col(`therapist.full_name`), "therapistName"],
+              // ],
+              include: [
+                {
+                  model: db.treatmentTypes,
+                  as: "treatmentType",
+                  attributes: ["name"],
+                },
+                {
+                  model: db.employees,
+                  as: "therapist",
+                  attributes: ["fullName", "phoneNumber", "email"],
+                },
+              ],
             },
           ],
         },

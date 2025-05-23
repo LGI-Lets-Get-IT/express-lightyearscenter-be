@@ -60,6 +60,20 @@ const getById = async (req, res) => {
   }
 };
 
+const getForTreatmentProgress = async (req, res) => {
+  try {
+    const queryParams = {
+      clientId: req.query.clientId,
+      appointmentType: 'Treatment',
+    }
+    const appointment = await appointmentService.getAllAppointmentsByQueryParams(queryParams);
+
+    res.jsonSuccess(200, "Successfully fetched appointment data", appointment);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message);
+  }
+};
+
 const create = async (req, res) => {
   try {
     const {
@@ -144,6 +158,7 @@ module.exports = {
   create,
   getAll,
   getById,
+  getForTreatmentProgress,
   updateById,
   deleteIds,
 };

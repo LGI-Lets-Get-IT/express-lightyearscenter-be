@@ -14,7 +14,7 @@ const corsOptions = require("./app/config/corsOptions.config");
 require("dotenv").config();
 
 app.set("trust proxy", 1);
-app.use(helmet())
+app.use(helmet());
 // app.use(
 //   rateLimit({
 //     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -24,7 +24,7 @@ app.use(helmet())
 // );
 app.use(morgan("dev"));
 app.use(messageHandler);
-app.use(express.static('public'))
+app.use(express.static("public"));
 app.use(cors(corsOptions));
 app.use(credentials);
 

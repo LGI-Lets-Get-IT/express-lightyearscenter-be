@@ -6,6 +6,7 @@ exports.treatmentSessionSchema = {
   }),
 
   create: Joi.object({
+    appointmentId: Joi.number().required(),
     clientId: Joi.number().required(),
     programId: Joi.number().required(),
     planId: Joi.number().required(),
