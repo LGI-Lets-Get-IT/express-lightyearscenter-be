@@ -10,6 +10,6 @@ router.get("/", verifyPermission(permissions.APPOINTMENTS.VIEW), appointmentCont
 router.get('/programs', verifyPermission(permissions.APPOINTMENTS.VIEW), appointmentController.getForTreatmentProgress);
 router.get('/:appointmentId', verifyPermission(permissions.APPOINTMENTS.VIEW), appointmentController.getById);
 router.put('/:appointmentId', verifyPermission(permissions.APPOINTMENTS.UPDATE), validateInput(appointmentSchema.update), appointmentController.updateById);
-router.delete('/', verifyPermission(permissions.APPOINTMENTS.DELETE), validateInput(appointmentSchema.delete), appointmentController.deleteIds);
+router.delete('/', verifyPermission(permissions.APPOINTMENTS.DELETE), appointmentController.deleteIds);
 
 module.exports = router;

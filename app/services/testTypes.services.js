@@ -26,7 +26,6 @@ const createTestType = async (bodyData) => {
     }
 
     await tr.commit()
-
     return result;
   } catch (error) {
     await tr.rollback()
@@ -48,8 +47,23 @@ const updateTestTypeById = async (typeId, bodyData) => {
   }
 }
 
-const deleteTestTypeById = async () => {
+const deleteTestTypeByIds = async (testIds) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const deletedTests = await testTypeRepository.deleteByIds(testIds, tr);
+    if(!deletedTests) {
+      customError.statusCode = 500;
+      customError.message = "Failed to delete test type data";
+      
+      throw customError;
+    }
 
+    await tr.commit();
+    return deletedTests;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
 }
 
 module.exports = {
@@ -57,5 +71,5 @@ module.exports = {
   getAllTestTypes,
   getTestTypeById,
   updateTestTypeById,
-  deleteTestTypeById,
+  deleteTestTypeByIds,
 };

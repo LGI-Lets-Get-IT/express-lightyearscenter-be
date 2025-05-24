@@ -140,10 +140,10 @@ const updatePasswordByUuid = async (req, res) => {
   }
 };
 
-const deleteIds = async (req, res) => {
+const deleteByUuids = async (req, res) => {
   try {
     const { clientIds } = req.body;
-    const deletedClient = await clientService.deleteClientById(clientIds);
+    const deletedClient = await clientService.deleteClientByUuids(clientIds)
 
     res.jsonSuccess(200, "Successfully deleted clients data", deletedClient);
   } catch (error) {
@@ -158,5 +158,5 @@ module.exports = {
   getClientAppointmentsByUuid,
   updateByUuid,
   updatePasswordByUuid,
-  deleteIds,
+  deleteByUuids,
 };

@@ -86,15 +86,8 @@ function TreatmentPlanRepository(db) {
             "guardianName",
             "guardianPhone",
             "guardianRelationship",
-            "dateOfBirth",
-            "problem",
           ],
           include: [
-            {
-              model: db.schools,
-              as: "school",
-              attributes: [],
-            },
             {
               model: db.clientAssessments,
               as: "assessments",
@@ -209,11 +202,11 @@ function TreatmentPlanRepository(db) {
     );
   };
 
-  const deleteById = (id, transaction) => {
+  const deleteByIds = (ids, transaction) => {
     return db.treatmentPlans.destroy(
       {
         where: {
-          id,
+          id: ids,
         },
       },
       { transaction }
@@ -226,7 +219,7 @@ function TreatmentPlanRepository(db) {
     findAllByClientId,
     create,
     updateById,
-    deleteById,
+    deleteByIds,
   };
 }
 

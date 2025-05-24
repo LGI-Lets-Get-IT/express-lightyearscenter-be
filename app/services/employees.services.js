@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt")
 const db = require("../models");
 const employeeRepository = require("../repositories/employees.repositories")(
   db
@@ -48,29 +48,46 @@ const getEmployeeById = async (employeeId) => {
 };
 
 const createEmployee = async (bodyData) => {
-  const employee = await employeeRepository.create(bodyData);
+  const tr = db.sequelize.transaction();
+  try {
+    const createdEmployee = await employeeRepository.create(bodyData);
 
-  if (!employee) {
-    customError.statusCode = 400;
-    customError.message = "Failed to create employee data";
+    if (!createdEmployee) {
+      customError.statusCode = 400;
+      customError.message = "Failed to create employee data";
 
-    throw customError;
+      throw customError;
+    }
+
+    await tr.commit();
+    return createdEmployee;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
   }
-
-  return employee;
 };
 
 const updateEmployeeById = async (employeeId, bodyData) => {
-  const employee = await employeeRepository.updateById(employeeId, bodyData);
+  const tr = db.sequelize.transaction();
+  try {
+    const updatedEmployee = await employeeRepository.updateById(
+      employeeId,
+      bodyData
+    );
 
-  if (!employee) {
-    customError.statusCode = 400;
-    customError.message = "Failed to update employee data";
+    if (!updatedEmployee) {
+      customError.statusCode = 400;
+      customError.message = "Failed to update employee data";
 
-    throw customError;
+      throw customError;
+    }
+
+    await tr.commit();
+    return updatedEmployee;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
   }
-
-  return employee;
 };
 
 const updateEmployeePasswordById = async (id, password) => {
@@ -78,11 +95,10 @@ const updateEmployeePasswordById = async (id, password) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const updatedEmployee = await employeeRepository.updateById(id, {
-      password: hashedPassword
-    }, tr)
+        password: hashedPassword
+      }, tr)
 
     await tr.commit()
-
     return updatedEmployee
   } catch (error) {
     await tr.rollback()
@@ -91,9 +107,34 @@ const updateEmployeePasswordById = async (id, password) => {
 }
 
 const updateEmployeeToken = async (employeeId, token) => {
-  return await employeeRepository.updateById(employeeId, {
-    refreshToken: token,
-  });
+  const tr = await db.sequelize.transaction();
+  try {
+    const updatedEmployee = await employeeRepository.updateById(employeeId, {
+      refreshToken: token,
+    });
+
+    await tr.commit();
+    return updatedEmployee;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
+};
+
+const deleteEmployeeByIds = async (employeeIds) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const deletedEmployee = await employeeRepository.deleteById(
+      employeeIds,
+      tr
+    );
+
+    await tr.commit();
+    return deletedEmployee;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
 };
 
 module.exports = {
@@ -106,4 +147,5 @@ module.exports = {
   updateEmployeeToken,
   updateEmployeeById,
   updateEmployeePasswordById,
+  deleteEmployeeByIds,
 };
