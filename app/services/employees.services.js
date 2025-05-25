@@ -68,11 +68,12 @@ const createEmployee = async (bodyData) => {
 };
 
 const updateEmployeeById = async (employeeId, bodyData) => {
-  const tr = db.sequelize.transaction();
+  const tr = await db.sequelize.transaction();
   try {
     const updatedEmployee = await employeeRepository.updateById(
       employeeId,
-      bodyData
+      bodyData,
+      tr,
     );
 
     if (!updatedEmployee) {
@@ -124,7 +125,7 @@ const updateEmployeeToken = async (employeeId, token) => {
 const deleteEmployeeByIds = async (employeeIds) => {
   const tr = await db.sequelize.transaction();
   try {
-    const deletedEmployee = await employeeRepository.deleteById(
+    const deletedEmployee = await employeeRepository.deleteByIds(
       employeeIds,
       tr
     );

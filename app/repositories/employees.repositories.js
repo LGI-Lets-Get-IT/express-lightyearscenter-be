@@ -110,7 +110,7 @@ function EmployeeRepository(db) {
     }, { transaction });
   };
 
-  const deleteById = (ids, transaction) => {
+  const deleteByIds = (ids, transaction) => {
     return db.employees.destroy({
       where: {
         id: ids,
@@ -126,7 +126,7 @@ function EmployeeRepository(db) {
     findOneByRefreshToken,
     create,
     updateById,
-    deleteById,
+    deleteByIds,
   };
 }
 

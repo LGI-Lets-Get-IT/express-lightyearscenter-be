@@ -81,6 +81,10 @@ const updateById = async (req, res) => {
 
 const deleteIds = async (req, res) => {
   try {
+    const { schoolIds } = req.body;
+    const deletedSchool = await schoolService.deleteByIds(schoolIds);
+
+    res.jsonSuccess(200, "Successfully deleted school data", deletedSchool)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }

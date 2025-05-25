@@ -53,6 +53,14 @@ function SchoolRepository(db) {
     }, { transaction })
   }
 
+  const deleteByIds = (ids, transaction) => {
+    return db.schools.destroy({
+      where: {
+        id: ids,
+      },
+    }, { transaction })
+  }
+
   return {
     findAll,
     findOneById,
@@ -60,6 +68,7 @@ function SchoolRepository(db) {
     findClientsBySchoolId,
     create,
     updateById,
+    deleteByIds,
   };
 }
 
