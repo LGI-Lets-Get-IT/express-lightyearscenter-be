@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Readable } = require('stream')
+const { Readable } = require("stream");
 const { google } = require("googleapis");
 const { generatePdf } = require("../utils/generatePdf.utils");
 const { treatmentSessions, employees, clients } = require("../models");
@@ -57,7 +57,7 @@ const uploadFile = async (appointmentId, uuid, clientName, fileData) => {
     const existingFolder = await driveApi.files.list({
       q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
       fields: "files(id, name)",
-      spaces: 'drive'
+      spaces: "drive",
     });
 
     let folderId;
@@ -66,13 +66,13 @@ const uploadFile = async (appointmentId, uuid, clientName, fileData) => {
     } else {
       const folderMetadata = {
         name: folderName,
-        mimeType: 'application/vnd.google-apps.folder',
-        parents: ['1vT39BW-fwBTjuq5g67Lm0RqYSoPDxX4z']
-      }
+        mimeType: "application/vnd.google-apps.folder",
+        parents: ["1vT39BW-fwBTjuq5g67Lm0RqYSoPDxX4z"],
+      };
 
       const createdFolder = await driveApi.files.create({
         requestBody: folderMetadata,
-        fields: 'id, name'
+        fields: "id, name",
       });
 
       folderId = createdFolder.data.id;
@@ -82,44 +82,68 @@ const uploadFile = async (appointmentId, uuid, clientName, fileData) => {
       requestBody: {
         name: fileData.originalname,
         mimeType: fileData.mimetype,
-        parents: [folderId]
+        parents: [folderId],
       },
       media: {
         mimeType: fileData.mimetype,
-        body: Readable.from(fileData.buffer)
-      }
-    })
+        body: Readable.from(fileData.buffer),
+      },
+    });
 
-    await tr.commit()
+    await tr.commit();
 
     return {
       fileId: uploadedFile.data.id,
       fileName: uploadedFile.data.name,
       folderId: folderId,
-    }
-
+    };
   } catch (error) {
     console.error("Error uploading file:", error);
-    await tr.rollback()
-    throw error
+    await tr.rollback();
+    throw error;
   }
-}
+};
 
-const generateDailyProgressReport = async () => {
+const generateDailyProgressReport = async (sessionId) => {
   const progressData = await treatmentSessions.findOne({
     raw: true,
     nest: true,
+    where: {
+      id: sessionId,
+    },
     attributes: [
       [db.sequelize.col(`client.full_name`), "clientName"],
       "activities",
       "short_term_goals",
       "progress",
+      [
+        db.sequelize.fn(
+          "TO_CHAR",
+          db.sequelize.col("TreatmentSession.created_at"),
+          "DD Mon YYYY"
+        ),
+        "createdAt",
+      ],
     ],
     include: [
       {
-        model: clients,
+        model: db.clients,
         as: "client",
-        attributes: [],
+      },
+      {
+        model: db.treatmentPrograms,
+        as: "program",
+        include: [
+          {
+            model: db.employees,
+            as: "therapist",
+          },
+          {
+            model: db.treatmentTypes,
+            as: "treatmentType",
+            attributes: ["name"],
+          },
+        ],
       },
     ],
   });
@@ -143,7 +167,7 @@ const generateTreatmentPlanDoc = async (planId) => {
         "consultDate",
       ],
       "presentProblem",
-      "parentPlan"
+      "parentPlan",
     ],
     where: {
       id: planId,
@@ -167,24 +191,24 @@ const generateTreatmentPlanDoc = async (planId) => {
             ),
             "formattedDOB",
           ],
-          'dateOfBirth',
+          "dateOfBirth",
           [
             db.sequelize.literal(`
               date_part('year', age(current_date, "client"."date_of_birth")) || ' years ' ||
               date_part('month', age(current_date, "client"."date_of_birth")) || ' months ' ||
               date_part('days', age(current_date, "client"."date_of_birth")) || ' days'`),
-            'age'
+            "age",
           ],
           "guardianName",
           "guardianRelationship",
-          'guardianPhone',
+          "guardianPhone",
         ],
         include: [
           {
             model: db.clientAssessments,
             as: "assessments",
             attributes: [
-              'result',
+              "result",
               [
                 db.sequelize.fn(
                   "TO_CHAR",

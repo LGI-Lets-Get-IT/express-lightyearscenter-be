@@ -11,7 +11,6 @@ const getAllSessions = async () => {
 const createSession = async (bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    console.log('bodyyy', bodyData)
     const body = {
       ...bodyData,
       activities: bodyData.sessions.map(item => item.activity),
@@ -19,7 +18,6 @@ const createSession = async (bodyData) => {
       shortTermGoals: bodyData.sessions.map(item => item.shortTermGoals),
     }
     const result = await treatmentSessionRepository.create(body, tr)
-    console.log('RESULT',)
 
     if(!result) {
       customError.statusCode = 500;
@@ -50,23 +48,33 @@ const updateSessionById = async (planId, bodyData) => {
   }
 }
 
-const deleteSessionById = async (planId) => {
+const deleteSessionByIds = async (sessionIds) => {
   const tr = await db.sequelize.transaction()
   try {
-    const result = await treatmentSessionRepository.deleteById(planId);
+    const result = await treatmentSessionRepository.deleteByIds(sessionIds, tr);
     await tr.commit();
 
     return result;
-    return true;
   } catch (error) {
     await tr.rollback()
     throw error;
   }
 }
 
+const getSessionByPlanId = async (planId) => {
+  try {
+    const sessions = await treatmentSessionRepository.getAllByPlanId(planId);
+
+    return sessions;
+  } catch (error) {
+    throw error; 
+  }
+} 
+
 module.exports = {
   createSession,
   getAllSessions,
+  getSessionByPlanId,
   updateSessionById,
-  deleteSessionById,
+  deleteSessionByIds,
 };

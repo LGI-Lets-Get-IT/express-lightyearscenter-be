@@ -26,7 +26,8 @@ const uploadFile = async (req, res) => {
 
 const generateDailyProgressReport = async (req, res) => {
   try {
-    const generatedDoc = await fileService.generateDailyProgressReport();
+    const { id } = req.params
+    const generatedDoc = await fileService.generateDailyProgressReport(id);
     res.set({
       "Content-Type": "application/pdf",
       "Content-Disposition": "attachment",
