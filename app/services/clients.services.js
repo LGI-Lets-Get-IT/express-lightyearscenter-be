@@ -4,7 +4,6 @@ const clientRepository = require("../repositories/clients.repositories")(db);
 const clientDetailRepository = require("../repositories/clientDetails.repositories")(db);
 const appointmentService = require("../services/appointments.services");
 const mailService = require("../services/mail.services");
-const { differenceInYears } = require("date-fns/differenceInYears");
 const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
 const { format } = require("date-fns/format");
 const customError = new Error();

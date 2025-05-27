@@ -2,7 +2,7 @@ const router = require("express").Router();
 const fileController = require("../controllers/files.controllers");
 const multer = require('multer');
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 router.get("/", fileController.getAll);
 router.post("/", upload.single('file'), fileController.uploadFile);

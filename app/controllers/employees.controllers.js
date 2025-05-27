@@ -52,24 +52,21 @@ const getById = async (req, res) => {
 const create = async (req, res) => {
   try {
     const {
-      schoolName,
-      schoolAddress,
-      schoolPhoneNumber,
-      schoolEmail,
-      picName,
-      picPhoneNumber,
-      picEmail,
+      fullName,
+      email,
+      phoneNumber,
+      roleId,
+      isActive
     } = req.body;
 
+    const generatedPassword = await generateRandomPassword();
     const bodyData = {
-      name: schoolName,
-      address: schoolAddress,
-      phoneNumber: schoolPhoneNumber,
-      email: schoolEmail,
-      picFullName: picName,
-      picPhoneNumber: picPhoneNumber,
-      picEmail: picEmail,
-      password: await generateRandomPassword(),
+      fullName,
+      email,
+      phoneNumber,
+      roleId,
+      isActive,
+      password: generatedPassword,
     };
     const createdEmployee = await employeeService.createEmployee(bodyData);
 

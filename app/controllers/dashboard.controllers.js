@@ -17,7 +17,7 @@ const getDashboardData = async (req, res) => {
                 totalClients = totalClients.length;
                 data = { totalAppointments, totalClients, totalAssessments, totalEmployees, totalPlans, totalSchools }
                 break;
-            case rolesNameConstant.ADMIN:
+            case rolesNameConstant.STAFF:
                 totalAppointments = await appointmentService.getAllAppointments();
                 totalAppointments = totalAppointments.length
                 totalClients = await clientService.getAllClients();
