@@ -1,4 +1,20 @@
+const { version } = require('joi');
+const verifyJwt = require('../middlewares/verifyJwt.middleware');
+const verifyPermission = require('../middlewares/verifyPermission.middleware');
+
 const _routes = [
+  {
+    path: 'profile',
+    router: require('./profile.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
+    path: 'dashboard',
+    router: require('./dashboard.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
   {
     path: 'auth',
     router: require('./auth.routes'),
@@ -6,29 +22,77 @@ const _routes = [
     version: '1'
   },
   {
-    path: "orders",
-    router: require("./orders.routes"),
-    middlewares: [],
+    path: "appointments",
+    router: require("./appointments.routes"),
+    middlewares: [verifyJwt],
     version: "1",
   },
   {
-    path: "products",
-    router: require('./products.routes'),
-    middlewares: [],
+    path: 'assessments',
+    router: require('./assessments.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
+    path: "clients",
+    router: require("./clients.routes"),
+    middlewares: [verifyJwt],
     version: "1",
   },
   {
-    path: "product-categories",
-    router: require("./productCategory.routes"),
-    middlewares: [],
+    path: "employees",
+    router: require("./employees.routes"),
+    middlewares: [verifyJwt],
     version: "1",
   },
-  //   {
-  //     path: "promotions",
-  //     router: require("./promotions.routes"),
-  //     middlewares: [],
-  //     version: "1",
-  //   },
+  {
+    path: 'files',
+    router: require('./files.routes'),
+    middlewares: [],
+    version: '1'
+  },
+  {
+    path: 'notifications',
+    router: require('./notifications.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
+    path: 'schools',
+    router: require('./schools.routes'),
+    middlewares: [verifyJwt],
+    version: '1'
+  },
+  {
+    path: 'treatments',
+    router: require('./treatmentTypes.routes'),
+    middlewares: [verifyJwt],
+    version: '1'
+  },
+  {
+    path: 'treatment-plans',
+    router: require('./treatmentPlans.routes'),
+    middlewares: [verifyJwt],
+    version: '1'
+  },
+  {
+    path: 'treatment-sessions',
+    router: require('./treatmentSessions.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
+    path: 'treatment-types',
+    router: require('./treatmentTypes.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
+  {
+    path: 'test-types',
+    router: require('./testTypes.routes'),
+    middlewares: [verifyJwt],
+    version: '1',
+  },
 ];
 
 module.exports = (app) => {

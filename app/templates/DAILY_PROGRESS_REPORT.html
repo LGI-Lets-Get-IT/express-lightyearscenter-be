@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Progress Report</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: #fff;
+      }
+
+      h3 {
+        text-align: center;
+        margin-top: 40px;
+      }
+
+      .info {
+        margin-top: 30px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        gap: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .info p {
+        margin: 5px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: 10px;
+      }
+
+      th,
+      td {
+        border: 0.5px solid;
+        padding: 12px;
+        text-align: left;
+        font-size: 14px;
+        vertical-align: top;
+        word-wrap: break-word;
+        font-weight: 300;
+      }
+
+      th:nth-child(1),
+      td:nth-child(1) {
+        width: 33.333%;
+      }
+
+      th:nth-child(2),
+      td:nth-child(2) {
+        width: 33.333%;
+      }
+
+      th:nth-child(3),
+      td:nth-child(3) {
+        width: 33.333%;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>DAILY PROGRESS REPORT</h3>
+
+    <div class="info">
+      <p>Date: {{ createdAt }}</p>
+      <!-- <p>Client Name: {{ clientName }}</p> -->
+      <p>Therapy: {{ program.treatmentType.name }}</p>
+      <!-- <p>Session: {{ currentSession }} of {{ totalSession }}</p> -->
+      <p>Therapist: {{ program.therapist.fullName }}</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="font-weight: bold">Short-term goals</th>
+          <th style="font-weight: bold">Activities</th>
+          <th style="font-weight: bold">Progress</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each short_term_goals}}
+        <tr>
+          <td>{{this}}</td>
+          <td>{{lookup ../activities @index}}</td>
+          <td>{{lookup ../progress @index}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </body>
+</html>

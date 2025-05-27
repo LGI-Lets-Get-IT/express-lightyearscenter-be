@@ -1,29 +1,25 @@
 module.exports = (req, res, next) => {
-  res.jsonSuccess = (statusCode, message, data, rest) => {
-    return res.status(statusCode).send({
-      response: {
-        code: "DC-00",
-        message,
-      },
+  res.jsonSuccess = (statusCode = 200, message, data, rest) => {
+    return res.status(statusCode || 200).send({
+      success: true,
+      message,
       ...(data && { data }),
       ...(rest && { rest }),
     });
   };
 
-  res.jsonFailed = (statusCode, code, message, error) => {
-    return res.status(statusCode).send({
-      response: {
-        code,
-        message,
-        ...(error && { error }),
-      },
+  res.jsonFailed = (statusCode, message, errors) => {
+    console.log('ERROR', errors)
+    return res.status(statusCode || 500).send({
+      success: false,
+      message,
+      ...(errors && { errors }),
     });
   };
 
   res.throwError = (code, message) => {
     const error = new Error();
     error.statusCode = code;
-    error.code = `DC-${code}`;
     error.message = message;
     throw error;
   };

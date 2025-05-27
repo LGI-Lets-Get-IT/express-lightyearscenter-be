@@ -1,113 +1,78 @@
 const db = require("../models");
-const OrderService = require("../services/orders.services");
+const authService = require('../services/auth.services')
 
-const customerLogin = async (req, res) => {
-    const transaction = await db.sequelize.transaction()
+const userLogin = async (req, res) => {
   try {
-    const { username, password} = req.body
-    const cookies = req.headers['cookie']
+    const { email, password } = req.body
+    const cookies = req.cookies.token
 
-    const loginData = await AuthService.login(cookies, username, password, transaction)
+    const loginData = await authService.login(cookies, email, password)
 
-    res.cookie("token", loginData.refresh_token, {
-        httpOnly: true,
-        sameSite: "None",
-        secure: true,
-        maxAge: 60 * 60 * 1000,
-      });
+    res.cookie("token", loginData.refreshToken, {
+      httpOnly: true,
+      sameSite: "Strict",
+      secure: true,
+      maxAge: 60 * 60 * 1000,
+    });
 
-      await transaction.commit()
-  
-    res.jsonSuccess(
-      200,
-      {
-        indonesian: "Data pesanan berhasil diambil",
-        english: "Order data fetched successfully",
-      },
-      loginData
-    );
+    res.jsonSuccess(200, "Login successful", loginData);
   } catch (error) {
-    await transaction.rollback()
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
 };
-
-const customerLoginWithGoogle = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-} 
-
-const customerRegister = async (req, res) => {
-    const transaction = await db.sequelize.transaction()
-    try {
-        const { full_name, username, email, phone_number, password } = req.body;
-        const data = await AuthService.register(
-            full_name,
-            username,
-            email,
-            phone_number,
-            password,
-            transaction
-        );
-        
-        await transaction.commit();
-        
-        res.jsonSuccess(
-            201,
-            {
-                indonesian: "Order berhasil dibuat",
-                english: "Order created successfully",
-            },
-            createdOrder
-        );
-  } catch (error) {
-    await transaction.rollback()
-    res.jsonFailed(error?.statusCode, error?.code, error?.message);
-  }
-};
-
-const employeeLogin = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-}
 
 const userLogout = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-} 
+  try {
+    const cookie = req.cookies.token;
+
+    const logoutData = await authService.logout(cookie)
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: "Strict",
+      secure: true,
+    })
+
+    res.jsonSuccess(200, "Logout successful");
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+}
+
+const userRefreshToken = async (req, res) => {
+  try {
+    const currentToken = req.cookies.token;
+    const newTokenData = await authService.getRefreshToken(currentToken)
+    res.jsonSuccess(200, "Successfully get new refresh token", newTokenData)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
+}
 
 const forgotPassword = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
+  try {
+
+  } catch (error) {
+
+  }
 }
 
 const resetPassword = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
+  try {
+    const { email } = req.body;
+    const updatedUser = await authService.resetPassword(email);
+    
+    res.jsonSuccess(200, "Successfully reset password", updatedUser)
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error)
+  }
 }
 
 
 module.exports = {
-  customerLogin,
-  customerLoginWithGoogle,
-  customerRegister,
-  employeeLogin,
+  userLogin,
   userLogout,
+  userRefreshToken,
   forgotPassword,
   resetPassword
 };
