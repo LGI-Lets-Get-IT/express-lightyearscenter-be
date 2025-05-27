@@ -26,7 +26,7 @@ const getAll = async (req, res) => {
       appointments = await appointmentService.getAllAppointmentsByQueryParams(
         queryParams
       );
-    } else {
+    } else if(!req.user?.role) {
       const findUser = await clientService.getClientByUuid(req.user.id)
       const queryParams = {
         clientId: findUser.id
@@ -65,6 +65,20 @@ const getForTreatmentProgress = async (req, res) => {
     const queryParams = {
       clientId: req.query.clientId,
       appointmentType: 'Treatment',
+    }
+    const appointment = await appointmentService.getAllAppointmentsByQueryParams(queryParams);
+
+    res.jsonSuccess(200, "Successfully fetched appointment data", appointment);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message);
+  }
+};
+
+const getForAssessments = async (req, res) => {
+  try {
+    const queryParams = {
+      clientId: req.query.clientId,
+      appointmentType: 'Assessment',
     }
     const appointment = await appointmentService.getAllAppointmentsByQueryParams(queryParams);
 
@@ -114,7 +128,7 @@ const create = async (req, res) => {
 
 const updateById = async (req, res) => {
   try {
-    const appointmentId = req.params.id;
+    const { appointmentId } = req.params;
     const {
       psychologistId,
       title,
@@ -128,8 +142,8 @@ const updateById = async (req, res) => {
       title,
       appointmentType,
       appointmentDate,
-      timeStart,
-      timeEnd,
+      bookingTimeStart: timeStart,
+      bookingTimeEnd: timeEnd,
     }
     const updatedAppointment = await appointmentService.updateAppointmentById(
       appointmentId,
@@ -159,6 +173,7 @@ module.exports = {
   getAll,
   getById,
   getForTreatmentProgress,
+  getForAssessments,
   updateById,
   deleteIds,
 };

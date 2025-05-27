@@ -59,12 +59,13 @@ const create = async (req, res) => {
       guardianEmail,
       guardianNationality,
       guardianRelationship,
+      intakeForm,
     } = req.body;
 
+    const generatedPassword = await generateRandomPassword();
     const bodyData = {
       schoolId,
       fullName,
-      age: differenceInYears(Date.now(), dateOfBirth),
       problem,
       gender,
       nationality,
@@ -75,7 +76,8 @@ const create = async (req, res) => {
       guardianPhone,
       guardianNationality,
       guardianRelationship,
-      password: await generateRandomPassword(),
+      password: generatedPassword,
+      intakeForm,
     };
     const createdClient = await clientService.createClient(bodyData);
 
@@ -104,7 +106,6 @@ const updateByUuid = async (req, res) => {
     const bodyData = {
       schoolId,
       fullName,
-      age: differenceInYears(Date.now(), dateOfBirth),
       gender,
       nationality,
       dateOfBirth,

@@ -62,13 +62,13 @@
   </tr>
   <tr style="background-color: #f3f3f3;">
     <td style="width: 25%">DOB<br><span class="field-subtitle">Tanggal Lahir</span></td>
-    <td style="width: 25%">{{client.dateOfBirth}}</td>
+    <td style="width: 25%">{{client.formattedDOB}}</td>
     <td style="width: 25%">School Name<br><span class="field-subtitle">Nama Sekolah</span></td>
     <td style="width: 25%">{{client.school.name}}</td>
   </tr>
   <tr style="background-color: #f3f3f3;">
     <td style="width: 25%">Age<br><span class="field-subtitle">Usia</span></td>
-    <td style="width: 25%">{{childAge}}</td>
+    <td style="width: 25%">{{client.age}}</td>
     <td style="width: 25%">Guardian's Name<br><span class="field-subtitle">Nama Wali / Orang tua</span></td>
     <td style="width: 25%">{{client.guardianName}}</td>
   </tr>
@@ -77,7 +77,7 @@
     <td style="width: 25%">{{client.guardianRelationship}}</td>
     <td style="width: 25%">Guardian's Contact<br><span class="field-subtitle">Kontak Wali</span></td>
     <td style="width: 25%">
-        test
+        {{ client.guardianPhone }}
     </td>
   </tr>
 </table>
@@ -100,8 +100,8 @@
     <td>Outcome | <span class="subtitle-translation">Hasil</span></td>
   </tr>
   {{#each client.assessments}}
-  <tr>
-    <td>{{ created_at }}</td>
+  <tr style="text-align: center;">
+    <td>{{ createdAt }}</td>
     <td>{{ result }}</td>
   </tr>
   {{/each}}
@@ -115,7 +115,7 @@
     <td style="width: 20%">Test | <span class="subtitle-translation">Tes</span></td>
     <td>Outcome | <span class="subtitle-translation">Hasil</span></td>
   </tr>
-  <tr>
+  <tr style="text-align: center;">
     <td>{{ assessmentDate }}</td>
     <td>{{ result }}</td>
   </tr>
@@ -168,7 +168,7 @@
   </tr>
   <tr>
     <td style="width: 25%">Short Term Target:<br><span class="field-subtitle">Target jangka pendek</span></td>
-    <td style="width: 25%">{{aimOfTreatment}}</td>
+    <td style="width: 25%">{{shortTermTarget}}</td>
   </tr>
   <tr>
     <td style="width: 25%">Media/Tools:<br><span class="field-subtitle">Alat</span></td>

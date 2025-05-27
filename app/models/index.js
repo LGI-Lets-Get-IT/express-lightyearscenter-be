@@ -24,6 +24,7 @@ db.treatmentTypes = require("./treatmentType")(sequelize, Sequelize);
 db.testTypes = require("./testType")(sequelize, Sequelize);
 db.schools = require("./school")(sequelize, Sequelize);
 db.clients = require('./client')(sequelize, Sequelize);
+db.clientDetails = require('./clientdetail')(sequelize, Sequelize);
 db.appointments = require("./appointment")(sequelize, Sequelize);
 db.employees = require('./employee')(sequelize, Sequelize);
 db.clients = require('./client')(sequelize, Sequelize);

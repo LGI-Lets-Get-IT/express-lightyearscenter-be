@@ -52,7 +52,9 @@ const getAll = async (req, res) => {
         psychologistId: req.user.id,
       })
     } else if (req.user.role === rolesNameConstant.THERAPIST) {
-      // plans = await treatmentPlanService
+      plans = await treatmentPlanService.getAllPlansByQueryParams({
+        therapistId: req.user.id,
+      })
     } else {
       const findUser = await clientService.getClientByUuid(req.user.id)
       plans = await treatmentPlanService.getAllPlansByQueryParams({

@@ -66,6 +66,8 @@ function AppointmentRepository(db) {
 
   const findOneById = (id) => {
     return db.appointments.findOne({
+      nest: true,
+      raw: true,
       where: {
         id,
       },
@@ -80,7 +82,7 @@ function AppointmentRepository(db) {
           db.sequelize.fn(
             "TO_CHAR",
             db.sequelize.col("booking_time_start"),
-            "DD Mon YYYY"
+            "YYYY-MM-DD"
           ),
           "appointmentDate",
         ],
@@ -121,13 +123,13 @@ function AppointmentRepository(db) {
           attributes: [
             "uuid",
             "fullName",
-            [
-              db.sequelize.literal(`
-                date_part('year', age(current_date, "client"."date_of_birth")) || ' years ' ||
-                date_part('month', age(current_date, "client"."date_of_birth")) || ' months ' ||
-                date_part('days', age(current_date, "client"."date_of_birth")) || ' days'`),
-              'age'
-            ],
+            // [
+            //   db.sequelize.literal(`
+            //     date_part('year', age(current_date, "client"."date_of_birth")) || ' years ' ||
+            //     date_part('month', age(current_date, "client"."date_of_birth")) || ' months ' ||
+            //     date_part('days', age(current_date, "client"."date_of_birth")) || ' days'`),
+            //   'age'
+            // ],
             "gender",
             "dateOfBirth",
             "nationality",

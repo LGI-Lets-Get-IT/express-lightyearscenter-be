@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const handlebars = require("handlebars");
 const puppeteer = require("puppeteer");
-const { differenceInYears, differenceInMonths } = require("date-fns");
+const { getAgeInYearsMonthDays } = require('../utils/getAge.utils');
 
 const generatePdf = async (templateName, data) => {
   const logoPath = path.join(__dirname, "../../public", "TLY_LOGO_L.png");
@@ -35,9 +35,7 @@ const generatePdf = async (templateName, data) => {
 
   await page.setContent(finalHtml, { waitUntil: "networkidle0" });
 
-  const years = differenceInYears(new Date(), data.client.dateOfBirth);
-  const totalMonths = differenceInMonths(new Date(), data.client.dateOfBirth);
-  const remainingMonths = totalMonths - years * 12;
+  const age = getAgeInYearsMonthDays(data.client.dateOfBirth);
   const pdfBuffer = await page.pdf({
     // path: `${fileName}.pdf`,
     format: "A4",
@@ -57,7 +55,7 @@ const generatePdf = async (templateName, data) => {
         </div>
         <div style="text-align: left; font-weight: bold; font-size: 14px;">
           ${data.client.fullName}<br>
-          ${years} YEARS, ${remainingMonths} MONTH
+          ${age}
         </div>
       </div>
     `,
