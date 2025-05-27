@@ -60,6 +60,7 @@ jobs:
     #     docker image rm -f mrizalrizky/lume-pos-backend:latest || true &&
     #     docker run --name lumcafe_backend -d -p 3443:3443"
   deploy-to-production:
+    needs: build-image
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
