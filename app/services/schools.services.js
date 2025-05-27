@@ -78,10 +78,10 @@ const updateSchoolById = async (schoolId, bodyData) => {
   }
 }
 
-const deleteById = async (schoolId) => {
+const deleteByIds = async (schoolIds) => {
   const tr = await db.sequelize.transaction()
   try {
-    const deletedSchool = await schoolRepository.deleteById(schoolId, tr)
+    const deletedSchool = await schoolRepository.deleteByIds(schoolIds, tr)
     if (!deletedSchool) {
       customError.statusCode = 500;
       customError.message = "Failed to delete school data"
@@ -105,5 +105,5 @@ module.exports = {
   getSchoolClientsById,
   createSchool,
   updateSchoolById,
-  deleteById,
+  deleteByIds,
 };

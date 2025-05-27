@@ -1,12 +1,17 @@
 function TreatmentPlanRepository(db) {
   const findAll = (queryParams) => {
-    let whereOptions;
+    let whereOptions = {};
     if (queryParams) {
-      whereOptions = queryParams;
+      const { therapistId, ...restParams} = queryParams;
+      if(therapistId) {
+        whereOptions.treatmentProgram = { therapistId };    
+      } else {
+        whereOptions.treatmentPlans = restParams;
+      }
     }
 
     return db.treatmentPlans.findAll({
-      where: whereOptions,
+      where: whereOptions.treatmentPlans,
       group: [
         "TreatmentPlan.id",
         "client.uuid",
@@ -28,7 +33,6 @@ function TreatmentPlanRepository(db) {
           db.sequelize.literal("CAST(COUNT(programs.id) AS INTEGER)"),
           "totalTreatments",
         ],
-        // [db.sequelize.literal('CAST(COUNT(targetedBehaviors.id) AS INTEGER)'), 'totalTargetedBehaviors'],
         "consultDate",
       ],
       include: [
@@ -46,6 +50,7 @@ function TreatmentPlanRepository(db) {
           model: db.treatmentPrograms,
           as: "programs",
           attributes: [],
+          where: whereOptions.treatmentProgram,
         },
         {
           model: db.targetedBehaviors,
@@ -86,15 +91,8 @@ function TreatmentPlanRepository(db) {
             "guardianName",
             "guardianPhone",
             "guardianRelationship",
-            "dateOfBirth",
-            "problem",
           ],
           include: [
-            {
-              model: db.schools,
-              as: "school",
-              attributes: [],
-            },
             {
               model: db.clientAssessments,
               as: "assessments",
@@ -209,11 +207,11 @@ function TreatmentPlanRepository(db) {
     );
   };
 
-  const deleteById = (id, transaction) => {
+  const deleteByIds = (ids, transaction) => {
     return db.treatmentPlans.destroy(
       {
         where: {
-          id,
+          id: ids,
         },
       },
       { transaction }
@@ -226,7 +224,7 @@ function TreatmentPlanRepository(db) {
     findAllByClientId,
     create,
     updateById,
-    deleteById,
+    deleteByIds,
   };
 }
 

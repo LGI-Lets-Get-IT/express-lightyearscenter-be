@@ -7,6 +7,6 @@ router.post("/", validateInput(treatmentPlanSchema.create), treatmentPlanControl
 router.get("/", treatmentPlanController.getAll);
 router.get('/:planId', validateInput(treatmentPlanSchema.view), treatmentPlanController.getById);
 router.put('/:planId', treatmentPlanController.updateById);
-router.delete('/', validateInput(treatmentPlanSchema.delete), treatmentPlanController.deleteById);
+router.delete('/', validateInput(treatmentPlanSchema.delete), treatmentPlanController.deleteByIds);
 
 module.exports = router;

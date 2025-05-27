@@ -1,39 +1,45 @@
 function ClientRepository(db) {
   const findAll = () => {
     return db.clientAssessments.findAll({
+      raw: true,
       attributes: [
-        'id',
-        [db.sequelize.col(`client.uuid`), 'clientId'],
-        [db.sequelize.col(`client.full_name`), 'clientName'],
-        [db.sequelize.col(`psychologist.full_name`), 'assessedBy'],
-        [db.sequelize.col(`testType.name`), 'testName'],
-        [db.sequelize.fn('TO_CHAR', db.sequelize.col(
-          'appointment.booking_time_start'), 'DD Mon YYYY'),
-          'assessmentDate'
-        ],
+        "id",
+        [db.sequelize.col(`client.uuid`), "clientId"],
+        [db.sequelize.col(`client.full_name`), "clientName"],
+        [db.sequelize.col(`psychologist.full_name`), "assessedBy"],
+        [db.sequelize.col(`testType.name`), "testName"],
+        ["created_at", "assessmentDate"],
+        // [
+        //   db.sequelize.fn(
+        //     "TO_CHAR",
+        //     db.sequelize.col("clientAssessment.created_at"),
+        //     "DD Mon YYYY"
+        //   ),
+        //   "assessmentDate",
+        // ],
       ],
       include: [
         {
           model: db.appointments,
-          as: 'appointment',
+          as: "appointment",
           attributes: [],
         },
         {
           model: db.employees,
-          as: 'psychologist',
-          attributes: []
+          as: "psychologist",
+          attributes: [],
         },
         {
           model: db.clients,
-          as: 'client',
+          as: "client",
           attributes: [],
         },
         {
           model: db.testTypes,
-          as: 'testType',
+          as: "testType",
           attributes: [],
         },
-      ]
+      ],
     });
   };
 
@@ -42,67 +48,62 @@ function ClientRepository(db) {
       where: {
         id,
       },
-      attributes: [
-        'id',
-        'result',
-        'createdAt',
-        'updatedAt',
-      ],
+      attributes: ["id", "result", "createdAt", "updatedAt"],
       include: [
         {
           model: db.clients,
-          as: 'client',
-          attributes: ['id', 'fullName'],
+          as: "client",
+          attributes: ["id", "fullName"],
         },
         {
           model: db.employees,
-          as: 'psychologist',
-          attributes: ['id', 'fullName']
+          as: "psychologist",
+          attributes: ["id", "fullName"],
         },
         {
           model: db.testTypes,
-          as: 'testType',
-          attributes: ['id', 'name'],
+          as: "testType",
+          attributes: ["id", "name"],
         },
         {
           model: db.appointments,
-          as: 'appointment',
-          attributes: ['id', 'title', 'appointmentType'],
-        }
-      ]
+          as: "appointment",
+          attributes: ["id", "title", "appointmentType"],
+        },
+      ],
     });
-  }
+  };
 
   const findAllByAppointmentId = (appointmentId) => {
     return db.clientAssessments.findAll({
       attributes: [
-        'id',
-        [db.sequelize.col(`testType.name`), 'testName'],
-        [db.sequelize.col(`psychologist.full_name`), 'assessedBy'],
-        [db.sequelize.col(`ClientAssessment.created_at`), 'assessmentDate'],
-        'result',
+        "id",
+        [db.sequelize.col(`testType.name`), "testName"],
+        [db.sequelize.col(`psychologist.full_name`), "assessedBy"],
+        ["created_at", "assessmentDate"],
+        // [db.sequelize.col(`ClientAssessment.created_at`), "assessmentDate"],
+        "result",
       ],
       where: {
-        appointment_id: appointmentId
+        appointment_id: appointmentId,
       },
       include: [
         {
           model: db.employees,
-          as: 'psychologist',
+          as: "psychologist",
           attributes: [],
         },
         {
           model: db.testTypes,
-          as: 'testType',
+          as: "testType",
           attributes: [],
-        }
-      ]
-    })
-  }
+        },
+      ],
+    });
+  };
 
   const create = (bodyData, transaction) => {
-    console.log('BODYDATAAA', bodyData)
-    return db.clientAssessments.create(bodyData, { transaction })
+    return db.clientAssessments.create(bodyData, { transaction });
   };
 
   const updateById = (id, bodyData, transaction) => {
@@ -122,7 +123,7 @@ function ClientRepository(db) {
     return db.clientAssessments.destroy(
       {
         where: {
-          ids,
+          id: ids,
         },
       },
       { transaction }

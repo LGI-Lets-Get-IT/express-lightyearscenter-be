@@ -52,7 +52,9 @@ const getAll = async (req, res) => {
         psychologistId: req.user.id,
       })
     } else if (req.user.role === rolesNameConstant.THERAPIST) {
-      // plans = await treatmentPlanService
+      plans = await treatmentPlanService.getAllPlansByQueryParams({
+        therapistId: req.user.id,
+      })
     } else {
       const findUser = await clientService.getClientByUuid(req.user.id)
       plans = await treatmentPlanService.getAllPlansByQueryParams({
@@ -124,10 +126,10 @@ const updateById = async (req, res) => {
   }
 };
 
-const deleteById = async (req, res) => {
+const deleteByIds = async (req, res) => {
   try {
-    const { planId } = req.body;
-    const deletedPlan = await treatmentPlanService.deletePlanById(planId);
+    const { planIds } = req.body;
+    const deletedPlan = await treatmentPlanService.deletePlanByIds(planIds);
     res.jsonSuccess(
       200,
       "Successfully deleted treatment plan data",
@@ -144,5 +146,5 @@ module.exports = {
   getById,
   getByClientId,
   updateById,
-  deleteById,
+  deleteByIds,
 };

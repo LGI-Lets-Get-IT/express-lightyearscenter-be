@@ -2,7 +2,8 @@ const { differenceInYears } = require('date-fns')
 const db = require("../models");
 const appointmentRepository =
   require("../repositories/appointments.repositories")(db);
-const employeeService = require('./employees.services')
+const employeeService = require('./employees.services');
+const { getAgeInYearsMonthDays } = require('../utils/getAge.utils');
 const customError = new Error();
 
 const getAllAppointments = async () => {
@@ -38,8 +39,12 @@ const getAppointmentById = async (appointmentId) => {
 
   const picData = await employeeService.getEmployeeById(result.picId);
   const appointment = {
-    ...result.dataValues,
+    ...result,
     picName: picData.fullName,
+    client: {
+      ...result.client,
+      age: getAgeInYearsMonthDays(result.client.dateOfBirth),
+    }
   }
 
   return appointment;

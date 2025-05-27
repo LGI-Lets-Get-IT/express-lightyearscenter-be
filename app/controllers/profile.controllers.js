@@ -1,6 +1,7 @@
 const clientService = require('../services/clients.services');
 const employeeService = require('../services/employees.services');
-const { getAge } = require('../utils/getAge.utils');
+const { getAgeInYearsMonthDays } = require('../utils/getAge.utils');
+// const { getAge } = require('../utils/getAge.utils');
 
 const getUserProfile = async (req, res) => {
     try {
@@ -13,7 +14,7 @@ const getUserProfile = async (req, res) => {
 
         const userProfile = {
             ...user.dataValues,
-            ...(user?.dateOfBirth && { age: getAge(user.dateOfBirth) }),
+            ...(user?.dateOfBirth && { age: getAgeInYearsMonthDays(user.dateOfBirth) }),
             email: user.email || user.guardianEmail,
         }
 

@@ -9,9 +9,9 @@ const generateRandomPassword = async () => {
     lowercase: true,
   });
 
-  const hashedPassword = await bcrypt.hash(generatedPassword);
+  const hashedPassword = await bcrypt.hash(generatedPassword, 10);
 
-  return hashedPassword;
+  return { password: generatedPassword, hashedPassword };
 };
 
 module.exports = generateRandomPassword;

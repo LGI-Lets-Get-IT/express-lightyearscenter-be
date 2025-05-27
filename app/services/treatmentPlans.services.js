@@ -261,12 +261,17 @@ const updatePlanById = async (planId, bodyData) => {
   }
 };
 
-const deletePlanById = async (planId) => {
+const deletePlanByIds = async (planIds) => {
   const tr = await db.sequelize.transaction();
   try {
-    const result = await treatmentPlanRepository.deleteById(planId);
-    await tr.commit();
+    const result = await treatmentPlanRepository.deleteByIds(planIds);
+    if(!result) {
+      customError.statusCode = 500;
+      customError.message = "Failed to delete treatment plan data";
+      throw customError;
+    }
 
+    await tr.commit();
     return result;
   } catch (error) {
     await tr.rollback();
@@ -281,5 +286,5 @@ module.exports = {
   getPlanById,
   getAllPlansByClientId,
   updatePlanById,
-  deletePlanById,
+  deletePlanByIds,
 };

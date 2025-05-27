@@ -132,7 +132,18 @@ const generateDailyProgressReport = async () => {
 const generateTreatmentPlanDoc = async (planId) => {
   const planData = await db.treatmentPlans.findOne({
     plain: true,
-    attributes: ["consultDate", "presentProblem", "parentPlan"],
+    attributes: [
+      [
+        db.sequelize.fn(
+          "TO_CHAR",
+          db.sequelize.col("consult_date"),
+          "DD Mon YYYY"
+        ),
+        "consultDate",
+      ],
+      "presentProblem",
+      "parentPlan"
+    ],
     where: {
       id: planId,
     },
@@ -147,14 +158,41 @@ const generateTreatmentPlanDoc = async (planId) => {
         as: "client",
         attributes: [
           "fullName",
-          "dateOfBirth",
+          [
+            db.sequelize.fn(
+              "TO_CHAR",
+              db.sequelize.col("date_of_birth"),
+              "DD Mon YYYY"
+            ),
+            "formattedDOB",
+          ],
+          'dateOfBirth',
+          [
+            db.sequelize.literal(`
+              date_part('year', age(current_date, "client"."date_of_birth")) || ' years ' ||
+              date_part('month', age(current_date, "client"."date_of_birth")) || ' months ' ||
+              date_part('days', age(current_date, "client"."date_of_birth")) || ' days'`),
+            'age'
+          ],
           "guardianName",
           "guardianRelationship",
+          'guardianPhone',
         ],
         include: [
           {
             model: db.clientAssessments,
             as: "assessments",
+            attributes: [
+              'result',
+              [
+                db.sequelize.fn(
+                  "TO_CHAR",
+                  db.sequelize.col("client->assessments.created_at"),
+                  "DD Mon YYYY"
+                ),
+                "createdAt",
+              ],
+            ],
             include: [
               {
                 model: db.testTypes,

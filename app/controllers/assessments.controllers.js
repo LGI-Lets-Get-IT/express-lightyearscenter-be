@@ -24,9 +24,7 @@ const getAll = async (req, res) => {
 const getById = async (req, res) => {
   try {
     const { assessmentId } = req.params;
-    const assessment = await assessmentService.getAssessmentById(
-      assessmentId
-    );
+    const assessment = await assessmentService.getAssessmentById(assessmentId);
 
     res.jsonSuccess(200, "Successfully fetched assessment data", assessment);
   } catch (error) {
@@ -46,13 +44,7 @@ const getByAppointmentId = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const {
-      appointmentId,
-      clientId,
-      psychologistId,
-      testId,
-      result,
-    } = req.body;
+    const { appointmentId, clientId, psychologistId, testId, result } = req.body;
 
     const bodyData = {
       appointmentId,
@@ -76,6 +68,7 @@ const updateById = async (req, res) => {
   try {
     const { assessmentId } = req.params;
     const { appointmentId, clientId, psychologistId, testId, result } = req.body;
+
     const bodyData = {
       appointmentId,
       clientId,
@@ -95,16 +88,10 @@ const updateById = async (req, res) => {
 
 const deleteIds = async (req, res) => {
   try {
-    const { appointmentIds } = req.body;
-    const deletedAppointments = await appointmentService.deleteAppointmentByIds(
-      appointmentIds
-    );
+    const { assessmentIds } = req.body;
+    const deletedAssessments = await assessmentService.deleteAssessmentByIds(assessmentIds);
 
-    res.jsonSuccess(
-      200,
-      "Successfully deleted appointments data",
-      deletedAppointments
-    );
+    res.jsonSuccess(200, "Successfully deleted assessments data", deletedAssessments);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }

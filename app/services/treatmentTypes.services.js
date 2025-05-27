@@ -48,8 +48,22 @@ const updateTreatmentById = async (typeId, bodyData) => {
   }
 }
 
-const deleteTreatmentById = async () => {
+const deleteTreatmentByIds = async (treatmentIds) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const deletedTreatments = await treatmentRepository.deleteByIds(treatmentIds, tr);
+    if(!deletedTreatments) {
+      customError.statusCode = 500;
+      customError.message = "Failed to delete treatment type data";
+      throw customError
+    }
 
+    await tr.commit()
+    return deletedTreatments
+  } catch (error) {
+    await tr.rollback()
+    throw error;
+  }
 }
 
 module.exports = {
@@ -57,5 +71,5 @@ module.exports = {
   getAllTreatments,
   getTreatmentById,
   updateTreatmentById,
-  deleteTreatmentById,
+  deleteTreatmentByIds,
 };

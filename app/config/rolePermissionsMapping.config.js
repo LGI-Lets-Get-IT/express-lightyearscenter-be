@@ -45,6 +45,7 @@ module.exports = {
         permissions.TEST_TYPES.VIEW,
         permissions.TREATMENT_PLANS.VIEW,
         permissions.TREATMENT_TYPES.VIEW,
+        permissions.ASSESSMENTS.VIEW,
         ...permissions.TREATMENT_SESSIONS.ALL,
         ...permissions.TREATMENT_TYPES.ALL,
     ],

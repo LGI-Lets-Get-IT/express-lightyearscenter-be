@@ -59,12 +59,13 @@ const create = async (req, res) => {
       guardianEmail,
       guardianNationality,
       guardianRelationship,
+      intakeForm,
     } = req.body;
 
+    const generatedPassword = await generateRandomPassword();
     const bodyData = {
       schoolId,
       fullName,
-      age: differenceInYears(Date.now(), dateOfBirth),
       problem,
       gender,
       nationality,
@@ -75,7 +76,8 @@ const create = async (req, res) => {
       guardianPhone,
       guardianNationality,
       guardianRelationship,
-      password: await generateRandomPassword(),
+      password: generatedPassword,
+      intakeForm,
     };
     const createdClient = await clientService.createClient(bodyData);
 
@@ -104,7 +106,6 @@ const updateByUuid = async (req, res) => {
     const bodyData = {
       schoolId,
       fullName,
-      age: differenceInYears(Date.now(), dateOfBirth),
       gender,
       nationality,
       dateOfBirth,
@@ -140,10 +141,10 @@ const updatePasswordByUuid = async (req, res) => {
   }
 };
 
-const deleteIds = async (req, res) => {
+const deleteByUuids = async (req, res) => {
   try {
     const { clientIds } = req.body;
-    const deletedClient = await clientService.deleteClientById(clientIds);
+    const deletedClient = await clientService.deleteClientByUuids(clientIds)
 
     res.jsonSuccess(200, "Successfully deleted clients data", deletedClient);
   } catch (error) {
@@ -158,5 +159,5 @@ module.exports = {
   getClientAppointmentsByUuid,
   updateByUuid,
   updatePasswordByUuid,
-  deleteIds,
+  deleteByUuids,
 };

@@ -113,6 +113,10 @@ const updatePasswordById = async (req, res) => {
 
 const deleteIds = async (req, res) => {
   try {
+    const { employeeIds } = req.body;
+    const deletedEmployee = await employeeService.deleteEmployeeByIds(employeeIds);
+
+    res.jsonSuccess(200, "Successfully deleted employee", deletedEmployee);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }

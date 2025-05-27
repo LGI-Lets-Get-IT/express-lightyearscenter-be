@@ -58,7 +58,10 @@ const updateById = async (req, res) => {
 
 const deleteIds = async (req, res) => {
   try {
+    const { treatmentIds } = req.body
+    const deletedTreatments = await treatmentTypeService.deleteTreatmentByIds(treatmentIds);
 
+    res.jsonSuccess(200, "Successfully deleted treatment type", deletedTreatments)
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error)
   }

@@ -1,8 +1,12 @@
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 const db = require("../models");
 const clientRepository = require("../repositories/clients.repositories")(db);
+const clientDetailRepository = require("../repositories/clientDetails.repositories")(db);
 const appointmentService = require("../services/appointments.services");
-const { differenceInYears } = require('date-fns/differenceInYears');
+const mailService = require("../services/mail.services");
+const { differenceInYears } = require("date-fns/differenceInYears");
+const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
+const { format } = require("date-fns/format");
 const customError = new Error();
 
 const getUserProfile = async (uuid) => {
@@ -47,7 +51,7 @@ const getClientByUuid = async (uuid) => {
     throw customError;
   }
 
-  return client;
+  return result;
 };
 
 const getClientByUuidWithAppointments = async (uuid) => {
@@ -62,8 +66,9 @@ const getClientByUuidWithAppointments = async (uuid) => {
 
   const client = {
     ...result.dataValues,
-    age: differenceInYears(new Date(), new Date(result.dateOfBirth))
-  }
+    age: getAgeInYearsMonthDays(result.dateOfBirth),
+    dateOfBirth: format(result.dateOfBirth, 'dd MMM yyyy')
+  };
   return client;
 };
 
@@ -74,21 +79,38 @@ const getClientByEmail = async (email) => {
 }
 
 const getClientAppointments = async (uuid) => {
-  const clientAppointments = await appointmentService.getAppointmentsByClientUuid(
-    uuid
-  );
+  const clientAppointments = await appointmentService.getAppointmentsByClientUuid(uuid);
 
   return clientAppointments;
 }
 const createClient = async (bodyData) => {
   const tr = await db.sequelize.transaction();
+  const { intakeForm, ...bodyRest } = bodyData;  
+  const { password, hashedPassword } = bodyData.password
   try {
-    const createdClient = await clientRepository.create(bodyData, tr);
+    const body = {
+      ...bodyRest,
+      password: hashedPassword,
+    }
+    const createdClient = await clientRepository.create(body, tr);
 
     if (!createdClient) {
       customError.message = "Failed to create school data";
       throw customError;
     }
+
+    const createdClientDetails = await clientDetailRepository.create({
+      ...intakeForm,
+      clientId: createdClient.id,
+      institutionsData: intakeForm.institutions,
+      guardiansData: intakeForm.guardians
+    }, tr)
+
+    await mailService.sendMail(bodyData.guardianEmail, 'Client account created', 'ACCOUNT_CREATED', {
+      fullName: bodyData.guardianName,
+      email: bodyData.guardianEmail,
+      password: password,
+    })
 
     await tr.commit();
 
@@ -128,8 +150,8 @@ const updateClientPasswordByUuid = async (uuid, password) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const updatedClient = await clientRepository.updateByUuid(uuid, {
-      password: hashedPassword
-    }, tr)
+        password: hashedPassword
+      }, tr)
 
     await tr.commit()
 
@@ -140,10 +162,10 @@ const updateClientPasswordByUuid = async (uuid, password) => {
   }
 }
 
-const deleteClientById = async (clientIds) => {
+const deleteClientByUuids = async (clientIds) => {
   const tr = await db.sequelize.transaction();
   try {
-    const deletedClient = await clientRepository.deleteByIds(clientIds, tr);
+    const deletedClient = await clientRepository.deleteByUuids(clientIds, tr);
     if (!deletedClient) {
       customError.message = "Failed to delete clients data";
 
@@ -170,5 +192,5 @@ module.exports = {
   createClient,
   updateClientByUuid,
   updateClientPasswordByUuid,
-  deleteClientById,
+  deleteClientByUuids,
 };

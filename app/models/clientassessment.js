@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class ClientAssessment extends Model {
     /**
@@ -37,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Appointments'
       },
       onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     psychologistId: {
       type: DataTypes.INTEGER,
@@ -45,6 +44,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
         model: 'Psychologist',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     clientId: {
       type: DataTypes.INTEGER,
@@ -54,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Clients',
       },
       onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
     testTypeId: {
       type: DataTypes.INTEGER,
@@ -63,6 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'TestType'
       },
       onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     result: {
       type: DataTypes.TEXT

@@ -3,6 +3,7 @@ const db = require('../models')
 const clientService = require('../services/clients.services')
 const employeeService = require('../services/employees.services')
 const roleConstant = require('../constants/roles.constant');
+const generateRandomPassword = require('../utils/generatePassword.utils')
 const { generateAccessToken, generateRefreshToken, decodeToken } = require('../utils/jwt.utils');
 const rolePermissionsMappingConfig = require('../config/rolePermissionsMapping.config');
 const employeeRepository = require('../repositories/employees.repositories')(db);
@@ -143,8 +144,32 @@ const getRefreshToken = async (currentToken) => {
     }
 }
 
+const resetPassword = async (email) => {
+    let userData = await clientRepository.findOneByEmail(email);
+    if (!userData) {
+        userData = await employeeRepository.findOneByEmail(email);
+        if (!userData) {
+            customError.statusCode = 404;
+            customError.message = "User with that email not found"
+
+            throw customError;
+        }
+    }
+
+    const generatedPassword = await generateRandomPassword()
+
+    const updatedUser = await userData.update({
+        password: generatedPassword
+    });
+
+    // const sentEmail = await mailService.
+
+    return updatedUser;
+}
+
 module.exports = {
     login,
     logout,
     getRefreshToken,
+    resetPassword,
 }

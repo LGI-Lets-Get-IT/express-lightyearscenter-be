@@ -33,4 +33,8 @@ exports.schoolSchema = {
     picEmail: Joi.string().email().optional().empty(""),
     picPhoneNumber: Joi.string().optional().empty(""),
   }),
+
+  delete: Joi.object({
+    schoolIds: Joi.array().items(Joi.number()).required(),
+  })
 };

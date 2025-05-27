@@ -17,6 +17,7 @@ module.exports = {
           model: 'appointments'
         },
         onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       psychologistId: {
         type: Sequelize.INTEGER,
@@ -25,6 +26,8 @@ module.exports = {
           key: 'id',
           model: 'employees',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       clientId: {
         type: Sequelize.INTEGER,
@@ -34,6 +37,7 @@ module.exports = {
           model: 'clients',
         },
         onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       testTypeId: {
         type: Sequelize.INTEGER,
@@ -43,6 +47,7 @@ module.exports = {
           model: 'test_types'
         },
         onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       result: Sequelize.TEXT,
       createdAt: {

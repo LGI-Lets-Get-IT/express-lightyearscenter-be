@@ -1,12 +1,17 @@
+const { format } = require("date-fns/format");
 const db = require("../models");
-const clientService = require('../services/clients.services')
 const assessmentRepository = require("../repositories/assessments.repositories")(db);
 const customError = new Error();
 
 const getAllAssessments = async () => {
   const assessments = await assessmentRepository.findAll();
 
-  return assessments;
+  const mappedAssessments = assessments.map((assessment) => ({
+    ...assessment,
+    assessmentDate: format(assessment.assessmentDate, "dd MMM yyyy"),
+  }));
+
+  return mappedAssessments;
 };
 
 const getAssessmentById = async (assessmentId) => {
@@ -31,11 +36,7 @@ const getAssessmentByAppointmentId = async (appointmentId) => {
 const createAssessment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
-    // const clientData = await clientService.getClientByUuid(bodyData.client)
-    const createdAssessment = await assessmentRepository.create({
-      ...bodyData,
-      // client: clientData.id
-    }, tr);
+    const createdAssessment = await assessmentRepository.create(bodyData, tr);
 
     if (!createdAssessment) {
       customError.statusCode = 500;
@@ -76,10 +77,10 @@ const updateAssessmentById = async (id, bodyData) => {
   }
 };
 
-const deleteAssessmentById = async (assessmentIds) => {
+const deleteAssessmentByIds = async (assessmentIds) => {
   const tr = await db.sequelize.transaction();
   try {
-    const deletedAssessment = await clientRepository.deleteByIds(assessmentIds, tr);
+    const deletedAssessment = await assessmentRepository.deleteByIds(assessmentIds, tr);
     if (!deletedAssessment) {
       customError.statusCode = 500;
       customError.message = "Failed to delete assessments data";
@@ -102,5 +103,5 @@ module.exports = {
   getAssessmentByAppointmentId,
   createAssessment,
   updateAssessmentById,
-  deleteAssessmentById,
+  deleteAssessmentByIds,
 };

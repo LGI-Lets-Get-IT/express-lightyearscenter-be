@@ -1,6 +1,8 @@
 function MasterTreatmentRepository(db) {
   const findAll = () => {
-    return db.treatmentTypes.findAll();
+    return db.treatmentTypes.findAll({
+      order: [['name', 'ASC']]
+    });
   };
 
   const findOneById = (id) => {
@@ -18,12 +20,20 @@ function MasterTreatmentRepository(db) {
       }
     }, { transaction })
   }
+  const deleteByIds = (ids, transaction) => {
+    return db.treatmentTypes.destroy({
+      where: {
+        id: ids
+      }
+    }, { transaction })
+  }
 
   return {
     create,
     findAll,
     findOneById,
     updateById,
+    deleteByIds,
   };
 }
 
