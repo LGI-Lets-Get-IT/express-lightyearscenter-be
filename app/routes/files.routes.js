@@ -7,7 +7,7 @@ const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 router.get("/", fileController.getAll);
 router.post("/", upload.single('file'), fileController.uploadFile);
 router.post(
-  "/reports/daily-progress/generate",
+  "/reports/daily-progress/generate/:id",
   fileController.generateDailyProgressReport
 );
 router.post(
