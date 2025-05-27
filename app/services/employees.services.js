@@ -5,6 +5,7 @@ const employeeRepository = require("../repositories/employees.repositories")(
 );
 const customError = new Error();
 const RoleConstant = require("../constants/roles.constant");
+const mailService = require('../services/mail.services')
 
 const getAllEmployees = async () => {
   const employees = await employeeRepository.findAll();
@@ -48,9 +49,15 @@ const getEmployeeById = async (employeeId) => {
 };
 
 const createEmployee = async (bodyData) => {
-  const tr = db.sequelize.transaction();
+  const tr = await db.sequelize.transaction();
+  const { password, ...bodyRest } = bodyData
+  const { password: generatedPassword, hashedPassword } = password
   try {
-    const createdEmployee = await employeeRepository.create(bodyData);
+    const body = {
+      ...bodyRest,
+      password: hashedPassword,
+    }
+    const createdEmployee = await employeeRepository.create(body, tr);
 
     if (!createdEmployee) {
       customError.statusCode = 400;
@@ -58,6 +65,14 @@ const createEmployee = async (bodyData) => {
 
       throw customError;
     }
+
+    console.log('bodyRest', bodyRest)
+
+    await mailService.sendMail(bodyRest.email, 'Employee account created', 'ACCOUNT_CREATED', {
+      fullName: bodyRest.fullName,
+      email: bodyRest.email,
+      password: generatedPassword,
+    })
 
     await tr.commit();
     return createdEmployee;

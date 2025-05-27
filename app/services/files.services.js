@@ -30,6 +30,7 @@ const getAllFiles = async (appointmentId, uuid, clientName) => {
     fields: "files(id, name, mimeType, webViewLink, size, createdTime, owners)",
   });
   return filesList.data.files.map((file) => ({
+    id: file.id,
     name: file.name,
     link: file.webViewLink,
     uploader: file.owners[0].emailAddress,

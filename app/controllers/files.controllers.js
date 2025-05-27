@@ -10,7 +10,7 @@ const getAll = async (req, res) => {
 
     res.jsonSuccess(200, "Successfully fetched all files data", files);
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message);
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
 };
 

@@ -23,6 +23,7 @@ module.exports = {
     ],
     [STAFF]: [
         permissions.DASHBOARD.VIEW,
+        permissions.SCHOOLS.VIEW,
         ...permissions.APPOINTMENTS.ALL,
         ...permissions.CLIENTS.ALL,
     ],
