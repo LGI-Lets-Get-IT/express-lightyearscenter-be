@@ -31,7 +31,7 @@ const getPlanById = async (planId) => {
       (session) => session.treatmentProgramId === program.id
     );
     const remainingSession = findSession.length;
-    const isCompleted = findSession.length > program.sessionFrequency;
+    const isCompleted = findSession.length >= program.sessionFrequency;
     programsDone += isCompleted ? 1 : 0;
     return {
       ...program,
@@ -265,7 +265,7 @@ const deletePlanByIds = async (planIds) => {
   const tr = await db.sequelize.transaction();
   try {
     const result = await treatmentPlanRepository.deleteByIds(planIds);
-    if(!result) {
+    if (!result) {
       customError.statusCode = 500;
       customError.message = "Failed to delete treatment plan data";
       throw customError;
