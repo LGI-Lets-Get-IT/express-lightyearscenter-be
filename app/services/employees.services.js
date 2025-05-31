@@ -5,7 +5,7 @@ const employeeRepository = require("../repositories/employees.repositories")(
 );
 const customError = new Error();
 const RoleConstant = require("../constants/roles.constant");
-const mailService = require('../services/mail.services')
+const mailService = require('../services/mail.services');
 
 const getAllEmployees = async () => {
   const employees = await employeeRepository.findAll();
@@ -66,8 +66,6 @@ const createEmployee = async (bodyData) => {
       throw customError;
     }
 
-    console.log('bodyRest', bodyRest)
-
     await mailService.sendMail(bodyRest.email, 'Employee account created', 'ACCOUNT_CREATED', {
       fullName: bodyRest.fullName,
       email: bodyRest.email,
@@ -113,6 +111,13 @@ const updateEmployeePasswordById = async (id, password) => {
     const updatedEmployee = await employeeRepository.updateById(id, {
         password: hashedPassword
       }, tr)
+
+    const employee = await employeeRepository.findOneById(id);
+    await mailService.sendMail(employee.email, 'Employee Password Changed', 'FORGOT_PASSWORD', {
+      fullName: employee.fullName,
+      email: employee.email,
+      password: password,
+    })
 
     await tr.commit()
     return updatedEmployee
