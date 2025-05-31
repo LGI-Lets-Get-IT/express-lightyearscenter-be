@@ -51,9 +51,11 @@ const userRefreshToken = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   try {
-
+    const { email } = req.body;
+    const forgotPassword = await authService.forgotPassword(email);
+    res.jsonSuccess(200, "Successfully forgot password", forgotPassword);
   } catch (error) {
-
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
 }
 

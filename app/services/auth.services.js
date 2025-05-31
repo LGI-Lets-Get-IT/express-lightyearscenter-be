@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const db = require('../models')
 const clientService = require('../services/clients.services')
 const employeeService = require('../services/employees.services')
+const mailService = require('../services/mail.services');
 const roleConstant = require('../constants/roles.constant');
 const generateRandomPassword = require('../utils/generatePassword.utils')
 const { generateAccessToken, generateRefreshToken, decodeToken } = require('../utils/jwt.utils');
@@ -144,32 +145,40 @@ const getRefreshToken = async (currentToken) => {
     }
 }
 
-const resetPassword = async (email) => {
-    let userData = await clientRepository.findOneByEmail(email);
-    if (!userData) {
-        userData = await employeeRepository.findOneByEmail(email);
+const forgotPassword = async (email) => {
+    const tr = await db.sequelize.transaction();
+    try {
+        let userData = await clientRepository.findOneByEmail(email);
         if (!userData) {
-            customError.statusCode = 404;
-            customError.message = "User with that email not found"
+            userData = await employeeRepository.findOneByEmail(email);
+            if (!userData) {
+                customError.statusCode = 404;
+                customError.message = "User with that email not found"
 
-            throw customError;
+                throw customError;
+            }
         }
+
+        const generatedPassword = await generateRandomPassword()
+        const updatedUser = await userData.update({
+            password: generatedPassword.hashedPassword
+        });
+        const sentEmail = await mailService.sendMail(email, "Forgot Password", 'FORGOT_PASSWORD', {
+            email,
+            password: generatedPassword.password,
+        });
+
+        await tr.commit();
+        return updatedUser;
+    } catch (error) {
+        await tr.rollback();
+        throw error;
     }
-
-    const generatedPassword = await generateRandomPassword()
-
-    const updatedUser = await userData.update({
-        password: generatedPassword
-    });
-
-    // const sentEmail = await mailService.
-
-    return updatedUser;
 }
 
 module.exports = {
     login,
     logout,
     getRefreshToken,
-    resetPassword,
+    forgotPassword,
 }
