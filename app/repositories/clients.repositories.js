@@ -99,6 +99,10 @@ function ClientRepository(db) {
           model: db.schools,
           as: 'school',
           attributes: []
+        },
+        {
+          model: db.clientDetails,
+          as: 'clientDetails',
         }
       ]
     });

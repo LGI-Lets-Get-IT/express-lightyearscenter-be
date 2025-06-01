@@ -12,7 +12,7 @@ const userLogin = async (req, res) => {
       httpOnly: true,
       sameSite: "Strict",
       secure: true,
-      maxAge: 60 * 60 * 1000,
+      maxAge: 1 * 24 * 60 * 60 * 1000,
     });
 
     res.jsonSuccess(200, "Login successful", loginData);

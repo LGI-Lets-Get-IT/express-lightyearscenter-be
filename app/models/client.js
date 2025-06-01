@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'schoolId',
         as: 'school'
       });
+      this.hasOne(models.clientDetails, {
+        foreignKey: 'clientId',
+        as: 'clientDetails',
+      });
     }
   }
   Client.init(
