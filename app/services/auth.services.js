@@ -137,10 +137,16 @@ const getRefreshToken = async (currentToken) => {
         fullName: userData?.fullName,
         ...(userData?.role && { role: userData?.role?.name }),
         permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
-        // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     });
 
     return {
+        user: {
+            id: userData?.uuid ?? userData?.id,
+            email: userData?.email ?? userData?.guardianEmail,
+            fullName: userData?.fullName,
+            ...(userData?.role && { role: userData?.role?.name }),
+            permissions: userData?.roleId ? rolePermissionsMappingConfig[userData?.roleId] : rolePermissionsMappingConfig[roleConstant.CLIENT],
+        },
         accessToken: newAccessToken
     }
 }

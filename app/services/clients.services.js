@@ -122,12 +122,21 @@ const createClient = async (bodyData) => {
 
 const updateClientByUuid = async (uuid, bodyData) => {
   const tr = await db.sequelize.transaction();
+  const { intakeForm, ...bodyRest } = bodyData;
   try {
     const updatedClient = await clientRepository.updateByUuid(
       uuid,
-      bodyData,
+      bodyRest,
       tr
     );
+
+    const user = await clientRepository.findOneByUuid(uuid);
+
+    const updatedClientDetails = await clientDetailRepository.updateByClientId(user.id, {
+      ...intakeForm,
+      institutionsData: intakeForm.institutions,
+      guardiansData: intakeForm.guardians,
+    }, tr)
 
     if (!updatedClient[0]) {
       customError.statusCode = 500

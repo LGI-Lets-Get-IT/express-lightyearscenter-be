@@ -3,8 +3,17 @@ function ClientDetailRepository(db) {
     return db.clientDetails.create(bodyData, { transaction })
   };
 
+  const updateByClientId = (clientId, bodyData, transaction) => {
+    return db.clientDetails.update(bodyData, {
+      where: {
+        clientId,
+      },
+    }, { transaction })
+  }
+
   return {
     create,
+    updateByClientId,
   };
 }
 

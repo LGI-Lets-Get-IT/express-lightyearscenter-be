@@ -29,7 +29,7 @@ function SchoolRepository(db) {
 
   const findOneSchoolByIdWithClients = (id) => {
     return db.schools.findOne({
-      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      attributes: { exclude: ['createdAt' ] },
       include: [
         {
           model: db.clients,

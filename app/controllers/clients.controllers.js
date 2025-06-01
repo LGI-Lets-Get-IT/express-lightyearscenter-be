@@ -101,6 +101,7 @@ const updateByUuid = async (req, res) => {
       guardianEmail,
       guardianNationality,
       guardianRelationship,
+      intakeForm,
     } = req.body;
 
     const bodyData = {
@@ -114,6 +115,7 @@ const updateByUuid = async (req, res) => {
       guardianPhone,
       guardianNationality,
       guardianRelationship,
+      intakeForm,
     };
 
     const updatedClient = await clientService.updateClientByUuid(
