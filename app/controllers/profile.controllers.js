@@ -26,8 +26,7 @@ const getUserProfile = async (req, res) => {
 
 const editUserProfile = async (req, res) => {
     try {
-        // const updatedUser = await clientService
-        const updatedUser = true;
+        const updatedUser = await clientService.updateClientShareData(req.user.id, req.body)
         res.jsonSuccess(200, "Successfully updated user profile", updatedUser)
     } catch (error) {
         res.jsonFailed(error?.statusCode, error?.message, error)
