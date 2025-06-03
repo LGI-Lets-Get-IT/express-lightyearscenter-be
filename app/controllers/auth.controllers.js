@@ -59,10 +59,10 @@ const forgotPassword = async (req, res) => {
   }
 }
 
-const resetPassword = async (req, res) => {
+const changePassword = async (req, res) => {
   try {
-    const { email } = req.body;
-    const updatedUser = await authService.resetPassword(email);
+    const { oldPassword, newPassword } = req.body;
+    const updatedUser = await authService.changePassword(req.user, oldPassword, newPassword);
     
     res.jsonSuccess(200, "Successfully reset password", updatedUser)
   } catch (error) {
@@ -76,5 +76,5 @@ module.exports = {
   userLogout,
   userRefreshToken,
   forgotPassword,
-  resetPassword
+  changePassword,
 };
