@@ -32,6 +32,7 @@ function ClientRepository(db) {
         'guardianEmail',
         'guardianRelationship',
         [db.sequelize.col('school.name'), 'schoolName'],
+        'allowShareData',
         'updatedAt',
       ],
       include: [
