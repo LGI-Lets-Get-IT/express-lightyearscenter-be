@@ -42,6 +42,15 @@ function EmployeeRepository(db) {
     });
   }
 
+  const findPasswordById = (id) => {
+    return db.employees.findOne({
+      attributes: ['password'],
+      where: {
+        id,
+      },
+    })
+  }
+
   const findOneById = (id) => {
     return db.employees.findOne({
       attributes: [
@@ -124,6 +133,7 @@ function EmployeeRepository(db) {
     findOneById,
     findOneByEmail,
     findOneByRefreshToken,
+    findPasswordById,
     create,
     updateById,
     deleteByIds,

@@ -142,6 +142,32 @@ const updateEmployeeToken = async (employeeId, token) => {
   }
 };
 
+const changePassword = async (employeeId, oldPassword, newPassword) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const employee = await employeeRepository.findPasswordById(employeeId);
+    const checkCurrentPassword = await bcrypt.compare(oldPassword, employee.password);
+
+    if(!checkCurrentPassword) {
+        customError.statusCode = 400;
+        customError.message = "The old password you entered is incorrect";
+
+        throw customError;
+    }
+    
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const updatedEmployee = await employeeRepository.updateById(employeeId, {
+      password: hashedPassword
+    }, tr)
+
+    await tr.commit()
+    return updatedEmployee
+  } catch (error) {
+    await tr.rollback()
+    throw error
+  }
+}
+
 const deleteEmployeeByIds = async (employeeIds) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -168,5 +194,6 @@ module.exports = {
   updateEmployeeToken,
   updateEmployeeById,
   updateEmployeePasswordById,
+  changePassword,
   deleteEmployeeByIds,
 };
