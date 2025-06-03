@@ -182,9 +182,30 @@ const forgotPassword = async (email) => {
     }
 }
 
+const changePassword = async (currentUser, oldPassword, newPassword) => {
+    const tr = await db.sequelize.transaction();
+    try {
+        const isEmployee = currentUser?.role ? true : false;
+
+        let updatedUser;
+        if(isEmployee) {
+            updatedUser = await employeeService.changePassword(currentUser.id, oldPassword, newPassword);
+        } else {
+            updatedUser = await clientService.changePassword(currentUser.id, oldPassword, newPassword)
+        }
+
+        await tr.commit();
+        return updatedUser;
+    } catch (error) {
+        await tr.rollback();
+        throw error;
+    }
+}
+
 module.exports = {
     login,
     logout,
     getRefreshToken,
     forgotPassword,
+    changePassword,
 }

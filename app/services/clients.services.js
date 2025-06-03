@@ -170,6 +170,33 @@ const updateClientPasswordByUuid = async (uuid, password) => {
   }
 }
 
+const changePassword = async (uuid, oldPassword, newPassword) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const findUserId = await clientRepository.findOneByUuid(uuid);
+    const client = await clientRepository.findOneById(findUserId.id);
+    const checkCurrentPassword = await bcrypt.compare(oldPassword, client.password);
+
+    if(!checkCurrentPassword) {
+        customError.statusCode = 400;
+        customError.message = "The old password you entered is incorrect";
+
+        throw customError;
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const updatedClient = await clientRepository.updateByUuid(uuid, {
+      password: hashedPassword
+    }, tr)
+
+    await tr.commit()
+    return updatedClient
+  } catch (error) {
+    await tr.rollback()
+    throw error
+  }
+}
+
 const deleteClientByUuids = async (clientIds) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -200,5 +227,6 @@ module.exports = {
   createClient,
   updateClientByUuid,
   updateClientPasswordByUuid,
+  changePassword,
   deleteClientByUuids,
 };

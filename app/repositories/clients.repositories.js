@@ -36,6 +36,10 @@ function ClientRepository(db) {
       ],
       include: [
         {
+          model: db.clientDetails,
+          as: 'clientDetails',
+        },
+        {
           model: db.schools,
           as: 'school',
           attributes: []
