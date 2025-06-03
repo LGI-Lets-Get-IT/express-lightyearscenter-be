@@ -153,6 +153,19 @@ const updateClientByUuid = async (uuid, bodyData) => {
   }
 };
 
+const updateClientShareData = async (uuid, bodyData) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const updatedData = await clientRepository.updateByUuid(uuid, bodyData, tr);
+
+    await tr.commit();
+    return updatedData;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
+}
+
 const updateClientPasswordByUuid = async (uuid, password) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -227,6 +240,7 @@ module.exports = {
   createClient,
   updateClientByUuid,
   updateClientPasswordByUuid,
+  updateClientShareData,
   changePassword,
   deleteClientByUuids,
 };
