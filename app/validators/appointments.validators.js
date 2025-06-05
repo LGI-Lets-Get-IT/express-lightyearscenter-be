@@ -8,7 +8,6 @@ exports.appointmentSchema = {
     picType: Joi.string().required(),
     appointmentType: Joi.string().required(),
     appointmentDate: Joi.string().required(),
-    appointmentTime: Joi.string().required(),
     timeStart: Joi.date().greater("now").required(),
     timeEnd: Joi.date().greater(Joi.ref("timeStart")).required(),
   }),
