@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 const db = require("../models");
 const clientRepository = require("../repositories/clients.repositories")(db);
 const clientDetailRepository = require("../repositories/clientDetails.repositories")(db);
-const appointmentService = require("../services/appointments.services");
 const mailService = require("../services/mail.services");
 const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
 const { format } = require("date-fns/format");
@@ -77,11 +76,6 @@ const getClientByEmail = async (email) => {
   return client;
 }
 
-const getClientAppointments = async (uuid) => {
-  const clientAppointments = await appointmentService.getAppointmentsByClientUuid(uuid);
-
-  return clientAppointments;
-}
 const createClient = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   const { intakeForm, ...bodyRest } = bodyData;  
@@ -246,7 +240,6 @@ module.exports = {
   getClientByUuid,
   getClientByUuidWithAppointments,
   getClientByEmail,
-  getClientAppointments,
   createClient,
   updateClientByUuid,
   updateClientPasswordByUuid,

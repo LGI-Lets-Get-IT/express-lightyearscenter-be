@@ -8,7 +8,6 @@ const { clientSchema } = require('../validators/clients.validators')
 router.post("/", verifyPermission(permissions.CLIENTS.CREATE), validateInput(clientSchema.create), clientController.create);
 router.get("/", verifyPermission(permissions.CLIENTS.VIEW), clientController.getAll);
 router.get('/:clientUuid', verifyPermission(permissions.CLIENTS.VIEW), validateInput(clientSchema.view), clientController.getByUuid);
-router.get('/:clientUuid/appointments', verifyPermission(permissions.CLIENTS.VIEW), validateInput(clientSchema.view), clientController.getClientAppointmentsByUuid);
 router.put('/:clientUuid', verifyPermission(permissions.CLIENTS.UPDATE), validateInput(clientSchema.update), clientController.updateByUuid);
 router.put('/:clientUuid/change-password', verifyPermission(permissions.CLIENTS.UPDATE), validateInput(clientSchema.updatePassword), clientController.updatePasswordByUuid);
 router.delete('/', verifyPermission(permissions.CLIENTS.DELETE), validateInput(clientSchema.delete), clientController.deleteByUuids);

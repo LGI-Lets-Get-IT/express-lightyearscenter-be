@@ -1,12 +1,16 @@
-const { differenceInYears } = require('date-fns')
 const db = require("../models");
+const { format } = require('date-fns')
 const appointmentRepository =
   require("../repositories/appointments.repositories")(db);
 const employeeService = require('./employees.services');
+const clientService = require('./clients.services');
+const mailService = require('./mail.services');
 const { getAgeInYearsMonthDays } = require('../utils/getAge.utils');
 const customError = new Error();
+const roomOptions = require('../constants/rooms.constant')
 
 const getAllAppointments = async () => {
+  console.log('ROOMOPTIONS', roomOptions, roomOptions[1])
   const result = await appointmentRepository.findAll();
 
   const appointments = await Promise.all(result.map(async (appointment) => {
@@ -59,9 +63,7 @@ const getAppointmentsByClientUuid = async (clientUuid) => {
 const createAppointment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
-    console.log('BODYDATAA', bodyData)
     const checkRoomAvailability = await appointmentRepository.checkRoomAvailable(bodyData.roomId, bodyData.appointmentDate, bodyData.bookingTimeStart, bodyData.bookingTimeEnd);
-    console.log('checkRoomAvailability', checkRoomAvailability)
     if(!checkRoomAvailability) {
       customError.statusCode = 400;
       customError.message = "Room is already booked at that time";
@@ -73,6 +75,36 @@ const createAppointment = async (bodyData) => {
       customError.message = "Failed to create appointment data";
       throw customError;
     }
+
+    console.log('CREATEDAPPOINTMENT', roomOptions, createdAppointment.roomId, roomOptions[createdAppointment.roomId])
+    const employeeData = await employeeService.getEmployeeById(bodyData.picId);
+    const clientData = await clientService.getClientById(bodyData.clientId)
+    const sendEmailToClient = await mailService.sendMail(clientData.guardianEmail, `New Appointment Confirmation: ${createdAppointment.title} on ${format(createdAppointment.appointmentDate, 'dd MMM yyyy')}`, 'APPOINTMENT_CREATED', {
+      guardianName: clientData.guardianName,
+      clientName: clientData.fullName,
+      picName: employeeData.fullName,
+      picType: createdAppointment.picType,
+      appointmentTitle: createdAppointment.title,
+      appointmentType: createdAppointment.appointmentType,
+      appointmentDate: format(createdAppointment.appointmentDate, 'dd MMM yyyy'),
+      startTime: format(createdAppointment.bookingTimeStart, 'HH:mm'),
+      endTime: format(createdAppointment.bookingTimeEnd, 'HH:mm'),
+      roomName: roomOptions[createdAppointment.roomId],
+      link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+    });
+
+    const sendEmailToPIC = await mailService.sendMail(employeeData.email, `New Appointment Assigned: ${createdAppointment.title} with ${clientData.fullName} on ${format(createdAppointment.appointmentDate, 'dd MMM yyyy')}`, 'APPOINTMENT_PIC_ASSIGNED', {
+      fullName: employeeData.fullName,
+      clientName: clientData.fullName,
+      picType: createdAppointment.picType,
+      appointmentTitle: createdAppointment.title,
+      appointmentType: createdAppointment.appointmentType,
+      appointmentDate: format(createdAppointment.appointmentDate, 'dd MMM yyyy'),
+      startTime: format(createdAppointment.bookingTimeStart, 'HH:mm'),
+      endTime: format(createdAppointment.bookingTimeEnd, 'HH:mm'),
+      roomName: roomOptions[createdAppointment.roomId],
+      link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+    });
 
     await tr.commit();
 
