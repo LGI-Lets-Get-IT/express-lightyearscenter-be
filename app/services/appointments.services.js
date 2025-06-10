@@ -59,6 +59,14 @@ const getAppointmentsByClientUuid = async (clientUuid) => {
 const createAppointment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
+    console.log('BODYDATAA', bodyData)
+    const checkRoomAvailability = await appointmentRepository.checkRoomAvailable(bodyData.roomId, bodyData.appointmentDate, bodyData.bookingTimeStart, bodyData.bookingTimeEnd);
+    console.log('checkRoomAvailability', checkRoomAvailability)
+    if(!checkRoomAvailability) {
+      customError.statusCode = 400;
+      customError.message = "Room is already booked at that time";
+      throw customError
+    }
     const createdAppointment = await appointmentRepository.create(bodyData, tr);
 
     if (!createdAppointment) {

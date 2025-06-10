@@ -53,6 +53,7 @@ function AppointmentRepository(db) {
           ),
           "appointmentTime",
         ],
+        'isConfirmed',
       ],
       include: [
         {
@@ -78,6 +79,7 @@ function AppointmentRepository(db) {
         'picId',
         'picType',
         "clientId",
+        'roomId',
         [
           db.sequelize.fn(
             "TO_CHAR",
@@ -113,6 +115,7 @@ function AppointmentRepository(db) {
             END 
           `), 'status'//
         ],
+        'isConfirmed',
         "createdAt",
         'updatedAt',
       ],
@@ -179,11 +182,31 @@ function AppointmentRepository(db) {
     );
   };
 
+  const checkRoomAvailable = async (roomId, appointmentDate, bookingTimeStart, bookingTimeEnd) => {
+    console.log('ROOMID', roomId, appointmentDate,bookingTimeStart, bookingTimeEnd)
+    const isAvailable = await db.appointments.findOne({
+      where: {
+        roomId,
+        appointmentDate,
+        bookingTimeStart: {
+          [db.Sequelize.Op.lt]: bookingTimeEnd,
+        },
+        bookingTimeEnd: {
+          [db.Sequelize.Op.gt]: bookingTimeStart,
+        },
+      },
+    })
+    console.log('ISAVAILABLE', isAvailable)
+
+    return !isAvailable;
+  }
+
   return {
     findAll,
     findOneById,
     findOneByClientUuid,
     create,
+    checkRoomAvailable,
     updateById,
     deleteByIds,
   };

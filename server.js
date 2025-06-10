@@ -15,13 +15,13 @@ require("dotenv").config();
 
 app.set("trust proxy", 1);
 app.use(helmet());
-// app.use(
-//   rateLimit({
-//     windowMs: 15 * 60 * 1000, // 15 minutes
-//     max: 50, // limit each IP to 50 requests per windowMs
-//     message: "Too many requests from this IP, please try again later.",
-//   })
-// );
+app.use(
+  rateLimit({
+    windowMs: 5 * 60 * 1000, // 15 minutes
+    max: 50, // limit each IP to 50 requests per windowMs
+    message: "Too many requests, please try again later.",
+  })
+);
 app.use(morgan("dev"));
 app.use(messageHandler);
 app.use(express.static("public"));
@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-if (process.env.NODE_ENV === "DEVELOPMENT") {
+if (process.env.NODE_ENV === "development") {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 }
 

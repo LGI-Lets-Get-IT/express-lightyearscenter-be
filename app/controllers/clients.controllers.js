@@ -1,5 +1,4 @@
 const clientService = require("../services/clients.services");
-const { differenceInYears } = require("date-fns");
 const generateRandomPassword = require("../utils/generatePassword.utils");
 
 const getAll = async (req, res) => {
@@ -59,10 +58,10 @@ const create = async (req, res) => {
       guardianEmail,
       guardianNationality,
       guardianRelationship,
+      password,
       intakeForm,
     } = req.body;
 
-    const generatedPassword = await generateRandomPassword();
     const bodyData = {
       schoolId,
       fullName,
@@ -76,7 +75,7 @@ const create = async (req, res) => {
       guardianPhone,
       guardianNationality,
       guardianRelationship,
-      password: generatedPassword,
+      password,
       intakeForm,
     };
     const createdClient = await clientService.createClient(bodyData);
