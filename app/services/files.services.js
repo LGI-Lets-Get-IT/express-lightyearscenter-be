@@ -117,19 +117,34 @@ const generateDailyProgressReport = async (sessionId) => {
       "activities",
       "short_term_goals",
       "progress",
-      [
-        db.sequelize.fn(
-          "TO_CHAR",
-          db.sequelize.col("TreatmentSession.created_at"),
-          "DD Mon YYYY"
-        ),
-        "createdAt",
-      ],
+      // [
+      //   db.sequelize.fn(
+      //     "TO_CHAR",
+      //     db.sequelize.col("TreatmentSession.created_at"),
+      //     "DD Mon YYYY"
+      //   ),
+      //   "createdAt",
+      // ],
     ],
     include: [
       {
         model: db.clients,
         as: "client",
+        attributes: ['fullName', 'dateOfBirth'],
+      },
+      {
+        model: db.appointments,
+        as: 'appointment',
+        attributes: [
+          [
+            db.sequelize.fn(
+              "TO_CHAR",
+              db.sequelize.col("appointment_date"),
+              "DD Mon YYYY"
+            ),
+            "appointmentDate",
+          ],
+        ]
       },
       {
         model: db.treatmentPrograms,
@@ -138,6 +153,7 @@ const generateDailyProgressReport = async (sessionId) => {
           {
             model: db.employees,
             as: "therapist",
+            attributes: ['fullName'],
           },
           {
             model: db.treatmentTypes,
@@ -148,6 +164,7 @@ const generateDailyProgressReport = async (sessionId) => {
       },
     ],
   });
+  console.log('progressData', progressData.appointment)
   const generatedFile = await generatePdf(
     "DAILY_PROGRESS_REPORT",
     progressData
