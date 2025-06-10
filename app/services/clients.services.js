@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 const db = require("../models");
 const clientRepository = require("../repositories/clients.repositories")(db);
 const clientDetailRepository = require("../repositories/clientDetails.repositories")(db);
-const appointmentService = require("../services/appointments.services");
 const mailService = require("../services/mail.services");
 const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
 const { format } = require("date-fns/format");
@@ -77,38 +76,35 @@ const getClientByEmail = async (email) => {
   return client;
 }
 
-const getClientAppointments = async (uuid) => {
-  const clientAppointments = await appointmentService.getAppointmentsByClientUuid(uuid);
-
-  return clientAppointments;
-}
 const createClient = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   const { intakeForm, ...bodyRest } = bodyData;  
-  const { password, hashedPassword } = bodyData.password
   try {
+    const hashedPassword = await bcrypt.hash(bodyData.password, 10);
     const body = {
       ...bodyRest,
       password: hashedPassword,
     }
+    console.log('BODYY', body)
     const createdClient = await clientRepository.create(body, tr);
 
     if (!createdClient) {
+      customError.statusCode = 500;
       customError.message = "Failed to create school data";
       throw customError;
     }
 
-    const createdClientDetails = await clientDetailRepository.create({
-      ...intakeForm,
-      clientId: createdClient.id,
-      institutionsData: intakeForm.institutions,
-      guardiansData: intakeForm.guardians
-    }, tr)
+    // const createdClientDetails = await clientDetailRepository.create({
+    //   ...intakeForm,
+    //   clientId: createdClient.id,
+    //   institutionsData: intakeForm.institutions,
+    //   guardiansData: intakeForm.guardians
+    // }, tr)
 
-    await mailService.sendMail(bodyData.guardianEmail, 'Client account created', 'ACCOUNT_CREATED', {
+    await mailService.sendMail(bodyData.guardianEmail, 'Client Account Created', 'ACCOUNT_CREATED', {
       fullName: bodyData.guardianName,
       email: bodyData.guardianEmail,
-      password: password,
+      password: bodyData.password,
     })
 
     await tr.commit();
@@ -174,6 +170,14 @@ const updateClientPasswordByUuid = async (uuid, password) => {
         password: hashedPassword
       }, tr)
 
+    const user = await clientRepository.findOneByUuid(uuid);
+    const sentEmail = await mailService.sendMail(user.guardianEmail, "Client Password Changed", 'FORGOT_PASSWORD', {
+      guardianName: user.guardianName,
+      childName: user.fullName,
+      email: user.guardianEmail,
+      password,
+    })
+
     await tr.commit()
 
     return updatedClient
@@ -236,7 +240,6 @@ module.exports = {
   getClientByUuid,
   getClientByUuidWithAppointments,
   getClientByEmail,
-  getClientAppointments,
   createClient,
   updateClientByUuid,
   updateClientPasswordByUuid,

@@ -5,7 +5,7 @@ const { generatePdf } = require("../utils/generatePdf.utils");
 const { treatmentSessions, employees, clients } = require("../models");
 // const clientService = require("./clients.services");
 
-const getAllFiles = async (appointmentId, uuid, clientName) => {
+const getAllFiles = async (uuid, clientName) => {
   const authClient = new google.auth.GoogleAuth({
     keyFile: "./the-lightyears-cdc-0cb82813d8e5.json",
     scopes: ["https://www.googleapis.com/auth/drive"],
@@ -15,7 +15,7 @@ const getAllFiles = async (appointmentId, uuid, clientName) => {
     version: "v3",
     auth: authClient,
   });
-  const folderName = `Appointment_${appointmentId}/${clientName}_${uuid}`;
+  const folderName = `${clientName}_${uuid}`;
 
   const folderId = await driveApi.files.list({
     q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}'`,
@@ -29,6 +29,7 @@ const getAllFiles = async (appointmentId, uuid, clientName) => {
     q: `'${folderId.data.files[0].id}' in parents`,
     fields: "files(id, name, mimeType, webViewLink, size, createdTime, owners)",
   });
+  console.log('FILESSS', filesList.data)
   return filesList.data.files.map((file) => ({
     id: file.id,
     name: file.name,
@@ -40,7 +41,7 @@ const getAllFiles = async (appointmentId, uuid, clientName) => {
   }));
 };
 
-const uploadFile = async (appointmentId, uuid, clientName, fileData) => {
+const uploadFile = async (uuid, clientName, fileData) => {
   const tr = await db.sequelize.transaction();
   try {
     const authClient = new google.auth.GoogleAuth({
@@ -53,7 +54,7 @@ const uploadFile = async (appointmentId, uuid, clientName, fileData) => {
       auth: authClient,
     });
 
-    const folderName = `Appointment_${appointmentId}/${clientName}_${uuid}`;
+    const folderName = `${clientName}_${uuid}`;
     const existingFolder = await driveApi.files.list({
       q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
       fields: "files(id, name)",

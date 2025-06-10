@@ -27,6 +27,10 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      // roomId: {
+      //   type: Sequelize.INTEGER,
+      //   field: 'room_id',
+      // },
       title: {
         type: Sequelize.STRING(64),
       },
@@ -34,6 +38,10 @@ module.exports = {
         type: Sequelize.STRING(32),
         field: 'appointment_type'
       },
+      // appointmentDate: {
+      //   type: Sequelize.DATE,
+      //   field: 'appointment_date',
+      // },
       bookingTimeStart: {
         type: Sequelize.DATE,
         field: "booking_time_start",

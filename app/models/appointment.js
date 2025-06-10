@@ -46,10 +46,18 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      roomId: {
+        type: DataTypes.INTEGER,
+        field: 'room_id',
+      },
       title: DataTypes.STRING(64),
       appointmentType: {
         type: DataTypes.STRING(32),
         field: "appointment_type",
+      },
+      appointmentDate: {
+        type: DataTypes.DATE,
+        field: 'appointment_date',
       },
       bookingTimeStart: {
         type: DataTypes.DATE,
@@ -58,6 +66,11 @@ module.exports = (sequelize, DataTypes) => {
       bookingTimeEnd: {
         type: DataTypes.DATE,
         field: "booking_time_end",
+      },
+      isConfirmed: {
+        type: DataTypes.BOOLEAN,
+        field: 'is_confirmed',
+        defaultValue: false,
       },
     },
     {
