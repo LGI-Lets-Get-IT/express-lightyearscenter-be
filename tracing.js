@@ -20,7 +20,9 @@ const sdk = new NodeSDK({
   }),
   instrumentations: [getNodeAutoInstrumentations()]
 })
-sdk.start();
+sdk.start()
+  .then(() => console.log('OpenTelemetry SDK started'))
+  .catch(err => console.error('Error starting OpenTelemetry SDK', err));
 
 process.on('SIGTERM', () => {
   sdk.shutdown()

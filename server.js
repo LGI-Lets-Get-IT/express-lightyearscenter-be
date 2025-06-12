@@ -38,6 +38,14 @@ app.use(cookieParser());
 if (process.env.NODE_ENV === "development") {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 }
+
+const span = tracer.startSpan('manual-span');
+span.setAttribute('debug', 'testing');
+setTimeout(() => {
+  span.end();
+  console.log('Span finished');
+}, 500);
+
 app.get("/api/health-check", (req, res) => {
   const span = tracer.startSpan('say-hello');
   span.setAttribute('TEST', 'Good bro')
