@@ -7,13 +7,24 @@ const { PeriodicExportingMetricReader, ConsoleMetricExporter } = require("@opent
 const { NodeSDK } = require("@opentelemetry/sdk-node");
 const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } = require("@opentelemetry/semantic-conventions");
 
+// Define the metric exporter and reader
+const metricExporter = new OTLPMetricExporter({
+  url: 'http://server.itslgit.com:4318/v1/metrics',
+});
+
+const metricReader = new PeriodicExportingMetricReader({
+  exporter: metricExporter,
+  exportIntervalMillis: 1000, // Export every second
+});
+
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: 'lightyears-cdc-backend',
     [ATTR_SERVICE_VERSION]: '1.0',
   }),
     traceExporter: new OTLPTraceExporter({ url: 'http://server.itslgit.com:4318/v1/traces' }),
-  metricExporter: new OTLPMetricExporter({ url: 'http://server.itslgit.com:4318/v1/metrics' }),
+  // metricExporter: new OTLPMetricExporter({ url: 'http://server.itslgit.com:4318/v1/metrics' }),
+  metricReader: metricReader,
   logExporter: new OTLPLogExporter({ url: 'http://server.itslgit.com:4318/v1/logs' }),
   instrumentations: [getNodeAutoInstrumentations()]
 })
