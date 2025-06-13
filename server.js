@@ -1,4 +1,4 @@
-require('./tracing')
+require('./otel')
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -29,7 +29,7 @@ app.use(morgan("dev"));
 app.use(messageHandler);
 app.use(express.static("public"));
 app.use(cors(corsOptions));
-app.use(credentials);
+// app.use(credentials);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

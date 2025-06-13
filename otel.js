@@ -1,26 +1,23 @@
 const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
+const { OTLPLogExporter } = require("@opentelemetry/exporter-logs-otlp-http");
+const { OTLPMetricExporter } = require("@opentelemetry/exporter-metrics-otlp-http");
 const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
 const { resourceFromAttributes } = require("@opentelemetry/resources");
 const { PeriodicExportingMetricReader, ConsoleMetricExporter } = require("@opentelemetry/sdk-metrics");
 const { NodeSDK } = require("@opentelemetry/sdk-node");
 const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } = require("@opentelemetry/semantic-conventions");
 
-const traceExporter = new OTLPTraceExporter({
-  url:'http://server.itslgit.com:4318/v1/traces',
-})
-
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: 'lightyears-cdc-backend',
     [ATTR_SERVICE_VERSION]: '1.0',
   }),
-  traceExporter,
-  metricReader: new PeriodicExportingMetricReader({
-    exporter: new ConsoleMetricExporter()
-  }),
+    traceExporter: new OTLPTraceExporter({ url: 'http://server.itslgit.com:4318/v1/traces' }),
+  metricExporter: new OTLPMetricExporter({ url: 'http://server.itslgit.com:4318/v1/metrics' }),
+  logExporter: new OTLPLogExporter({ url: 'http://server.itslgit.com:4318/v1/logs' }),
   instrumentations: [getNodeAutoInstrumentations()]
 })
-sdk.start()
+sdk.start();
 
 process.on('SIGTERM', () => {
   sdk.shutdown()
