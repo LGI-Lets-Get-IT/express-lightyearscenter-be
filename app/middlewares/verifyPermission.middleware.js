@@ -5,14 +5,13 @@ const verifyPermission = (...requiredPermissions) => {
     try {
       if (!req.permissions) {
         customError.statusCode = 403;
-        customError.message = "No permissions assigned to user"
+        customError.message = "No permissions assigned to user";
         throw customError;
       }
 
-      console.log('REQ.PERMISSIONS', req.permissions, requiredPermissions);
-
-      const hasPermission = req.permissions.some(perm => requiredPermissions.includes(perm));
-      console.log('HAS PERMISSION', hasPermission);
+      const hasPermission = req.permissions.some((perm) =>
+        requiredPermissions.includes(perm)
+      );
       if (!hasPermission) {
         customError.statusCode = 403;
         customError.message = "You are not authorized to perform this action";
