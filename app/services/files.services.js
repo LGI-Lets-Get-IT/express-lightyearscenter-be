@@ -2,8 +2,10 @@ const db = require("../models");
 const { Readable } = require("stream");
 const { google } = require("googleapis");
 const { generatePdf } = require("../utils/generatePdf.utils");
+const mailService = require("../services/mail.services");
 const { treatmentSessions, employees, clients } = require("../models");
-// const clientService = require("./clients.services");
+const { format } = require("date-fns/format");
+const clientService = require("./clients.services");
 
 const getAllFiles = async (uuid, clientName) => {
   const authClient = new google.auth.GoogleAuth({
@@ -29,7 +31,6 @@ const getAllFiles = async (uuid, clientName) => {
     q: `'${folderId.data.files[0].id}' in parents`,
     fields: "files(id, name, mimeType, webViewLink, size, createdTime, owners)",
   });
-  console.log('FILESSS', filesList.data)
   return filesList.data.files.map((file) => ({
     id: file.id,
     name: file.name,
@@ -41,7 +42,7 @@ const getAllFiles = async (uuid, clientName) => {
   }));
 };
 
-const uploadFile = async (uuid, clientName, fileData) => {
+const uploadFile = async (currentUser, uuid, clientName, fileData) => {
   const tr = await db.sequelize.transaction();
   try {
     const authClient = new google.auth.GoogleAuth({
@@ -91,6 +92,20 @@ const uploadFile = async (uuid, clientName, fileData) => {
       },
     });
 
+    const client = await clientService.getClientByUuid(uuid);
+    const emailToShare = [currentUser.email, client.guardianEmail];
+    for (const email of emailToShare) {
+      const addPermission = await driveApi.permissions.create({
+        sendNotificationEmail: true,
+        fileId: folderId,
+        requestBody: {
+          emailAddress: email,
+          type: "user",
+          role: "reader",
+        },
+      });
+    }
+
     await tr.commit();
 
     return {
@@ -130,11 +145,11 @@ const generateDailyProgressReport = async (sessionId) => {
       {
         model: db.clients,
         as: "client",
-        attributes: ['fullName', 'dateOfBirth'],
+        attributes: ["fullName", "dateOfBirth"],
       },
       {
         model: db.appointments,
-        as: 'appointment',
+        as: "appointment",
         attributes: [
           [
             db.sequelize.fn(
@@ -144,7 +159,7 @@ const generateDailyProgressReport = async (sessionId) => {
             ),
             "appointmentDate",
           ],
-        ]
+        ],
       },
       {
         model: db.treatmentPrograms,
@@ -153,7 +168,7 @@ const generateDailyProgressReport = async (sessionId) => {
           {
             model: db.employees,
             as: "therapist",
-            attributes: ['fullName'],
+            attributes: ["fullName"],
           },
           {
             model: db.treatmentTypes,
@@ -164,7 +179,6 @@ const generateDailyProgressReport = async (sessionId) => {
       },
     ],
   });
-  console.log('progressData', progressData.appointment)
   const generatedFile = await generatePdf(
     "DAILY_PROGRESS_REPORT",
     progressData
@@ -220,6 +234,7 @@ const generateTreatmentPlanDoc = async (planId) => {
           "guardianName",
           "guardianRelationship",
           "guardianPhone",
+          "guardianEmail",
         ],
         include: [
           {
@@ -279,12 +294,34 @@ const generateTreatmentPlanDoc = async (planId) => {
       },
     ],
   });
+
   const generatedFile = await generatePdf(
     "TREATMENT_PLAN_REPORT",
     planData?.get({ plain: true })
   );
+  const attachment = [
+    {
+      filename: "TREATMENT_PLAN_REPORT.pdf",
+      content: Buffer.from(generatedFile),
+    },
+  ];
+  const sendMail = await mailService.sendMail(
+    "mrizalrn@gmail.com",
+    "Treatment Plan Report",
+    "PARENT_TREATMENT_PLAN_REPORT",
+    {
+      parentName: planData?.client?.guardianName,
+      childName: planData?.client?.fullName,
+      childDob: format(planData?.client?.dateOfBirth, "dd MMM yyyy"),
+      consultDate: format(planData?.consultDate, "dd MMM yyyy"),
+      psychologistName: planData?.psychologist?.fullName,
+    },
+    attachment
+  );
   return generatedFile;
 };
+
+// const sendFileToEmail = async
 
 module.exports = {
   getAllFiles,
