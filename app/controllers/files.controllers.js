@@ -2,10 +2,7 @@ const fileService = require("../services/files.services");
 const getAll = async (req, res) => {
   try {
     const { uuid, clientName } = req.query;
-    const files = await fileService.getAllFiles(
-      uuid,
-      clientName
-    );
+    const files = await fileService.getAllFiles(uuid, clientName);
 
     res.jsonSuccess(200, "Successfully fetched all files data", files);
   } catch (error) {
@@ -15,8 +12,13 @@ const getAll = async (req, res) => {
 
 const uploadFile = async (req, res) => {
   try {
-    const { uuid, clientName } = req.body
-    const uploadedFile = await fileService.uploadFile(uuid, clientName, req.file)
+    const { uuid, clientName } = req.body;
+    const uploadedFile = await fileService.uploadFile(
+      req.user,
+      uuid,
+      clientName,
+      req.file
+    );
     res.jsonSuccess(200, "Successfully uploaded file", uploadedFile);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
@@ -25,7 +27,7 @@ const uploadFile = async (req, res) => {
 
 const generateDailyProgressReport = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     const generatedDoc = await fileService.generateDailyProgressReport(id);
     res.set({
       "Content-Type": "application/pdf",
