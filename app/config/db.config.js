@@ -40,7 +40,7 @@ module.exports = {
     define: { aliases: false },
     pool: {
       min: 0, // min connection
-      max: 1, // max connection
+      max: 3, // max connection
       acquire: 30000,
       idle: 10000,
     },
