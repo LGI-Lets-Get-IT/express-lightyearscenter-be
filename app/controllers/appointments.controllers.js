@@ -94,7 +94,7 @@ const create = async (req, res) => {
       title,
       clientId,
       picId,
-      picType,
+      roomId,
       timeStart,
       timeEnd,
       appointmentDate,
@@ -105,7 +105,8 @@ const create = async (req, res) => {
       title,
       clientId,
       picId,
-      picType,
+      roomId,
+      picType: appointmentType.toLowerCase() === 'treatment' ? 'Therapist' : 'Psychologist',
       appointmentType,
       appointmentDate,
       bookingTimeStart: timeStart,
@@ -130,18 +131,21 @@ const updateById = async (req, res) => {
   try {
     const { appointmentId } = req.params;
     const {
-      psychologistId,
       title,
+      picId,
+      roomId,
       appointmentType,
       appointmentDate,
       timeStart,
       timeEnd,
     } = req.body;
     const bodyData = {
-      psychologistId,
       title,
+      picId,
+      roomId,
       appointmentType,
       appointmentDate,
+      picType: appointmentType.toLowerCase() === 'treatment' ? 'Therapist' : 'Psychologist',
       bookingTimeStart: timeStart,
       bookingTimeEnd: timeEnd,
     }
@@ -150,6 +154,22 @@ const updateById = async (req, res) => {
       bodyData
     );
     res.jsonSuccess(200, "Successfully updated appointment data", updatedAppointment);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+};
+
+const confirmPicAttendanceById = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const bodyData = {
+      isConfirmed: true,
+    }
+    const updatedAppointment = await appointmentService.updateAppointmentById(
+      appointmentId,
+      bodyData
+    );
+    res.jsonSuccess(200, "Successfully confirmed attandence", updatedAppointment);
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
@@ -175,5 +195,6 @@ module.exports = {
   getForTreatmentProgress,
   getForAssessments,
   updateById,
+  confirmPicAttendanceById,
   deleteIds,
 };

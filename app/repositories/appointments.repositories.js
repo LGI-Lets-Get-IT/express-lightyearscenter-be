@@ -17,25 +17,27 @@ function AppointmentRepository(db) {
         'appointmentType',
         'picId',
         'picType',
+        'appointmentDate',
         [db.sequelize.col("client.uuid"), "clientId"],
         [db.sequelize.col("client.full_name"), "clientName"],
         [db.sequelize.literal(`
             CASE
-              WHEN now() < booking_time_start THEN 'Upcoming'
-              WHEN now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
-              WHEN now() > booking_time_end THEN 'Done'
+              WHEN appointment_date > CURRENT_DATE THEN 'Upcoming'
+              WHEN appointment_date = CURRENT_DATE AND now() < booking_time_start THEN 'Upcoming'
+              WHEN appointment_date = CURRENT_DATE AND now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
+              WHEN appointment_date < CURRENT_DATE OR (appointment_date = CURRENT_DATE AND now() > booking_time_end) THEN 'Done'
               ELSE 'Unknown'
             END 
           `), 'status'//
         ],
-        [
-          db.sequelize.fn(
-            "TO_CHAR",
-            db.sequelize.col("booking_time_start"),
-            "DD Mon YYYY"
-          ),
-          "appointmentDate",
-        ],
+        // [
+        //   db.sequelize.fn(
+        //     "TO_CHAR",
+        //     db.sequelize.col("booking_time_start"),
+        //     "DD Mon YYYY"
+        //   ),
+        //   "appointmentDate",
+        // ],
         [
           db.sequelize.fn(
             "CONCAT",
@@ -53,6 +55,7 @@ function AppointmentRepository(db) {
           ),
           "appointmentTime",
         ],
+        'isConfirmed',
       ],
       include: [
         {
@@ -78,14 +81,16 @@ function AppointmentRepository(db) {
         'picId',
         'picType',
         "clientId",
-        [
-          db.sequelize.fn(
-            "TO_CHAR",
-            db.sequelize.col("booking_time_start"),
-            "YYYY-MM-DD"
-          ),
-          "appointmentDate",
-        ],
+        'roomId',
+        'appointmentDate',
+        // [
+        //   db.sequelize.fn(
+        //     "TO_CHAR",
+        //     db.sequelize.col("booking_time_start"),
+        //     "YYYY-MM-DD"
+        //   ),
+        //   "appointmentDate",
+        // ],
         [
           db.sequelize.fn(
             "CONCAT",
@@ -106,13 +111,15 @@ function AppointmentRepository(db) {
         [
           db.sequelize.literal(`
             CASE
-              WHEN now() < booking_time_start THEN 'Upcoming'
-              WHEN now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
-              WHEN now() > booking_time_end THEN 'Done'
+              WHEN appointment_date > CURRENT_DATE THEN 'Upcoming'
+              WHEN appointment_date = CURRENT_DATE AND now() < booking_time_start THEN 'Upcoming'
+              WHEN appointment_date = CURRENT_DATE AND now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
+              WHEN appointment_date < CURRENT_DATE OR (appointment_date = CURRENT_DATE AND now() > booking_time_end) THEN 'Done'
               ELSE 'Unknown'
             END 
           `), 'status'//
         ],
+        'isConfirmed',
         "createdAt",
         'updatedAt',
       ],
@@ -179,11 +186,31 @@ function AppointmentRepository(db) {
     );
   };
 
+  const checkRoomAvailable = async (roomId, appointmentDate, bookingTimeStart, bookingTimeEnd) => {
+    console.log('ROOMID', roomId, appointmentDate,bookingTimeStart, bookingTimeEnd)
+    const isAvailable = await db.appointments.findOne({
+      where: {
+        roomId,
+        appointmentDate,
+        bookingTimeStart: {
+          [db.Sequelize.Op.lt]: bookingTimeEnd,
+        },
+        bookingTimeEnd: {
+          [db.Sequelize.Op.gt]: bookingTimeStart,
+        },
+      },
+    })
+    console.log('ISAVAILABLE', isAvailable)
+
+    return !isAvailable;
+  }
+
   return {
     findAll,
     findOneById,
     findOneByClientUuid,
     create,
+    checkRoomAvailable,
     updateById,
     deleteByIds,
   };
