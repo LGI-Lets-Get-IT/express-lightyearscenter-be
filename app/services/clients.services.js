@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const db = require("../models");
 const clientRepository = require("../repositories/clients.repositories")(db);
-const clientDetailRepository = require("../repositories/clientDetails.repositories")(db);
+const clientDetailRepository =
+  require("../repositories/clientDetails.repositories")(db);
 const mailService = require("../services/mail.services");
 const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
 const { format } = require("date-fns/format");
@@ -18,7 +19,7 @@ const getUserProfile = async (uuid) => {
   }
 
   return userProfile;
-}
+};
 
 const getAllClients = async () => {
   const clients = await clientRepository.findAll();
@@ -65,7 +66,7 @@ const getClientByUuidWithAppointments = async (uuid) => {
   const client = {
     ...result.dataValues,
     age: getAgeInYearsMonthDays(result.dateOfBirth),
-    dateOfBirth: format(result.dateOfBirth, 'dd MMM yyyy')
+    dateOfBirth: format(result.dateOfBirth, "dd MMM yyyy"),
   };
   return client;
 };
@@ -74,18 +75,18 @@ const getClientByEmail = async (email) => {
   const client = await clientRepository.findOneByEmail(email);
 
   return client;
-}
+};
 
 const createClient = async (bodyData) => {
   const tr = await db.sequelize.transaction();
-  const { intakeForm, ...bodyRest } = bodyData;  
+  const { intakeForm, ...bodyRest } = bodyData;
   try {
     const hashedPassword = await bcrypt.hash(bodyData.password, 10);
     const body = {
       ...bodyRest,
       password: hashedPassword,
-    }
-    console.log('BODYY', body)
+    };
+    console.log("BODYY", body);
     const createdClient = await clientRepository.create(body, tr);
 
     if (!createdClient) {
@@ -101,11 +102,16 @@ const createClient = async (bodyData) => {
     //   guardiansData: intakeForm.guardians
     // }, tr)
 
-    await mailService.sendMail(bodyData.guardianEmail, 'Client Account Created', 'ACCOUNT_CREATED', {
-      fullName: bodyData.guardianName,
-      email: bodyData.guardianEmail,
-      password: bodyData.password,
-    })
+    await mailService.sendMail(
+      bodyData.guardianEmail,
+      "The Light Years CDC: Client Account Created",
+      "ACCOUNT_CREATED",
+      {
+        fullName: bodyData.guardianName,
+        email: bodyData.guardianEmail,
+        password: bodyData.password,
+      }
+    );
 
     await tr.commit();
 
@@ -128,14 +134,18 @@ const updateClientByUuid = async (uuid, bodyData) => {
 
     const user = await clientRepository.findOneByUuid(uuid);
 
-    const updatedClientDetails = await clientDetailRepository.updateByClientId(user.id, {
-      ...intakeForm,
-      institutionsData: intakeForm.institutions,
-      guardiansData: intakeForm.guardians,
-    }, tr)
+    const updatedClientDetails = await clientDetailRepository.updateByClientId(
+      user.id,
+      {
+        ...intakeForm,
+        institutionsData: intakeForm.institutions,
+        guardiansData: intakeForm.guardians,
+      },
+      tr
+    );
 
     if (!updatedClient[0]) {
-      customError.statusCode = 500
+      customError.statusCode = 500;
       customError.message = "Failed to update client data";
       throw customError;
     }
@@ -160,59 +170,75 @@ const updateClientShareData = async (uuid, bodyData) => {
     await tr.rollback();
     throw error;
   }
-}
+};
 
 const updateClientPasswordByUuid = async (uuid, password) => {
   const tr = await db.sequelize.transaction();
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const updatedClient = await clientRepository.updateByUuid(uuid, {
-        password: hashedPassword
-      }, tr)
+    const updatedClient = await clientRepository.updateByUuid(
+      uuid,
+      {
+        password: hashedPassword,
+      },
+      tr
+    );
 
     const user = await clientRepository.findOneByUuid(uuid);
-    const sentEmail = await mailService.sendMail(user.guardianEmail, "Client Password Changed", 'FORGOT_PASSWORD', {
-      guardianName: user.guardianName,
-      childName: user.fullName,
-      email: user.guardianEmail,
-      password,
-    })
+    const sentEmail = await mailService.sendMail(
+      user.guardianEmail,
+      "Client Password Changed",
+      "FORGOT_PASSWORD",
+      {
+        guardianName: user.guardianName,
+        childName: user.fullName,
+        email: user.guardianEmail,
+        password,
+      }
+    );
 
-    await tr.commit()
+    await tr.commit();
 
-    return updatedClient
+    return updatedClient;
   } catch (error) {
-    await tr.rollback()
-    throw error
+    await tr.rollback();
+    throw error;
   }
-}
+};
 
 const changePassword = async (uuid, oldPassword, newPassword) => {
   const tr = await db.sequelize.transaction();
   try {
     const findUserId = await clientRepository.findOneByUuid(uuid);
     const client = await clientRepository.findOneById(findUserId.id);
-    const checkCurrentPassword = await bcrypt.compare(oldPassword, client.password);
+    const checkCurrentPassword = await bcrypt.compare(
+      oldPassword,
+      client.password
+    );
 
-    if(!checkCurrentPassword) {
-        customError.statusCode = 400;
-        customError.message = "The old password you entered is incorrect";
+    if (!checkCurrentPassword) {
+      customError.statusCode = 400;
+      customError.message = "The old password you entered is incorrect";
 
-        throw customError;
+      throw customError;
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const updatedClient = await clientRepository.updateByUuid(uuid, {
-      password: hashedPassword
-    }, tr)
+    const updatedClient = await clientRepository.updateByUuid(
+      uuid,
+      {
+        password: hashedPassword,
+      },
+      tr
+    );
 
-    await tr.commit()
-    return updatedClient
+    await tr.commit();
+    return updatedClient;
   } catch (error) {
-    await tr.rollback()
-    throw error
+    await tr.rollback();
+    throw error;
   }
-}
+};
 
 const deleteClientByUuids = async (clientIds) => {
   const tr = await db.sequelize.transaction();

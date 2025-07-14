@@ -1,86 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to The Light Years Child Development Center</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f6f9fc;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 600px;
-      margin: 40px auto;
-      background-color: #ffffff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    .header {
-      text-align: center;
-      padding: 30px 20px 10px;
-      background-color: #ffffff;
-    }
-    .header img {
-      max-height: 60px;
-    }
-    .content {
-      padding: 30px;
-      color: #333333;
-      line-height: 1.6;
-    }
-    .content h2 {
-      color: #2b2e7f;
-    }
-    .highlight {
-      background-color: #f1f3f7;
-      padding: 12px;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 16px;
-      margin: 10px 0;
-      color: #2b2e7f;
-    }
-    .button {
-      display: inline-block;
-      padding: 12px 24px;
-      background-color: #2b2e7f;
-      color: #ffffff;
-      text-decoration: none;
-      border-radius: 6px;
-      margin-top: 20px;
-    }
-    .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 12px;
-      color: #888888;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <img src="https://dashboard.thelightyearscdc.com/images/TLY_LOGO_L.png" alt="The Light Years Logo" />
-    </div>
-    <div class="content">
-      <h2>Welcome to The Light Years Child Development Center!</h2>
-      <p>Hello <strong>{{ fullName }}</strong>,</p>
-      <p>Your account has been successfully created. You can now log in and begin your journey with us!</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to The Light Years Child Development Center</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f6f9fc;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      .header {
+        text-align: center;
+        padding: 30px 20px 10px;
+        background-color: #ffffff;
+      }
+      .header img {
+        max-height: 60px;
+      }
+      .content {
+        padding: 30px;
+        color: #333333;
+        line-height: 1.6;
+      }
+      .content h2 {
+        color: #2b2e7f;
+      }
+      .highlight {
+        background-color: #f1f3f7;
+        padding: 12px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 16px;
+        margin: 10px 0;
+        color: #2b2e7f;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #2b2e7f;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-top: 20px;
+        text-decoration-line: none;
+      }
+      .footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 12px;
+        color: #888888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="https://dashboard.thelightyearscdc.com/images/TLY_LOGO_L.png"
+          alt="The Light Years Logo"
+        />
+      </div>
+      <div class="content">
+        <h2>Welcome to The Light Years Child Development Center!</h2>
+        <p>Hello <strong>{{ fullName }}</strong>,</p>
+        <p>
+          Your account has been successfully created. You can now log in and
+          begin your journey with us!
+        </p>
 
-      <p><strong>Your login credentials:</strong></p>
-      <p><strong>Email:</strong> {{ email }}</p>
-      <p><strong>Password:</strong></p>
-      <div class="highlight">{{ password }}</div>
+        <p><strong>Your login credentials:</strong></p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>Password:</strong></p>
+        <div class="highlight">{{ password }}</div>
 
-      <a href="https://dashboard.thelightyearscdc.com" class="button">Log In to Your Account</a>
+        <a href="https://dashboard.thelightyearscdc.com" class="button"
+          >Log In to Your Account</a
+        >
+      </div>
+      <div class="footer">
+        © 2025 The Lightyears Child Development Center. All rights reserved.<br />
+      </div>
     </div>
-    <div class="footer">
-      © 2025 The Lightyears Child Development Center. All rights reserved.<br/>
-    </div>
-  </div>
-</body>
+  </body>
 </html>
