@@ -33,7 +33,7 @@ const sendMail = async (
   });
 
   const emailSent = await transporter.sendMail({
-    from: '"The Lightyears CDC" <info@thelightyearscdc.com>',
+    from: '"The Light Years CDC" <admin@thelightyearscdc.com>',
     to: recipient,
     subject: subject,
     html: content,
