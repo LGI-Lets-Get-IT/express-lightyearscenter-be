@@ -13,7 +13,10 @@ const getDashboardData = async (req, res) => {
     let assessments, appointments, employees, clients, plans, schools;
 
     let data = {};
-    if (user.role === rolesNameConstant.SUPER_ADMIN) {
+    if (
+      user.role === rolesNameConstant.SUPER_ADMIN ||
+      user.role === rolesNameConstant.SPED_TEACHER
+    ) {
       appointments = await appointmentService.getAllAppointments();
       clients = await clientService.getAllClients();
       assessments = await assessmentService.getAllAssessments();
@@ -29,9 +32,7 @@ const getDashboardData = async (req, res) => {
         totalPlans: plans.length,
         totalSchools: schools.length,
       };
-    }
-
-    if (user.role === rolesNameConstant.STAFF) {
+    } else if (user.role === rolesNameConstant.STAFF) {
       appointments = await appointmentService.getAllAppointments();
       clients = await clientService.getAllClients();
       schools = await schoolService.getAllSchools();
@@ -41,9 +42,7 @@ const getDashboardData = async (req, res) => {
         totalClients: clients.length,
         totalSchools: schools.length,
       };
-    }
-
-    if (user.role === rolesNameConstant.PSYCHOLOGIST) {
+    } else if (user.role === rolesNameConstant.PSYCHOLOGIST) {
       appointments = await appointmentService.getAllAppointmentsByQueryParams({
         picId: user.id,
         picType: rolesNameConstant.PSYCHOLOGIST,
@@ -59,9 +58,7 @@ const getDashboardData = async (req, res) => {
         totalAssessments: assessments.length,
         totalPlans: plans.length,
       };
-    }
-
-    if (user.role === rolesNameConstant.THERAPIST) {
+    } else if (user.role === rolesNameConstant.THERAPIST) {
       appointments = await appointmentService.getAllAppointmentsByQueryParams({
         picId: user.id,
         picType: rolesNameConstant.THERAPIST,

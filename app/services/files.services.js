@@ -6,6 +6,7 @@ const mailService = require("../services/mail.services");
 const { treatmentSessions, employees, clients } = require("../models");
 const { format } = require("date-fns/format");
 const clientService = require("./clients.services");
+const treatmentPlanService = require("./treatmentPlans.services");
 
 const getAllFiles = async (uuid, clientName) => {
   const authClient = new google.auth.GoogleAuth({
@@ -20,7 +21,12 @@ const getAllFiles = async (uuid, clientName) => {
   const folderName = `${clientName}_${uuid}`;
 
   const folderId = await driveApi.files.list({
-    q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}'`,
+    q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
+    spaces: "drive",
+    supportsAllDrives: true,
+    driveId: process.env.DRIVE_ID,
+    includeItemsFromAllDrives: true,
+    corpora: "drive",
   });
 
   if (!folderId.data.files.length) {
@@ -29,13 +35,17 @@ const getAllFiles = async (uuid, clientName) => {
 
   const filesList = await driveApi.files.list({
     q: `'${folderId.data.files[0].id}' in parents`,
-    fields: "files(id, name, mimeType, webViewLink, size, createdTime, owners)",
+    fields: "files(id, name, mimeType, webViewLink, size, createdTime)",
+    supportsAllDrives: true,
+    driveId: process.env.DRIVE_ID,
+    includeItemsFromAllDrives: true,
+    corpora: "drive",
   });
   return filesList.data.files.map((file) => ({
     id: file.id,
     name: file.name,
     link: file.webViewLink,
-    uploader: file.owners[0].emailAddress,
+    // uploader: file.owners[0].emailAddress,
     size: file.size,
     mimeType: file.mimeType,
     createdTime: file.createdTime,
@@ -46,7 +56,7 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
   const tr = await db.sequelize.transaction();
   try {
     const authClient = new google.auth.GoogleAuth({
-      keyFile: "./the-lightyears-cdc-0cb82813d8e5.json",
+      keyFile: process.env.GOOGLE_SERVICE_KEY_FILE,
       scopes: ["https://www.googleapis.com/auth/drive"],
     });
 
@@ -60,6 +70,10 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
       q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
       fields: "files(id, name)",
       spaces: "drive",
+      supportsAllDrives: true,
+      driveId: process.env.DRIVE_ID,
+      includeItemsFromAllDrives: true,
+      corpora: "drive",
     });
 
     let folderId;
@@ -69,18 +83,19 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
       const folderMetadata = {
         name: folderName,
         mimeType: "application/vnd.google-apps.folder",
-        parents: ["1vT39BW-fwBTjuq5g67Lm0RqYSoPDxX4z"],
+        parents: [`${process.env.DRIVE_ID}`],
       };
-
       const createdFolder = await driveApi.files.create({
         requestBody: folderMetadata,
         fields: "id, name",
+        supportsAllDrives: true,
       });
 
       folderId = createdFolder.data.id;
     }
 
     const uploadedFile = await driveApi.files.create({
+      supportsAllDrives: true,
       requestBody: {
         name: fileData.originalname,
         mimeType: fileData.mimetype,
@@ -93,16 +108,32 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
     });
 
     const client = await clientService.getClientByUuid(uuid);
-    const emailToShare = [currentUser.email, client.guardianEmail];
+    const plans = await treatmentPlanService.getAllPlansWithProgramsByClientId(
+      client.id
+    );
+    const psychologistEmails = plans.map((plan) => plan.psychologist.email);
+    console.log("psychologistEmails", psychologistEmails);
+    const therapistEmails = plans.flatMap((plan) =>
+      plan.programs.map((program) => program.therapist.email)
+    );
+    console.log("therapistEmails", therapistEmails);
+    const emailToShare = [
+      currentUser.email,
+      client.guardianEmail,
+      ...psychologistEmails,
+      ...therapistEmails,
+    ];
+    console.log("EMAILTOSHARE", emailToShare);
     for (const email of emailToShare) {
       const addPermission = await driveApi.permissions.create({
-        sendNotificationEmail: true,
+        sendNotificationEmail: false,
         fileId: folderId,
         requestBody: {
           emailAddress: email,
           type: "user",
-          role: "reader",
+          role: "writer",
         },
+        supportsAllDrives: true,
       });
     }
 

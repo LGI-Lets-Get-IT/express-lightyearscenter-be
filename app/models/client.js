@@ -9,20 +9,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.appointments, {
-        foreignKey: 'clientId',
-        as: 'appointments'
+        foreignKey: "clientId",
+        as: "appointments",
       });
       this.hasMany(models.clientAssessments, {
-        foreignKey: 'clientId',
-        as: 'assessments'
+        foreignKey: "clientId",
+        as: "assessments",
       });
       this.belongsTo(models.schools, {
-        foreignKey: 'schoolId',
-        as: 'school'
+        foreignKey: "schoolId",
+        as: "school",
       });
       this.hasOne(models.clientDetails, {
-        foreignKey: 'clientId',
-        as: 'clientDetails',
+        foreignKey: "clientId",
+        as: "clientDetails",
+      });
+      this.hasMany(models.treatmentPlans, {
+        foreignKey: "clientId",
+        as: "treatmentPlans",
+      });
+      this.hasMany(models.treatmentSessions, {
+        foreignKey: "clientId",
+        as: "treatmentSessions",
       });
     }
   }
@@ -46,8 +54,8 @@ module.exports = (sequelize, DataTypes) => {
           model: "School",
           key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       fullName: {
         type: DataTypes.STRING(128),
@@ -55,11 +63,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       className: {
         type: DataTypes.STRING(32),
-        field: 'class_name',
+        field: "class_name",
       },
       branchOrigin: {
         type: DataTypes.STRING(64),
-        field: 'branch_origin',
+        field: "branch_origin",
         allowNull: true,
       },
       gender: {
@@ -72,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       nationality: {
         type: DataTypes.STRING(32),
-        field: 'nationality',
+        field: "nationality",
       },
       problem: {
         type: DataTypes.TEXT,
@@ -92,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       guardianNationality: {
         type: DataTypes.STRING(),
-        field: 'guardian_nationality'
+        field: "guardian_nationality",
       },
       guardianRelationship: {
         type: DataTypes.STRING(16),

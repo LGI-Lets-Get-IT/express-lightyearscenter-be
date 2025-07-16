@@ -193,6 +193,33 @@ function TreatmentPlanRepository(db) {
     });
   };
 
+  const findAllByClientIdWithPrograms = (clientId) => {
+    return db.treatmentPlans.findAll({
+      where: {
+        clientId,
+      },
+      include: [
+        {
+          model: db.employees,
+          as: "psychologist",
+          attributes: ["id", "full_name", "email"],
+        },
+        {
+          model: db.treatmentPrograms,
+          as: "programs",
+          attributes: ["id"],
+          include: [
+            {
+              model: db.employees,
+              as: "therapist",
+              attributes: ["id", "full_name", "email"],
+            },
+          ],
+        },
+      ],
+    });
+  };
+
   const create = (bodyData, transaction) => {
     return db.treatmentPlans.create(bodyData, { transaction });
   };
@@ -224,6 +251,7 @@ function TreatmentPlanRepository(db) {
     findAll,
     findOneById,
     findAllByClientId,
+    findAllByClientIdWithPrograms,
     create,
     updateById,
     deleteByIds,

@@ -45,18 +45,22 @@ const getAll = async (req, res) => {
     // } else {
     //   plans = await treatmentPlanService.getAllPlansByClientId(clientId);
     // }
-    if (req.user.role === rolesNameConstant.SUPER_ADMIN) {
+    if (
+      req.user.role === rolesNameConstant.SUPER_ADMIN ||
+      req.user.role === rolesNameConstant.STAFF ||
+      req.user.role === rolesNameConstant.SPED_TEACHER
+    ) {
       plans = await treatmentPlanService.getAllPlans();
     } else if (req.user.role === rolesNameConstant.PSYCHOLOGIST) {
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         psychologistId: req.user.id,
-      })
+      });
     } else if (req.user.role === rolesNameConstant.THERAPIST) {
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         therapistId: req.user.id,
-      })
-    } else {
-      const findUser = await clientService.getClientByUuid(req.user.id)
+      });
+    } else if (!user?.role) {
+      const findUser = await clientService.getClientByUuid(req.user.id);
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         clientId: findUser.id,
       });
