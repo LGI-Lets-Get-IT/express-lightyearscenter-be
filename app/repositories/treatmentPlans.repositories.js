@@ -2,9 +2,9 @@ function TreatmentPlanRepository(db) {
   const findAll = (queryParams) => {
     let whereOptions = {};
     if (queryParams) {
-      const { therapistId, ...restParams} = queryParams;
-      if(therapistId) {
-        whereOptions.treatmentProgram = { therapistId };    
+      const { therapistId, ...restParams } = queryParams;
+      if (therapistId) {
+        whereOptions.treatmentProgram = { therapistId };
       } else {
         whereOptions.treatmentPlans = restParams;
       }
@@ -14,6 +14,7 @@ function TreatmentPlanRepository(db) {
       where: whereOptions.treatmentPlans,
       group: [
         "TreatmentPlan.id",
+        "client.id",
         "client.uuid",
         "client.full_name",
         "programs.id",
@@ -22,7 +23,8 @@ function TreatmentPlanRepository(db) {
       ],
       attributes: [
         "id",
-        [db.sequelize.col("client.uuid"), "clientId"],
+        [db.sequelize.col("client.id"), "clientId"],
+        [db.sequelize.col("client.uuid"), "clientUuid"],
         [db.sequelize.col("client.full_name"), "clientName"],
         [db.sequelize.col("psychologist.full_name"), "plannedBy"],
         [
@@ -191,6 +193,33 @@ function TreatmentPlanRepository(db) {
     });
   };
 
+  const findAllByClientIdWithPrograms = (clientId) => {
+    return db.treatmentPlans.findAll({
+      where: {
+        clientId,
+      },
+      include: [
+        {
+          model: db.employees,
+          as: "psychologist",
+          attributes: ["id", "full_name", "email"],
+        },
+        {
+          model: db.treatmentPrograms,
+          as: "programs",
+          attributes: ["id"],
+          include: [
+            {
+              model: db.employees,
+              as: "therapist",
+              attributes: ["id", "full_name", "email"],
+            },
+          ],
+        },
+      ],
+    });
+  };
+
   const create = (bodyData, transaction) => {
     return db.treatmentPlans.create(bodyData, { transaction });
   };
@@ -222,6 +251,7 @@ function TreatmentPlanRepository(db) {
     findAll,
     findOneById,
     findAllByClientId,
+    findAllByClientIdWithPrograms,
     create,
     updateById,
     deleteByIds,

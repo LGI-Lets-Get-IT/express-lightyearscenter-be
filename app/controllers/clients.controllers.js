@@ -1,9 +1,38 @@
 const clientService = require("../services/clients.services");
+const appointmentService = require("../services/appointments.services");
+const treatmentPlanService = require("../services/treatmentPlans.services");
 const generateRandomPassword = require("../utils/generatePassword.utils");
+const rolesNameConstant = require("../constants/rolesName.constant");
 
 const getAll = async (req, res) => {
+  const { user } = req;
   try {
-    const clients = await clientService.getAllClients();
+    let clients = [];
+    if (
+      user.role === rolesNameConstant.SUPER_ADMIN ||
+      user.role === rolesNameConstant.STAFF ||
+      user.role === rolesNameConstant.SPED_TEACHER
+    ) {
+      clients = await clientService.getAllClients();
+    } else if (user.role === rolesNameConstant.PSYCHOLOGIST) {
+      const appointments =
+        await appointmentService.getAllAppointmentsByQueryParams({
+          picId: user.id,
+          picType: rolesNameConstant.PSYCHOLOGIST,
+        });
+
+      const relatedClientIds = appointments.map(
+        (appointment) => appointment.clientId
+      );
+
+      clients = await clientService.getAllClientsById(relatedClientIds);
+    } else if (user.role === rolesNameConstant.THERAPIST) {
+      const plans = await treatmentPlanService.getAllPlansByQueryParams({
+        therapistId: user.id,
+      });
+      const relatedClientIds = plans.map((plan) => plan.clientId);
+      clients = await clientService.getAllClientsById(relatedClientIds);
+    }
 
     res.jsonSuccess(200, "Successfully fetched all clients data", clients);
   } catch (error) {
@@ -100,7 +129,7 @@ const updateByUuid = async (req, res) => {
       guardianEmail,
       guardianNationality,
       guardianRelationship,
-      intakeForm,
+      // intakeForm,
     } = req.body;
 
     const bodyData = {
@@ -114,7 +143,7 @@ const updateByUuid = async (req, res) => {
       guardianPhone,
       guardianNationality,
       guardianRelationship,
-      intakeForm,
+      // intakeForm,
     };
 
     const updatedClient = await clientService.updateClientByUuid(
@@ -145,7 +174,7 @@ const updatePasswordByUuid = async (req, res) => {
 const deleteByUuids = async (req, res) => {
   try {
     const { clientIds } = req.body;
-    const deletedClient = await clientService.deleteClientByUuids(clientIds)
+    const deletedClient = await clientService.deleteClientByUuids(clientIds);
 
     res.jsonSuccess(200, "Successfully deleted clients data", deletedClient);
   } catch (error) {

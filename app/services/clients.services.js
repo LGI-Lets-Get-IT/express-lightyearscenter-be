@@ -27,6 +27,11 @@ const getAllClients = async () => {
   return clients;
 };
 
+const getAllClientsById = async (clientIds) => {
+  const clients = await clientRepository.findAllById(clientIds);
+  return clients;
+};
+
 const getClientById = async (clientId) => {
   const client = await clientRepository.findOneById(clientId);
 
@@ -65,6 +70,8 @@ const getClientByUuidWithAppointments = async (uuid) => {
 
   const client = {
     ...result.dataValues,
+    totalTreatmentPlans: result.treatmentPlans.length,
+    totalAssessments: result.assessments.length,
     age: getAgeInYearsMonthDays(result.dateOfBirth),
     dateOfBirth: format(result.dateOfBirth, "dd MMM yyyy"),
   };
@@ -124,25 +131,25 @@ const createClient = async (bodyData) => {
 
 const updateClientByUuid = async (uuid, bodyData) => {
   const tr = await db.sequelize.transaction();
-  const { intakeForm, ...bodyRest } = bodyData;
+  // const { intakeForm, ...bodyRest } = bodyData;
   try {
     const updatedClient = await clientRepository.updateByUuid(
       uuid,
-      bodyRest,
+      // bodyRest,
+      bodyData,
       tr
     );
 
-    const user = await clientRepository.findOneByUuid(uuid);
-
-    const updatedClientDetails = await clientDetailRepository.updateByClientId(
-      user.id,
-      {
-        ...intakeForm,
-        institutionsData: intakeForm.institutions,
-        guardiansData: intakeForm.guardians,
-      },
-      tr
-    );
+    // const user = await clientRepository.findOneByUuid(uuid);
+    // const updatedClientDetails = await clientDetailRepository.updateByClientId(
+    //   user.id,
+    //   {
+    //     ...intakeForm,
+    //     institutionsData: intakeForm.institutions,
+    //     guardiansData: intakeForm.guardians,
+    //   },
+    //   tr
+    // );
 
     if (!updatedClient[0]) {
       customError.statusCode = 500;
@@ -262,6 +269,7 @@ const deleteClientByUuids = async (clientIds) => {
 module.exports = {
   getUserProfile,
   getAllClients,
+  getAllClientsById,
   getClientById,
   getClientByUuid,
   getClientByUuidWithAppointments,

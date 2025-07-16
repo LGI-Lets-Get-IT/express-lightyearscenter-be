@@ -1,10 +1,23 @@
 const { format } = require("date-fns/format");
 const db = require("../models");
-const assessmentRepository = require("../repositories/assessments.repositories")(db);
+const assessmentRepository =
+  require("../repositories/assessments.repositories")(db);
 const customError = new Error();
 
 const getAllAssessments = async () => {
   const assessments = await assessmentRepository.findAll();
+
+  const mappedAssessments = assessments.map((assessment) => ({
+    ...assessment,
+    assessmentDate: format(assessment.assessmentDate, "dd MMM yyyy"),
+  }));
+
+  return mappedAssessments;
+};
+
+const getAllAssessmentsByQueryParams = async (queryParams) => {
+  console.log("QUERYPARAMSSS IN ASSESSMENT", queryParams);
+  const assessments = await assessmentRepository.findAll(queryParams);
 
   const mappedAssessments = assessments.map((assessment) => ({
     ...assessment,
@@ -28,10 +41,12 @@ const getAssessmentById = async (assessmentId) => {
 };
 
 const getAssessmentByAppointmentId = async (appointmentId) => {
-  const assessments = await assessmentRepository.findAllByAppointmentId(appointmentId);
+  const assessments = await assessmentRepository.findAllByAppointmentId(
+    appointmentId
+  );
 
   return assessments;
-}
+};
 
 const createAssessment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
@@ -63,7 +78,7 @@ const updateAssessmentById = async (id, bodyData) => {
     );
 
     if (!updatedAssessment[0]) {
-      customError.statusCode = 500
+      customError.statusCode = 500;
       customError.message = "Failed to update assessment data";
       throw customError;
     }
@@ -80,7 +95,10 @@ const updateAssessmentById = async (id, bodyData) => {
 const deleteAssessmentByIds = async (assessmentIds) => {
   const tr = await db.sequelize.transaction();
   try {
-    const deletedAssessment = await assessmentRepository.deleteByIds(assessmentIds, tr);
+    const deletedAssessment = await assessmentRepository.deleteByIds(
+      assessmentIds,
+      tr
+    );
     if (!deletedAssessment) {
       customError.statusCode = 500;
       customError.message = "Failed to delete assessments data";
@@ -99,6 +117,7 @@ const deleteAssessmentByIds = async (assessmentIds) => {
 
 module.exports = {
   getAllAssessments,
+  getAllAssessmentsByQueryParams,
   getAssessmentById,
   getAssessmentByAppointmentId,
   createAssessment,

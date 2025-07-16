@@ -22,6 +22,13 @@ const getAllPlansByQueryParams = async (queryParams) => {
   return result;
 };
 
+const getAllPlansWithProgramsByClientId = async (clientId) => {
+  const result = await treatmentPlanRepository.findAllByClientIdWithPrograms(
+    clientId
+  );
+  return result;
+};
+
 const getPlanById = async (planId) => {
   let planData = await treatmentPlanRepository.findOneById(planId);
   planData = planData.get({ plain: true });
@@ -283,6 +290,7 @@ module.exports = {
   createPlan,
   getAllPlans,
   getAllPlansByQueryParams,
+  getAllPlansWithProgramsByClientId,
   getPlanById,
   getAllPlansByClientId,
   updatePlanById,

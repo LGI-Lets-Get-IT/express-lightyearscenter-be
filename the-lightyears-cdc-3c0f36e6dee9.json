@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "the-lightyears-cdc",
+  "private_key_id": "3c0f36e6dee9de270f55a08b7cee027613640f94",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDjLo3YwjXSePTR\nMXAUGffsS9iy8jD932n6kp0P0PH4O5J8dE4ByvKRc8kJGA1cHOSJ2m+BL3RZ4DuA\nGafR7pQ8RudMQrKbPwwbev3/+BVrYVQgUVjwSVXwZmPpWZS0rDtSRo55wIFX+wi7\npI6C/J9xsyp80LTlexlB/dnLZiELEDpt15uC3pYeBUpxRUViDkHhJOw/cNKpGVb1\nEyQ3DAtkE79qDZGDO6tjchGG2PvPpzUCPpSwWkpOMfS3nwFwu8fNJZhf3nM8kgg3\n63vDp5TSwiocBHTjRXqdjY0Evrm4xjzl5ZRXowK8fHiig/CCIeYA9AxZPcijVRnv\n/Nb2AMslAgMBAAECggEAEetYzOwktVaibjhpZWyBnbst0I+XRa8a+49s9r5obPK7\nTzhtSWmUpdxtfbDOp6FadXUsA73r04Wtq8uvl7jV1cX8oItHmJnp0+Zo+okQR3QE\nirgKkol2Tzau/XekvyDcB6qrukwbklupXgOmKgwlwiDRDR9OkCXxjBRV2tv8vJPZ\nEfH5jPXrTWR7Cx+CrpxtMflHqBiO2i5oQBTz41QwJB31F3IUnJTsBfzvpdLOMEPV\n3aEfDLbOPLRyrinWLSXaPdFzm8ADwPwsZ0vIUFvpjH3RSKWQ54jDtqUOZ4gzf3nE\n/BtzB3pLxlxIZHYX2wJjba10JHdNXjrI7GydPR/nAQKBgQDxMcgdT533gMQ2pmaD\njZtvYoo32QKgFifZ4U86DRUVk6x0/Lys3jDiTUwIJzwLizFYxE8+pUb3KEOqEyT4\nUCGbgscamQZVijvhpLBCbn3K5SADDxTlweV0heacGYgY8G+w04x+P1CB2VrCJuHl\n2QEScP4f7oQT0Kf1j6H/a/q9FQKBgQDxIJK4bP1BadPGfY3YtBJcgufhKqmLg24I\nm7p5TdDBPR4im3I8VVVesw4vRTYg6W+uFISY6EBo1JSWLx1xtC3IAa9O1er1kQ+P\nuMsfo8tWORJQ/WjYoj/4Yycex+Pfub+lEf8QRXzMyitZV9p7YtOl7prHA77U+E5d\nRIvBEZf50QKBgD4fhFuIVjeZgvBQi7b2kkJuLwuTaYmyKzGDRtS86eFU1+aJ8k7U\nK+Md5adz85NFlsA2T/LivxSJ2mPD6pHKkd1sIbxIDcmagTHtKTjzHJNV0Jj5GXjU\nKDWLB4rNSLCjvSDeXCFoTWQkh6vaN/Trn8sQL2QqGvq/k4M8K42OUlbBAoGBAJ57\n3VOQdyi+aO5GaavsN0FM3SGWy9ch7HmF+ZtvNO09wYfXic7z+2eB4qnZIMmjBL9z\nRu/Ff0gnqP3JO94XIhwaV2JGoecDkCnTuNYz7xrd6hcHaBkzEz6r1PObSEAtMzRI\nzs+gDHYBz1oqrzR38UpXuK1j3dLW3ZLZ0c11ReFxAoGAEbpYz5Aq3iGVNvQupuZ/\nR8DWiaTebJtiyfp6aB3n4x2Jnuxtmk/uX3dS5SRmRnRAtguZzhy/JmOxkgsfclEg\n1v6fzzvwBB3u1jUHag1xjgpbFZzq2GZBORJIY5t5B1Wp2eLEz3elvhKwSD9CdU9X\nbJY3eyFTm2aLOj/y4CUFaCQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "tly-cdc-admin@the-lightyears-cdc.iam.gserviceaccount.com",
+  "client_id": "118000088984332154108",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tly-cdc-admin%40the-lightyears-cdc.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

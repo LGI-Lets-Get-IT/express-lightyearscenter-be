@@ -1,35 +1,41 @@
 const appointmentService = require("../services/appointments.services");
 const clientService = require("../services/clients.services");
+const employeeService = require("../services/employees.services");
 const roleConstant = require("../constants/roles.constant");
 const rolesNameConstant = require("../constants/rolesName.constant");
 
 const getAll = async (req, res) => {
+  const { user } = req;
   try {
     let appointments = [];
-    if (req.user.role === rolesNameConstant.SUPER_ADMIN || req.user.role === rolesNameConstant.STAFF) {
+    if (
+      user.role === rolesNameConstant.SUPER_ADMIN ||
+      user.role === rolesNameConstant.STAFF ||
+      user.role === rolesNameConstant.SPED_TEACHER
+    ) {
       appointments = await appointmentService.getAllAppointments();
-    } else if (req.user.role === rolesNameConstant.PSYCHOLOGIST) {
+    } else if (user.role === rolesNameConstant.PSYCHOLOGIST) {
       const queryParams = {
-        picId: req.user.id,
+        picId: user.id,
         picType: rolesNameConstant.PSYCHOLOGIST,
       };
 
       appointments = await appointmentService.getAllAppointmentsByQueryParams(
         queryParams
       );
-    } else if (req.user.role === rolesNameConstant.THERAPIST) {
+    } else if (user.role === rolesNameConstant.THERAPIST) {
       const queryParams = {
-        picId: req.user.id,
+        picId: user.id,
         picType: rolesNameConstant.THERAPIST,
       };
 
       appointments = await appointmentService.getAllAppointmentsByQueryParams(
         queryParams
       );
-    } else if(!req.user?.role) {
-      const findUser = await clientService.getClientByUuid(req.user.id)
+    } else if (!user?.role) {
+      const findUser = await clientService.getClientByUuid(user.id);
       const queryParams = {
-        clientId: findUser.id
+        clientId: findUser.id,
       };
 
       appointments = await appointmentService.getAllAppointmentsByQueryParams(
@@ -64,9 +70,10 @@ const getForTreatmentProgress = async (req, res) => {
   try {
     const queryParams = {
       clientId: req.query.clientId,
-      appointmentType: 'Treatment',
-    }
-    const appointment = await appointmentService.getAllAppointmentsByQueryParams(queryParams);
+      appointmentType: "Treatment",
+    };
+    const appointment =
+      await appointmentService.getAllAppointmentsByQueryParams(queryParams);
 
     res.jsonSuccess(200, "Successfully fetched appointment data", appointment);
   } catch (error) {
@@ -78,9 +85,10 @@ const getForAssessments = async (req, res) => {
   try {
     const queryParams = {
       clientId: req.query.clientId,
-      appointmentType: 'Assessment',
-    }
-    const appointment = await appointmentService.getAllAppointmentsByQueryParams(queryParams);
+      appointmentType: "Assessment",
+    };
+    const appointment =
+      await appointmentService.getAllAppointmentsByQueryParams(queryParams);
 
     res.jsonSuccess(200, "Successfully fetched appointment data", appointment);
   } catch (error) {
@@ -106,7 +114,10 @@ const create = async (req, res) => {
       clientId,
       picId,
       roomId,
-      picType: appointmentType.toLowerCase() === 'treatment' ? 'Therapist' : 'Psychologist',
+      picType:
+        appointmentType.toLowerCase() === "treatment"
+          ? "Therapist"
+          : "Psychologist",
       appointmentType,
       appointmentDate,
       bookingTimeStart: timeStart,
@@ -145,15 +156,22 @@ const updateById = async (req, res) => {
       roomId,
       appointmentType,
       appointmentDate,
-      picType: appointmentType.toLowerCase() === 'treatment' ? 'Therapist' : 'Psychologist',
+      picType:
+        appointmentType.toLowerCase() === "treatment"
+          ? "Therapist"
+          : "Psychologist",
       bookingTimeStart: timeStart,
       bookingTimeEnd: timeEnd,
-    }
+    };
     const updatedAppointment = await appointmentService.updateAppointmentById(
       appointmentId,
       bodyData
     );
-    res.jsonSuccess(200, "Successfully updated appointment data", updatedAppointment);
+    res.jsonSuccess(
+      200,
+      "Successfully updated appointment data",
+      updatedAppointment
+    );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
@@ -164,12 +182,16 @@ const confirmPicAttendanceById = async (req, res) => {
     const { appointmentId } = req.params;
     const bodyData = {
       isConfirmed: true,
-    }
+    };
     const updatedAppointment = await appointmentService.updateAppointmentById(
       appointmentId,
       bodyData
     );
-    res.jsonSuccess(200, "Successfully confirmed attandence", updatedAppointment);
+    res.jsonSuccess(
+      200,
+      "Successfully confirmed attandence",
+      updatedAppointment
+    );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
@@ -182,7 +204,11 @@ const deleteIds = async (req, res) => {
       appointmentIds
     );
 
-    res.jsonSuccess(200, "Successfully deleted appointments data", deletedAppointments);
+    res.jsonSuccess(
+      200,
+      "Successfully deleted appointments data",
+      deletedAppointments
+    );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
