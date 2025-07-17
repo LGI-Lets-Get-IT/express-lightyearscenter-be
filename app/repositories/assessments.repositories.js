@@ -1,6 +1,7 @@
-function ClientRepository(db) {
-  const findAll = () => {
+function ClientAssessmentRepository(db) {
+  const findAll = (queryParams) => {
     return db.clientAssessments.findAll({
+      ...(queryParams && { where: queryParams }),
       raw: true,
       attributes: [
         "id",
@@ -140,4 +141,4 @@ function ClientRepository(db) {
   };
 }
 
-module.exports = ClientRepository;
+module.exports = ClientAssessmentRepository;
