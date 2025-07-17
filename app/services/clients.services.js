@@ -69,10 +69,10 @@ const getClientByUuidWithAppointments = async (uuid) => {
   }
 
   const psychologistInCharge =
-    result.treatmentPlans[0].psychologist.fullName || undefined;
+    result.treatmentPlans?.[0]?.psychologist?.fullName || undefined;
   const therapistInCharge =
     result.treatmentPlans[0]?.programs
-      .map((program) => program.therapist.fullName)
+      .map((program) => program?.therapist?.fullName)
       .filter(Boolean)
       .join(", ") || undefined;
 
