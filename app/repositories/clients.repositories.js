@@ -155,7 +155,7 @@ function ClientRepository(db) {
             {
               model: db.employees,
               as: "psychologist",
-              attributes: ["id", "full_name"],
+              attributes: ["id", "fullName"],
             },
             {
               model: db.treatmentPrograms,
@@ -164,7 +164,7 @@ function ClientRepository(db) {
                 {
                   model: db.employees,
                   as: "therapist",
-                  attributes: ["id", "full_name"],
+                  attributes: ["id", "fullName"],
                 },
               ],
             },

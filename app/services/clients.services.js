@@ -68,12 +68,22 @@ const getClientByUuidWithAppointments = async (uuid) => {
     throw customError;
   }
 
+  const psychologistInCharge =
+    result.treatmentPlans[0].psychologist.fullName || undefined;
+  const therapistInCharge =
+    result.treatmentPlans[0]?.programs
+      .map((program) => program.therapist.fullName)
+      .filter(Boolean)
+      .join(", ") || undefined;
+
   const client = {
     ...result.dataValues,
-    totalTreatmentPlans: result.treatmentPlans.length,
-    totalAssessments: result.assessments.length,
     age: getAgeInYearsMonthDays(result.dateOfBirth),
     dateOfBirth: format(result.dateOfBirth, "dd MMM yyyy"),
+    totalTreatmentPlans: result.treatmentPlans.length,
+    totalAssessments: result.assessments.length,
+    psychologistInCharge,
+    therapistInCharge,
   };
   return client;
 };
