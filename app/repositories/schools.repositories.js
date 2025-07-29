@@ -2,18 +2,14 @@ function SchoolRepository(db) {
   const findAll = () => {
     return db.schools.findAll();
   };
-  
+
   const findOneById = (id) => {
-    console.log('ID', id)
     return db.schools.findByPk(id);
   };
 
   const findClientsBySchoolId = (id) => {
     return db.schools.findOne({
-      attributes: [
-        'id',
-        'name',
-      ],
+      attributes: ['id', 'name'],
       where: {
         id
       },
@@ -21,7 +17,13 @@ function SchoolRepository(db) {
         {
           model: db.clients,
           as: "clients",
-          attributes: ['uuid', 'fullName', 'guardianName', 'guardianEmail', 'guardianPhone']
+          attributes: [
+            "uuid",
+            "fullName",
+            "guardianName",
+            "guardianEmail",
+            "guardianPhone",
+          ],
         },
       ],
     })
@@ -29,12 +31,18 @@ function SchoolRepository(db) {
 
   const findOneSchoolByIdWithClients = (id) => {
     return db.schools.findOne({
-      attributes: { exclude: ['createdAt' ] },
+      attributes: { exclude: ["createdAt"] },
       include: [
         {
           model: db.clients,
           as: "clients",
-          attributes: ['uuid', 'fullName', 'guardianName', 'guardianEmail', 'guardianPhone']
+          attributes: [
+            "uuid",
+            "fullName",
+            "guardianName",
+            "guardianEmail",
+            "guardianPhone",
+          ],
         },
       ]
     })
@@ -45,7 +53,6 @@ function SchoolRepository(db) {
   }
 
   const updateById = (id, bodyData, transaction) => {
-    console.log('bodyData IN REPO', bodyData)
     return db.schools.update(bodyData, {
       where: {
         id

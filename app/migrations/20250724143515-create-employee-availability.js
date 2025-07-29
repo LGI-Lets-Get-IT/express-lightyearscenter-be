@@ -17,10 +17,14 @@ module.exports = {
           key: "id",
         },
       },
-      availableTime: {
-        type: Sequelize.DATE,
-        field: "available_time",
+      availableDay: {
+        type: Sequelize.STRING,
+        field: "available_day",
       },
+      // availableTime: {
+      //   type: Sequelize.DATE,
+      //   field: "available_time",
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
