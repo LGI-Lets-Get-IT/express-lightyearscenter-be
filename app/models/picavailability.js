@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.employees, {
-        foreignKey: "id",
+        foreignKey: "employeeId",
         as: "employee",
       });
     }
@@ -24,9 +24,17 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      availableTime: {
-        type: DataTypes.DATE,
-        field: "available_time",
+      availableDays: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        field: "available_days",
+      },
+      availableStartTime: {
+        type: DataTypes.STRING(16),
+        field: "available_start_time",
+      },
+      availableEndTime: {
+        type: DataTypes.STRING(16),
+        field: "available_end_time",
       },
     },
     {

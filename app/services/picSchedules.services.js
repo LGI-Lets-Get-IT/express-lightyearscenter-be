@@ -1,17 +1,19 @@
 const { format } = require("date-fns/format");
 const db = require("../models");
-const assessmentRepository =
-  require("../repositories/assessments.repositories")(db);
+const picAvailabilityRepository =
+  require("../repositories/picAvailability.repositories")(db);
+const employeeService = require("../services/employees.services");
 const customError = new Error();
 
 const getAllSchedules = async () => {
-  const schedules = await assessmentRepository.findAll();
+  // const schedules = await picAvailabilityRepository.findAll();
+  const employeeSchedules = await employeeService.getAllEmployeeSchedules();
 
-  return schedules;
+  return employeeSchedules;
 };
 
-const getScheduleById = async (scheduleId) => {
-  const schedule = await employeeAvailability.findOneById(scheduleId);
+const getScheduleByEmployeeId = async (employeeId) => {
+  const schedule = await employeeService.getScheduleByEmployeeId(employeeId);
 
   if (!schedule) {
     customError.statusCode = 404;
@@ -26,11 +28,13 @@ const getScheduleById = async (scheduleId) => {
 const createSchedule = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
-    const createdSchedule = await assessmentRepository.create(bodyData, tr);
-
+    const createdSchedule = await picAvailabilityRepository.bulkCreate(
+      bodyData,
+      tr
+    );
     if (!createdSchedule) {
       customError.statusCode = 500;
-      customError.message = "Failed to create client assessment data";
+      customError.message = "Failed to create PIC schedule data";
       throw customError;
     }
 
@@ -46,7 +50,7 @@ const createSchedule = async (bodyData) => {
 const updateScheduleById = async (id, bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
-    const updatedSchedule = await assessmentRepository.updateById(
+    const updatedSchedule = await picAvailabilityRepository.updateById(
       id,
       bodyData,
       tr
@@ -54,7 +58,7 @@ const updateScheduleById = async (id, bodyData) => {
 
     if (!updatedSchedule[0]) {
       customError.statusCode = 500;
-      customError.message = "Failed to update assessment data";
+      customError.message = "Failed to update PIC schedule data";
       throw customError;
     }
 
@@ -67,16 +71,16 @@ const updateScheduleById = async (id, bodyData) => {
   }
 };
 
-const deleteScheduleByIds = async (assessmentIds) => {
+const deleteScheduleByIds = async (scheduleIds) => {
   const tr = await db.sequelize.transaction();
   try {
-    const deletedSchedule = await assessmentRepository.deleteByIds(
-      assessmentIds,
+    const deletedSchedule = await picAvailabilityRepository.deleteByIds(
+      scheduleIds,
       tr
     );
     if (!deletedSchedule) {
       customError.statusCode = 500;
-      customError.message = "Failed to delete assessments data";
+      customError.message = "Failed to delete PIC schedule data";
 
       throw customError;
     }
@@ -92,7 +96,7 @@ const deleteScheduleByIds = async (assessmentIds) => {
 
 module.exports = {
   getAllSchedules,
-  getScheduleById,
+  getScheduleByEmployeeId,
   createSchedule,
   updateScheduleById,
   deleteScheduleByIds,

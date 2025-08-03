@@ -15,10 +15,12 @@ const getAll = async (req, res) => {
   }
 };
 
-const getById = async (req, res) => {
+const getByEmployeeId = async (req, res) => {
   try {
-    const { scheduleId } = req.params;
-    const schedule = await picScheduleService.getScheduleById(scheduleId);
+    const { employeeId } = req.params;
+    const schedule = await picScheduleService.getScheduleByEmployeeId(
+      employeeId
+    );
 
     res.jsonSuccess(200, "Successfully fetched PIC schedule data", schedule);
   } catch (error) {
@@ -29,12 +31,18 @@ const getById = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { employeeId, schedules } = req.body;
-    const bodyData = {
-      employeeId,
-      schedules,
+
+    const mappedBody = [];
+    for (const schedule of schedules) {
+      mappedBody.push({
+        employeeId,
+        availableDays: schedule.availableDays,
+        availableStartTime: schedule.availableStartTime,
+        availableEndTime: schedule.availableEndTime,
+      });
     }
 
-    const createdSchedule = await picScheduleService.createSchedule(bodyData);
+    const createdSchedule = await picScheduleService.createSchedule(mappedBody);
 
     res.jsonSuccess(
       201,
@@ -46,7 +54,7 @@ const create = async (req, res) => {
   }
 };
 
-const updateById = async (req, res) => {
+const updateByEmployeeId = async (req, res) => {
   try {
     const { scheduleId } = req.params;
     const { appointmentId, clientId, psychologistId, testId, result } =
@@ -93,7 +101,7 @@ const deleteIds = async (req, res) => {
 module.exports = {
   create,
   getAll,
-  getById,
-  updateById,
+  getByEmployeeId,
+  updateByEmployeeId,
   deleteIds,
 };

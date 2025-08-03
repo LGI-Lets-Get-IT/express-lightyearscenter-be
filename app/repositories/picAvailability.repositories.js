@@ -1,6 +1,24 @@
-function picAvailabilitiesRepository(db) {
+function PicAvailabilityRepository(db) {
   const findAll = () => {
-    return db.picAvailabilities.findAll();
+    return db.picAvailabilities.findAll({
+      raw: true,
+      nest: true,
+      group: ["PICAvailability.id", "employee.id", "employeeId"],
+      // attributes: [
+      //   "id",
+      //   [db.Sequelize.col(`employee.name`), "employeeName"],
+      //   "availableDays",
+      //   "availableStartTime",
+      //   "availableEndTime",
+      // ],
+      include: [
+        {
+          model: db.employees,
+          as: "employee",
+          attribuets: ["id", "fullName"],
+        },
+      ],
+    });
   };
 
   const findOneById = (id) => {
@@ -12,7 +30,10 @@ function picAvailabilitiesRepository(db) {
   };
 
   const bulkCreate = (bodyData, transaction) => {
-    return db.picAvailabilities.bulkCreate(bodyData, { transaction });
+    return db.picAvailabilities.bulkCreate(bodyData, {
+      updateOnDuplicate: ["availableDays"],
+      transaction,
+    });
   };
 
   const updateById = (id, bodyData, transaction) => {
@@ -27,7 +48,7 @@ function picAvailabilitiesRepository(db) {
     );
   };
 
-  const deleteById = (id, transaction) => {
+  const deleteByIds = (id, transaction) => {
     return db.picAvailabilities.destroy(
       {
         where: {
@@ -44,8 +65,8 @@ function picAvailabilitiesRepository(db) {
     create,
     bulkCreate,
     updateById,
-    deleteById,
+    deleteByIds,
   };
 }
 
-module.exports = picAvailabilitiesRepository;
+module.exports = PicAvailabilityRepository;

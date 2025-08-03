@@ -17,14 +17,18 @@ module.exports = {
           key: "id",
         },
       },
-      availableDay: {
-        type: Sequelize.STRING,
-        field: "available_day",
+      availableDays: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        field: "available_days",
       },
-      // availableTime: {
-      //   type: Sequelize.DATE,
-      //   field: "available_time",
-      // },
+      availableStartTime: {
+        type: Sequelize.STRING(16),
+        field: "available_start_time",
+      },
+      availableEndTime: {
+        type: Sequelize.STRING(16),
+        field: "available_end_time",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

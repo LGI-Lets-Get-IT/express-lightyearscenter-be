@@ -29,6 +29,23 @@ const getAllTherapists = async () => {
   return psychologists;
 };
 
+const getAllEmployeeSchedules = async () => {
+  const schedules =
+    await employeeRepository.findAllEmployeeWithSchedulesByRoleId([
+      RoleConstant.PSYCHOLOGIST,
+      RoleConstant.THERAPIST,
+    ]);
+
+  return schedules;
+};
+
+const getScheduleByEmployeeId = async (employeeId) => {
+  const schedules = await employeeRepository.findOneWithSchedulesById(
+    employeeId
+  );
+  return schedules;
+};
+
 const getEmployeeByEmail = async (email) => {
   const employee = await employeeRepository.findOneByEmail(email);
 
@@ -209,6 +226,8 @@ module.exports = {
   getAllEmployees,
   getAllTherapists,
   getAllPsychologists,
+  getAllEmployeeSchedules,
+  getScheduleByEmployeeId,
   getEmployeeById,
   getEmployeeByEmail,
   createEmployee,

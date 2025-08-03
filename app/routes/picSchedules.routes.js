@@ -17,16 +17,16 @@ router.get(
   picScheduleController.getAll
 );
 router.get(
-  "/:scheduleId",
+  "/:employeeId",
   verifyPermission(permissions.EMPLOYEES.VIEW),
   // validateInput(assessmentSchema.view),
-  picScheduleController.getById
+  picScheduleController.getByEmployeeId
 );
 router.put(
-  "/:scheduleId",
+  "/:employeeId",
   verifyPermission(permissions.ASSESSMENTS.UPDATE),
   // validateInput(assessmentSchema.update),
-  picScheduleController.updateById
+  picScheduleController.updateByEmployeeId
 );
 router.delete(
   "/",

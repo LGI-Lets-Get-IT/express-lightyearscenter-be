@@ -9,9 +9,9 @@ function SchoolRepository(db) {
 
   const findClientsBySchoolId = (id) => {
     return db.schools.findOne({
-      attributes: ['id', 'name'],
+      attributes: ["id", "name"],
       where: {
-        id
+        id,
       },
       include: [
         {
@@ -26,11 +26,14 @@ function SchoolRepository(db) {
           ],
         },
       ],
-    })
-  }
+    });
+  };
 
   const findOneSchoolByIdWithClients = (id) => {
     return db.schools.findOne({
+      where: {
+        id,
+      },
       attributes: { exclude: ["createdAt"] },
       include: [
         {
@@ -44,29 +47,36 @@ function SchoolRepository(db) {
             "guardianPhone",
           ],
         },
-      ]
-    })
-  }
+      ],
+    });
+  };
 
   const create = (bodyData, transaction) => {
-    return db.schools.create(bodyData, { transaction })
-  }
+    return db.schools.create(bodyData, { transaction });
+  };
 
   const updateById = (id, bodyData, transaction) => {
-    return db.schools.update(bodyData, {
-      where: {
-        id
+    return db.schools.update(
+      bodyData,
+      {
+        where: {
+          id,
+        },
       },
-    }, { transaction })
-  }
+      { transaction }
+    );
+  };
 
   const deleteByIds = (ids, transaction) => {
-    return db.schools.destroy({
-      where: {
-        id: ids,
+    return db.schools.destroy(
+      {
+        where: {
+          id: ids,
+        },
       },
-    }, { transaction })
-  }
+      { transaction }
+    );
+  };
 
   return {
     findAll,
