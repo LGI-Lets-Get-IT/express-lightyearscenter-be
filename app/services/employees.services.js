@@ -39,6 +39,20 @@ const getAllEmployeeSchedules = async () => {
   return schedules;
 };
 
+const getAllEmployeesBySchedule = async (
+  appointmentDay,
+  startTime,
+  endTime
+) => {
+  const schedules = await employeeRepository.findAllBySchedules(
+    appointmentDay,
+    startTime,
+    endTime
+  );
+
+  return schedules;
+};
+
 const getScheduleByEmployeeId = async (employeeId) => {
   const schedules = await employeeRepository.findOneWithSchedulesById(
     employeeId
@@ -227,6 +241,7 @@ module.exports = {
   getAllTherapists,
   getAllPsychologists,
   getAllEmployeeSchedules,
+  getAllEmployeesBySchedule,
   getScheduleByEmployeeId,
   getEmployeeById,
   getEmployeeByEmail,

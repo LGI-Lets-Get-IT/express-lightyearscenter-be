@@ -1,10 +1,11 @@
+const { format } = require("date-fns");
 const employeeService = require("../services/employees.services");
 const generateRandomPassword = require("../utils/generatePassword.utils");
 const customError = new Error();
 
 const getAll = async (req, res) => {
   try {
-    const employees = await employeeService.getAllEmployees();
+    const employees = await employeeService.getAllEmployees(req.body);
 
     res.jsonSuccess(200, "Successfully fetched all employees data", employees);
   } catch (error) {
@@ -14,7 +15,18 @@ const getAll = async (req, res) => {
 
 const getAllByRolePsychologist = async (req, res) => {
   try {
-    const psychologists = await employeeService.getAllPsychologists();
+    let psychologists = [];
+    const { appointmentDate, timeStart, timeEnd } = req.query;
+    if (appointmentDate && timeStart && timeEnd) {
+      const dateToDay = format(appointmentDate, "EEEE");
+      psychologists = await employeeService.getAllEmployeesBySchedule(
+        dateToDay,
+        timeStart,
+        timeEnd
+      );
+    } else {
+      psychologists = await employeeService.getAllPsychologists();
+    }
     res.jsonSuccess(
       200,
       "Successfully fetched all psychologists data",
@@ -51,13 +63,7 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const {
-      fullName,
-      email,
-      phoneNumber,
-      roleId,
-      isActive
-    } = req.body;
+    const { fullName, email, phoneNumber, roleId, isActive } = req.body;
 
     const generatedPassword = await generateRandomPassword();
     const bodyData = {
@@ -111,7 +117,9 @@ const updatePasswordById = async (req, res) => {
 const deleteIds = async (req, res) => {
   try {
     const { employeeIds } = req.body;
-    const deletedEmployee = await employeeService.deleteEmployeeByIds(employeeIds);
+    const deletedEmployee = await employeeService.deleteEmployeeByIds(
+      employeeIds
+    );
 
     res.jsonSuccess(200, "Successfully deleted employee", deletedEmployee);
   } catch (error) {

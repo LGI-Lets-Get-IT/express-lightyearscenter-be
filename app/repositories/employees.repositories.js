@@ -71,6 +71,32 @@ function EmployeeRepository(db) {
     });
   };
 
+  const findAllBySchedules = (appointmentDay, startTime, endTime) => {
+    return db.employees.findAll({
+      attributes: ["id", "fullName"],
+      include: [
+        {
+          model: db.picAvailabilities,
+          as: "schedules",
+          attributes: {
+            exclude: ["employeeId", "employee_id", "createdAt", "updatedAt"],
+          },
+          where: {
+            availableDays: {
+              [db.Sequelize.Op.overlap]: [appointmentDay],
+            },
+            availableStartTime: {
+              [db.Sequelize.Op.lte]: startTime,
+            },
+            availableEndTime: {
+              [db.Sequelize.Op.gte]: endTime,
+            },
+          },
+        },
+      ],
+    });
+  };
+
   const findOneWithSchedulesById = (id) => {
     return db.employees.findOne({
       where: {
@@ -177,6 +203,7 @@ function EmployeeRepository(db) {
     findAll,
     findAllByRoleId,
     findAllEmployeeWithSchedulesByRoleId,
+    findAllBySchedules,
     findOneWithSchedulesById,
     findOneById,
     findOneByEmail,
