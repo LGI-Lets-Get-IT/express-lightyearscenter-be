@@ -5,7 +5,7 @@ const customError = new Error();
 
 const getAll = async (req, res) => {
   try {
-    const employees = await employeeService.getAllEmployees(req.body);
+    const employees = await employeeService.getAllEmployees();
 
     res.jsonSuccess(200, "Successfully fetched all employees data", employees);
   } catch (error) {

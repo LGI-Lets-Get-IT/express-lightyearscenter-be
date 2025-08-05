@@ -73,8 +73,17 @@ function EmployeeRepository(db) {
 
   const findAllBySchedules = (appointmentDay, startTime, endTime) => {
     return db.employees.findAll({
-      attributes: ["id", "fullName"],
+      attributes: [
+        "id",
+        "fullName",
+        [db.sequelize.col(`role.name`), "roleName"]
+      ],
       include: [
+        {
+          model: db.roles,
+          as: 'role',
+          attributes: []
+        },
         {
           model: db.picAvailabilities,
           as: "schedules",
@@ -85,12 +94,12 @@ function EmployeeRepository(db) {
             availableDays: {
               [db.Sequelize.Op.overlap]: [appointmentDay],
             },
-            availableStartTime: {
-              [db.Sequelize.Op.lte]: startTime,
-            },
-            availableEndTime: {
-              [db.Sequelize.Op.gte]: endTime,
-            },
+            // availableStartTime: {
+            //   [db.Sequelize.Op.lte]: startTime,
+            // },
+            // availableEndTime: {
+            //   [db.Sequelize.Op.gte]: endTime,
+            // },
           },
         },
       ],
