@@ -14,13 +14,10 @@ function TreatmentProgramRepository(db) {
   }
 
   const create = (bodyData, transaction) => {
-    console.log('BODYDATA', bodyData)
-    console.log('BODYDATA', bodyData)
     return db.treatmentPrograms.create(bodyData, { transaction })
   }
 
   const bulkCreate = (bodyData, transaction) => {
-    console.log('BODYDATAAA', bodyData)
     return db.treatmentPrograms.bulkCreate(bodyData, { transaction })
   }
 

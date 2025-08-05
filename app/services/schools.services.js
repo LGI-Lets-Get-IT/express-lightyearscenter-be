@@ -5,7 +5,7 @@ const customError = new Error()
 const getAllSchools = async () => {
   const schools = await schoolRepository.findAll();
 
-  return schools.map(school => ({
+  return schools.map((school) => ({
     id: school.id,
     name: school.name,
     address: school.address,
@@ -60,13 +60,16 @@ const createSchool = async (bodyData) => {
 const updateSchoolById = async (schoolId, bodyData) => {
   const tr = await db.sequelize.transaction()
   try {
-    const updatedSchool = await schoolRepository.updateById(schoolId, bodyData, tr)
+    const updatedSchool = await schoolRepository.updateById(
+      schoolId,
+      bodyData,
+      tr,
+    );
 
-    console.log('updatedSchool[0]', !updatedSchool[0])
     if (!updatedSchool[0]) {
       // customError.statusCode = 500
-      customError.message = "Failed to update school data"
-      throw customError
+      customError.message = "Failed to update school data";
+      throw customError;
     }
 
     await tr.commit()

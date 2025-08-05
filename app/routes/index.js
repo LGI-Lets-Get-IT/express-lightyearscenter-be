@@ -58,6 +58,12 @@ const _routes = [
     version: "1",
   },
   {
+    path: "pic-schedules",
+    router: require("./picSchedules.routes"),
+    middlewares: [verifyJwt],
+    version: "1",
+  },
+  {
     path: "schools",
     router: require("./schools.routes"),
     middlewares: [verifyJwt],

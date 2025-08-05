@@ -187,13 +187,6 @@ function AppointmentRepository(db) {
     bookingTimeStart,
     bookingTimeEnd
   ) => {
-    console.log(
-      "ROOMID",
-      roomId,
-      appointmentDate,
-      bookingTimeStart,
-      bookingTimeEnd
-    );
     const isAvailable = await db.appointments.findOne({
       where: {
         roomId,
@@ -206,7 +199,6 @@ function AppointmentRepository(db) {
         },
       },
     });
-    console.log("ISAVAILABLE", isAvailable);
 
     return !isAvailable;
   };

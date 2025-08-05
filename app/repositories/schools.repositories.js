@@ -2,64 +2,81 @@ function SchoolRepository(db) {
   const findAll = () => {
     return db.schools.findAll();
   };
-  
+
   const findOneById = (id) => {
-    console.log('ID', id)
     return db.schools.findByPk(id);
   };
 
   const findClientsBySchoolId = (id) => {
     return db.schools.findOne({
-      attributes: [
-        'id',
-        'name',
-      ],
+      attributes: ["id", "name"],
       where: {
-        id
+        id,
       },
       include: [
         {
           model: db.clients,
           as: "clients",
-          attributes: ['uuid', 'fullName', 'guardianName', 'guardianEmail', 'guardianPhone']
+          attributes: [
+            "uuid",
+            "fullName",
+            "guardianName",
+            "guardianEmail",
+            "guardianPhone",
+          ],
         },
       ],
-    })
-  }
+    });
+  };
 
   const findOneSchoolByIdWithClients = (id) => {
     return db.schools.findOne({
-      attributes: { exclude: ['createdAt' ] },
+      where: {
+        id,
+      },
+      attributes: { exclude: ["createdAt"] },
       include: [
         {
           model: db.clients,
           as: "clients",
-          attributes: ['uuid', 'fullName', 'guardianName', 'guardianEmail', 'guardianPhone']
+          attributes: [
+            "uuid",
+            "fullName",
+            "guardianName",
+            "guardianEmail",
+            "guardianPhone",
+          ],
         },
-      ]
-    })
-  }
+      ],
+    });
+  };
 
   const create = (bodyData, transaction) => {
-    return db.schools.create(bodyData, { transaction })
-  }
+    return db.schools.create(bodyData, { transaction });
+  };
 
   const updateById = (id, bodyData, transaction) => {
-    console.log('bodyData IN REPO', bodyData)
-    return db.schools.update(bodyData, {
-      where: {
-        id
+    return db.schools.update(
+      bodyData,
+      {
+        where: {
+          id,
+        },
       },
-    }, { transaction })
-  }
+      { transaction }
+    );
+  };
 
   const deleteByIds = (ids, transaction) => {
-    return db.schools.destroy({
-      where: {
-        id: ids,
+    return db.schools.destroy(
+      {
+        where: {
+          id: ids,
+        },
       },
-    }, { transaction })
-  }
+      { transaction }
+    );
+  };
 
   return {
     findAll,

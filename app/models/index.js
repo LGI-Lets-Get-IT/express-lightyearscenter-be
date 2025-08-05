@@ -33,6 +33,7 @@ db.treatmentPlans = require('./treatmentplan')(sequelize, Sequelize);
 db.treatmentPrograms = require('./treatmentprogram')(sequelize, Sequelize);
 db.treatmentSessions = require('./treatmentsession')(sequelize, Sequelize);
 db.targetedBehaviors = require('./targetedbehavior')(sequelize, Sequelize);
+db.picAvailabilities = require('./picavailability')(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

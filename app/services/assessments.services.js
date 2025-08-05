@@ -16,7 +16,6 @@ const getAllAssessments = async () => {
 };
 
 const getAllAssessmentsByQueryParams = async (queryParams) => {
-  console.log("QUERYPARAMSSS IN ASSESSMENT", queryParams);
   const assessments = await assessmentRepository.findAll(queryParams);
 
   const mappedAssessments = assessments.map((assessment) => ({

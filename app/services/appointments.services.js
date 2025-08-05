@@ -14,7 +14,6 @@ const getAllAppointments = async () => {
 
   const appointments = await Promise.all(
     result.map(async (appointment) => {
-      // console.log('APPOINTMENT', appointment.picId)
       const picData = await employeeService.getEmployeeById(appointment.picId);
       return {
         ...appointment,
@@ -85,12 +84,6 @@ const createAppointment = async (bodyData) => {
       throw customError;
     }
 
-    console.log(
-      "CREATEDAPPOINTMENT",
-      roomOptions,
-      createdAppointment.roomId,
-      roomOptions[createdAppointment.roomId]
-    );
     const employeeData = await employeeService.getEmployeeById(bodyData.picId);
     const clientData = await clientService.getClientById(bodyData.clientId);
     const sendEmailToClient = await mailService.sendMail(
