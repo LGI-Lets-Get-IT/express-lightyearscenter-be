@@ -71,18 +71,21 @@ function EmployeeRepository(db) {
     });
   };
 
-  const findAllBySchedules = (appointmentDay, startTime, endTime) => {
+  const findAllBySchedules = (roleId, appointmentDay, startTime, endTime) => {
     return db.employees.findAll({
+      where: {
+        roleId,
+      },
       attributes: [
         "id",
         "fullName",
-        [db.sequelize.col(`role.name`), "roleName"]
+        [db.sequelize.col(`role.name`), "roleName"],
       ],
       include: [
         {
           model: db.roles,
-          as: 'role',
-          attributes: []
+          as: "role",
+          attributes: [],
         },
         {
           model: db.picAvailabilities,
