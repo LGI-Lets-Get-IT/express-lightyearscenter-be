@@ -10,6 +10,21 @@ exports.appointmentSchema = {
     appointmentDate: Joi.string().required(),
     timeStart: Joi.date().greater("now").required(),
     timeEnd: Joi.date().greater(Joi.ref("timeStart")).required(),
+    treatmentId: Joi.number().when("appointmentType", {
+      is: "Treatment",
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
+    numberOfRepetition: Joi.number().when("appointmentType", {
+      is: "Treatment",
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
+    intervalBetweenAppointment: Joi.number().when("appointmentType", {
+      is: "Treatment",
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
   }),
 
   //   create: Joi.object({

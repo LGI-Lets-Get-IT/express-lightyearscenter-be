@@ -1,5 +1,7 @@
 const rolesNameConstant = require("../constants/rolesName.constant");
 const assessmentService = require("../services/assessments.services");
+const treatmentPlanService = require("../services/treatmentPlans.services");
+const appointmentService = require("../services/appointments.services");
 const customError = new Error();
 
 const getAll = async (req, res) => {
@@ -23,13 +25,19 @@ const getAll = async (req, res) => {
           psychologistId: user.id,
         });
       } else if (user.role === rolesNameConstant.THERAPIST) {
-        plans = await treatmentPlanService.getAllPlansByQueryParams({
-          therapistId: user.id,
-        });
-        const clientIds = plans.map((dt) => dt.clientId);
-        assessments = await assessmentService.getAllAssessmentsByQueryParams({
-          clientId: [clientIds],
-        });
+        appointments = await appointmentService.getAllAppointmentsByQueryParams(
+          {
+            picId: user.id,
+            picType: rolesNameConstant.THERAPIST,
+          }
+        );
+
+        const clientIds = appointments.map((dt) => dt.clientId);
+        if (clientIds.length) {
+          assessments = await assessmentService.getAllAssessmentsByQueryParams({
+            clientId: [clientIds],
+          });
+        }
       } else if (!user?.role) {
         assessments = await assessmentService.getAllAssessmentsByQueryParams({
           clientId: user.id,

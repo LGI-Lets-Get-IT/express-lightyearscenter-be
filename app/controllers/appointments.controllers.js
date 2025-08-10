@@ -107,6 +107,9 @@ const create = async (req, res) => {
       timeEnd,
       appointmentDate,
       appointmentType,
+      treatmentId,
+      numberOfRepetition,
+      intervalBetweenAppointment,
     } = req.body;
 
     const bodyData = {
@@ -122,6 +125,9 @@ const create = async (req, res) => {
       appointmentDate,
       bookingTimeStart: timeStart,
       bookingTimeEnd: timeEnd,
+      treatmentId,
+      numberOfRepetition,
+      intervalBetweenAppointment,
     };
 
     const createdAppointment = await appointmentService.createAppointment(

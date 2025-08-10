@@ -68,7 +68,7 @@ const updateByEmployeeId = async (req, res) => {
       result,
     };
     const updatedAssessment = await picScheduleService.updateScheduleById(
-      assessmentId,
+      scheduleId,
       bodyData
     );
     res.jsonSuccess(

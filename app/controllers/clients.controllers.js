@@ -25,13 +25,17 @@ const getAll = async (req, res) => {
         (appointment) => appointment.clientId
       );
 
-      clients = await clientService.getAllClientsById(relatedClientIds);
+      if (relatedClientIds.length) {
+        clients = await clientService.getAllClientsById(relatedClientIds);
+      }
     } else if (user.role === rolesNameConstant.THERAPIST) {
       const plans = await treatmentPlanService.getAllPlansByQueryParams({
         therapistId: user.id,
       });
       const relatedClientIds = plans.map((plan) => plan.clientId);
-      clients = await clientService.getAllClientsById(relatedClientIds);
+      if (relatedClientIds.length) {
+        clients = await clientService.getAllClientsById(relatedClientIds);
+      }
     }
 
     res.jsonSuccess(200, "Successfully fetched all clients data", clients);
@@ -118,12 +122,27 @@ const create = async (req, res) => {
 const updateByUuid = async (req, res) => {
   try {
     const { clientUuid } = req.params;
+    // const {
+    //   schoolId,
+    //   fullName,
+    //   gender,
+    //   nationality,
+    //   dateOfBirth,
+    //   guardianName,
+    //   guardianPhone,
+    //   guardianEmail,
+    //   guardianNationality,
+    //   guardianRelationship,
+    //   // intakeForm,
+    // } = req.body;
     const {
       schoolId,
       fullName,
       gender,
       nationality,
       dateOfBirth,
+      problem,
+      className,
       guardianName,
       guardianPhone,
       guardianEmail,
@@ -143,12 +162,28 @@ const updateByUuid = async (req, res) => {
       guardianPhone,
       guardianNationality,
       guardianRelationship,
+      problem,
+      className,
       // intakeForm,
     };
 
     const updatedClient = await clientService.updateClientByUuid(
       clientUuid,
       bodyData
+    );
+    res.jsonSuccess(200, "Successfully updated client data", updatedClient);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+};
+
+const updateIntakeFormLinkByUuid = async (req, res) => {
+  try {
+    const { clientUuid } = req.params;
+
+    const updatedClient = await clientService.updateClientByUuid(
+      clientUuid,
+      req.body
     );
     res.jsonSuccess(200, "Successfully updated client data", updatedClient);
   } catch (error) {
@@ -188,6 +223,7 @@ module.exports = {
   getByUuid,
   getClientAppointmentsByUuid,
   updateByUuid,
+  updateIntakeFormLinkByUuid,
   updatePasswordByUuid,
   deleteByUuids,
 };

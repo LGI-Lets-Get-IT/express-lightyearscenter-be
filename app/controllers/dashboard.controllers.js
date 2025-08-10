@@ -10,7 +10,12 @@ const schoolService = require("../services/schools.services");
 const getDashboardData = async (req, res) => {
   try {
     const { user } = req;
-    let assessments, appointments, employees, clients, plans, schools;
+    let assessments = [],
+      appointments = [],
+      employees = [],
+      clients = [],
+      plans = [],
+      schools = [];
 
     let data = {};
     if (
@@ -67,9 +72,11 @@ const getDashboardData = async (req, res) => {
         therapistId: user.id,
       });
       const clientIds = plans.map((dt) => dt.clientId);
-      assessments = await assessmentService.getAllAssessmentsByQueryParams({
-        clientId: [clientIds],
-      });
+      if (clientIds.length > 0) {
+        assessments = await assessmentService.getAllAssessmentsByQueryParams({
+          clientId: [clientIds],
+        });
+      }
       data = {
         totalAppointments: appointments.length,
         totalAssessments: assessments.length,
