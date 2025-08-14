@@ -1,18 +1,26 @@
 const db = require("../models");
-const authService = require('../services/auth.services')
+const authService = require("../services/auth.services");
 
 const userLogin = async (req, res) => {
   try {
-    const { email, password } = req.body
-    const cookies = req.cookies.token
+    const { email, password } = req.body;
+    const cookies = req.cookies.refreshToken;
 
-    const loginData = await authService.login(cookies, email, password)
+    const loginData = await authService.login(cookies, email, password);
 
-    res.cookie("token", loginData.refreshToken, {
+    res.cookie("refreshToken", loginData.refreshToken, {
       httpOnly: true,
       sameSite: "Strict",
       secure: true,
-      maxAge: 1 * 24 * 60 * 60 * 1000,
+      maxAge: 6 * 60 * 1000,
+      // maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
+
+    res.cookie("accessToken", loginData.accessToken, {
+      httpOnly: true,
+      sameSite: "Strict",
+      secure: true,
+      maxAge: 3 * 60 * 1000,
     });
 
     res.jsonSuccess(200, "Login successful", loginData);
@@ -23,31 +31,37 @@ const userLogin = async (req, res) => {
 
 const userLogout = async (req, res) => {
   try {
-    const cookie = req.cookies.token;
+    const cookie = req.cookies.accessToken;
 
-    const logoutData = await authService.logout(cookie)
+    const logoutData = await authService.logout(cookie);
 
-    res.clearCookie('token', {
+    res.clearCookie("accessToken", {
       httpOnly: true,
       sameSite: "Strict",
       secure: true,
-    })
+    });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "Strict",
+      secure: true,
+    });
 
     res.jsonSuccess(200, "Logout successful");
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 const userRefreshToken = async (req, res) => {
   try {
-    const currentToken = req.cookies.token;
-    const newTokenData = await authService.getRefreshToken(currentToken)
-    res.jsonSuccess(200, "Successfully get new refresh token", newTokenData)
+    const currentToken = req.cookies.refreshToken;
+    const newTokenData = await authService.getRefreshToken(currentToken);
+    res.jsonSuccess(200, "Successfully get new refresh token", newTokenData);
   } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message, error)
+    res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 const forgotPassword = async (req, res) => {
   try {
@@ -57,19 +71,22 @@ const forgotPassword = async (req, res) => {
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
   }
-}
+};
 
 const changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const updatedUser = await authService.changePassword(req.user, oldPassword, newPassword);
-    
-    res.jsonSuccess(200, "Successfully reset password", updatedUser)
-  } catch (error) {
-    res.jsonFailed(error?.statusCode, error?.message, error)
-  }
-}
+    const updatedUser = await authService.changePassword(
+      req.user,
+      oldPassword,
+      newPassword
+    );
 
+    res.jsonSuccess(200, "Successfully reset password", updatedUser);
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+};
 
 module.exports = {
   userLogin,
