@@ -158,6 +158,10 @@ function AppointmentRepository(db) {
     return db.appointments.create(bodyData, { transaction });
   };
 
+  const bulkCreate = (bodyData, transaction) => {
+    return db.appointments.bulkCreate(bodyData, { transaction });
+  };
+
   const updateById = (id, bodyData, transaction) => {
     return db.appointments.update(
       bodyData,
@@ -208,6 +212,7 @@ function AppointmentRepository(db) {
     findOneById,
     findOneByClientUuid,
     create,
+    bulkCreate,
     checkRoomAvailable,
     updateById,
     deleteByIds,

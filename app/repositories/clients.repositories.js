@@ -72,6 +72,7 @@ function ClientRepository(db) {
         "gender",
         "className",
         "problem",
+        "intakeFormLink",
         "guardianName",
         "guardianNationality",
         "guardianPhone",
@@ -197,6 +198,7 @@ function ClientRepository(db) {
   };
 
   const updateByUuid = (uuid, bodyData, transaction) => {
+    console.log("REPODATA", uuid, bodyData);
     return db.clients.update(
       bodyData,
       {

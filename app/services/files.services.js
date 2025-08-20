@@ -94,6 +94,7 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
       folderId = createdFolder.data.id;
     }
 
+    console.log("FILEDATAAA", fileData);
     const uploadedFile = await driveApi.files.create({
       supportsAllDrives: true,
       requestBody: {
@@ -105,6 +106,7 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
         mimeType: fileData.mimetype,
         body: Readable.from(fileData.buffer),
       },
+      fields: "id, name, webViewLink",
     });
 
     const client = await clientService.getClientByUuid(uuid);
@@ -139,10 +141,13 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
 
     await tr.commit();
 
+    console.log("UPLOADEDFILE", uploadedFile, uploadedFile.data);
+
     return {
       fileId: uploadedFile.data.id,
       fileName: uploadedFile.data.name,
       folderId: folderId,
+      webViewLink: uploadedFile.data.webViewLink,
     };
   } catch (error) {
     console.error("Error uploading file:", error);

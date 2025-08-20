@@ -85,6 +85,10 @@ module.exports = (sequelize, DataTypes) => {
       problem: {
         type: DataTypes.TEXT,
       },
+      intakeFormLink: {
+        type: DataTypes.STRING,
+        field: "intake_form_link",
+      },
       guardianName: {
         type: DataTypes.STRING(128),
         field: "guardian_name",

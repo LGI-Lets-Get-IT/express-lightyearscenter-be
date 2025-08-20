@@ -2,6 +2,7 @@ const { format } = require("date-fns");
 const employeeService = require("../services/employees.services");
 const generateRandomPassword = require("../utils/generatePassword.utils");
 const customError = new Error();
+const RoleConstant = require("../constants/roles.constant");
 
 const getAll = async (req, res) => {
   try {
@@ -20,6 +21,7 @@ const getAllByRolePsychologist = async (req, res) => {
     if (appointmentDate && timeStart && timeEnd) {
       const dateToDay = format(appointmentDate, "EEEE");
       psychologists = await employeeService.getAllEmployeesBySchedule(
+        RoleConstant.PSYCHOLOGIST,
         dateToDay,
         timeStart,
         timeEnd
@@ -39,7 +41,19 @@ const getAllByRolePsychologist = async (req, res) => {
 
 const getAllByRoleTherapist = async (req, res) => {
   try {
-    const therapists = await employeeService.getAllTherapists();
+    let therapists = [];
+    const { appointmentDate, timeStart, timeEnd } = req.query;
+    if (appointmentDate && timeStart && timeEnd) {
+      const dateToDay = format(appointmentDate, "EEEE");
+      therapists = await employeeService.getAllEmployeesBySchedule(
+        RoleConstant.THERAPIST,
+        dateToDay,
+        timeStart,
+        timeEnd
+      );
+    } else {
+      therapists = await employeeService.getAllTherapists();
+    }
     res.jsonSuccess(
       200,
       "Successfully fetched all therapists data",

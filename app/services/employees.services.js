@@ -40,11 +40,13 @@ const getAllEmployeeSchedules = async () => {
 };
 
 const getAllEmployeesBySchedule = async (
+  roleId,
   appointmentDay,
   startTime,
   endTime
 ) => {
   const schedules = await employeeRepository.findAllBySchedules(
+    roleId,
     appointmentDay,
     startTime,
     endTime
