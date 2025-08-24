@@ -20,7 +20,7 @@ exports.appointmentSchema = {
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-    intervalBetweenAppointment: Joi.number().when("appointmentType", {
+    therapyDays: Joi.array().when("appointmentType", {
       is: "Treatment",
       then: Joi.required(),
       otherwise: Joi.optional(),

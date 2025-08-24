@@ -198,7 +198,6 @@ function ClientRepository(db) {
   };
 
   const updateByUuid = (uuid, bodyData, transaction) => {
-    console.log("REPODATA", uuid, bodyData);
     return db.clients.update(
       bodyData,
       {
