@@ -1,5 +1,12 @@
 const db = require("../models");
-const { format, addBusinessDays } = require("date-fns");
+const {
+  format,
+  addBusinessDays,
+  set,
+  getHours,
+  getMinutes,
+  addDays,
+} = require("date-fns");
 const appointmentRepository =
   require("../repositories/appointments.repositories")(db);
 const employeeService = require("./employees.services");
@@ -64,12 +71,7 @@ const getAppointmentsByClientUuid = async (clientUuid) => {
 
 const createAppointment = async (bodyData) => {
   const tr = await db.sequelize.transaction();
-  const {
-    treatmentId,
-    numberOfRepetition,
-    intervalBetweenAppointment,
-    ...rest
-  } = bodyData;
+  const { treatmentId, numberOfRepetition, therapyDays, ...rest } = bodyData;
 
   try {
     const checkRoomAvailability =
@@ -88,28 +90,65 @@ const createAppointment = async (bodyData) => {
     const employeeData = await employeeService.getEmployeeById(bodyData.picId);
     const clientData = await clientService.getClientById(bodyData.clientId);
 
-    if (bodyData.treatmentId && numberOfRepetition > 0) {
+    if (
+      bodyData.appointmentType.toLowerCase() === "treatment" &&
+      bodyData.treatmentId &&
+      numberOfRepetition > 0
+    ) {
       const mapBulkAppointment = [];
-      for (let repetition = 0; repetition < numberOfRepetition; repetition++) {
-        const newDate = addBusinessDays(
-          new Date(format(bodyData.appointmentDate, "yyyy-MM-dd")),
-          intervalBetweenAppointment * repetition
-        );
-        const newStartTime = addBusinessDays(
-          new Date(format(bodyData.bookingTimeStart, "yyyy-MM-dd HH:mm")),
-          intervalBetweenAppointment * repetition
-        );
-        const newEndTime = addBusinessDays(
-          new Date(format(bodyData.bookingTimeEnd, "yyyy-MM-dd HH:mm")),
-          intervalBetweenAppointment * repetition
-        );
+      // for (let repetition = 0; repetition < numberOfRepetition; repetition++) {
+      //   const newDate = addBusinessDays(
+      //     new Date(format(bodyData.appointmentDate, "yyyy-MM-dd")),
+      //     7 * repetition
+      //   );
+      //   const newStartTime = addBusinessDays(
+      //     new Date(format(bodyData.bookingTimeStart, "yyyy-MM-dd HH:mm")),
+      //     7 * repetition
+      //   );
+      //   const newEndTime = addBusinessDays(
+      //     new Date(format(bodyData.bookingTimeEnd, "yyyy-MM-dd HH:mm")),
+      //     7 * repetition
+      //   );
 
-        mapBulkAppointment.push({
-          ...rest,
-          appointmentDate: newDate,
-          bookingTimeStart: newStartTime,
-          bookingTimeEnd: newEndTime,
-        });
+      //   mapBulkAppointment.push({
+      //     ...rest,
+      //     appointmentDate: newDate,
+      //     bookingTimeStart: newStartTime,
+      //     bookingTimeEnd: newEndTime,
+      //     title: `${bodyData.title} - Session ${repetition + 1}`,
+      //   });
+      // }
+
+      let currentDate = new Date(bodyData.appointmentDate);
+      let repetitionCount = 0;
+      while (repetitionCount < numberOfRepetition) {
+        const dayName = format(currentDate, "EEEE"); // Monday, Tuesday, etc.
+
+        if (therapyDays.includes(dayName)) {
+          // Adjust start and end times for this date
+          const startTime = set(currentDate, {
+            hours: getHours(new Date(bodyData.bookingTimeStart)),
+            minutes: getMinutes(new Date(bodyData.bookingTimeStart)),
+          });
+
+          const endTime = set(currentDate, {
+            hours: getHours(new Date(bodyData.bookingTimeEnd)),
+            minutes: getMinutes(new Date(bodyData.bookingTimeEnd)),
+          });
+
+          mapBulkAppointment.push({
+            ...rest,
+            appointmentDate: currentDate,
+            bookingTimeStart: startTime,
+            bookingTimeEnd: endTime,
+            title: `${bodyData.title} - Session ${repetitionCount + 1}`,
+          });
+
+          repetitionCount++;
+        }
+
+        // Move to next day
+        currentDate = addDays(currentDate, 1);
       }
       const bulkCreatedAppointment = await appointmentRepository.bulkCreate(
         mapBulkAppointment,
@@ -121,8 +160,7 @@ const createAppointment = async (bodyData) => {
         throw customError;
       }
 
-      for await (const appointment of bulkCreatedAppointment) {
-        console.log("APPOINTMENTTT", appointment, appointment.id);
+      for (const appointment of bulkCreatedAppointment) {
         const sendEmailToClient = await mailService.sendMail(
           clientData.guardianEmail,
           `New Appointment Confirmation: ${appointment.title} on ${format(
@@ -239,6 +277,50 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
       appointmentId,
       bodyData,
       tr
+    );
+
+    const employeeData = await employeeService.getEmployeeById(bodyData.picId);
+    const clientData = await clientService.getClientById(bodyData.clientId);
+    const sendEmailToClient = await mailService.sendMail(
+      clientData.guardianEmail,
+      `Appointment Updated: ${bodyData.title} on ${format(
+        bodyData.appointmentDate,
+        "dd MMM yyyy"
+      )}`,
+      "APPOINTMENT_UPDATED",
+      {
+        guardianName: clientData.guardianName,
+        clientName: clientData.fullName,
+        picName: employeeData.fullName,
+        picType: bodyData.picType,
+        appointmentTitle: bodyData.title,
+        appointmentType: bodyData.appointmentType,
+        appointmentDate: format(bodyData.appointmentDate, "dd MMM yyyy"),
+        startTime: format(bodyData.bookingTimeStart, "HH:mm"),
+        endTime: format(bodyData.bookingTimeEnd, "HH:mm"),
+        roomName: roomOptions[bodyData.roomId],
+        link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
+      }
+    );
+
+    const sendEmailToPIC = await mailService.sendMail(
+      employeeData.email,
+      `Appointment Updated: ${bodyData.title} with ${
+        clientData.fullName
+      } on ${format(bodyData.appointmentDate, "dd MMM yyyy")}`,
+      "APPOINTMENT_PIC_UPDATED",
+      {
+        fullName: employeeData.fullName,
+        clientName: clientData.fullName,
+        picType: bodyData.picType,
+        appointmentTitle: bodyData.title,
+        appointmentType: bodyData.appointmentType,
+        appointmentDate: format(bodyData.appointmentDate, "dd MMM yyyy"),
+        startTime: format(bodyData.bookingTimeStart, "HH:mm"),
+        endTime: format(bodyData.bookingTimeEnd, "HH:mm"),
+        roomName: roomOptions[bodyData.roomId],
+        link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
+      }
     );
     await tr.commit();
 
