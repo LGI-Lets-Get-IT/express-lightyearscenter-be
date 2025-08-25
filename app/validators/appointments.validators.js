@@ -15,6 +15,11 @@ exports.appointmentSchema = {
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
+    treatmentName: Joi.string().when("appointmentType", {
+      is: "Treatment",
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
     numberOfRepetition: Joi.number().when("appointmentType", {
       is: "Treatment",
       then: Joi.required(),
