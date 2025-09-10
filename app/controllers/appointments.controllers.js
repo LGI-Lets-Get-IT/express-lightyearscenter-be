@@ -108,6 +108,7 @@ const create = async (req, res) => {
       appointmentDate,
       appointmentType,
       treatmentId,
+      treatmentName,
       numberOfRepetition,
       therapyDays,
     } = req.body;
@@ -126,6 +127,7 @@ const create = async (req, res) => {
       bookingTimeStart: timeStart,
       bookingTimeEnd: timeEnd,
       treatmentId,
+      treatmentName,
       numberOfRepetition,
       therapyDays,
     };

@@ -141,7 +141,9 @@ const createAppointment = async (bodyData) => {
             appointmentDate: currentDate,
             bookingTimeStart: startTime,
             bookingTimeEnd: endTime,
-            title: `${bodyData.title} - Session ${repetitionCount + 1}`,
+            title: `${bodyData.title} - ${bodyData.treatmentName} - Session ${
+              repetitionCount + 1
+            }`,
           });
 
           repetitionCount++;
