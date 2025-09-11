@@ -12,6 +12,7 @@ const appointmentRepository =
 const employeeService = require("./employees.services");
 const clientService = require("./clients.services");
 const mailService = require("./mail.services");
+const emailQueue = require("./emailQueue.service");
 const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
 const customError = new Error();
 const roomOptions = require("../constants/rooms.constant");
@@ -19,30 +20,55 @@ const roomOptions = require("../constants/rooms.constant");
 const getAllAppointments = async () => {
   const result = await appointmentRepository.findAll();
 
-  const appointments = await Promise.all(
-    result.map(async (appointment) => {
-      const picData = await employeeService.getEmployeeById(appointment.picId);
-      return {
-        ...appointment,
-        picName: picData?.fullName,
-      };
-    })
+  // Get all unique PIC IDs to fetch employee data in one query
+  const picIds = [...new Set(result.map((appointment) => appointment.picId))];
+
+  // Fetch all employee data at once
+  const employeesData = await Promise.all(
+    picIds.map((picId) => employeeService.getEmployeeById(picId))
   );
+
+  // Create a map for quick lookup
+  const employeeMap = new Map();
+  employeesData.forEach((employee) => {
+    if (employee) {
+      employeeMap.set(employee.id, employee);
+    }
+  });
+
+  // Map appointments with employee data
+  const appointments = result.map((appointment) => ({
+    ...appointment,
+    picName: employeeMap.get(appointment.picId)?.fullName || "Unknown",
+  }));
 
   return appointments;
 };
 
 const getAllAppointmentsByQueryParams = async (queryParams) => {
   const result = await appointmentRepository.findAll(queryParams);
-  const appointments = await Promise.all(
-    result.map(async (appointment) => {
-      const picData = await employeeService.getEmployeeById(appointment.picId);
-      return {
-        ...appointment,
-        picName: picData?.fullName,
-      };
-    })
+
+  // Get all unique PIC IDs to fetch employee data in one query
+  const picIds = [...new Set(result.map((appointment) => appointment.picId))];
+
+  // Fetch all employee data at once
+  const employeesData = await Promise.all(
+    picIds.map((picId) => employeeService.getEmployeeById(picId))
   );
+
+  // Create a map for quick lookup
+  const employeeMap = new Map();
+  employeesData.forEach((employee) => {
+    if (employee) {
+      employeeMap.set(employee.id, employee);
+    }
+  });
+
+  // Map appointments with employee data
+  const appointments = result.map((appointment) => ({
+    ...appointment,
+    picName: employeeMap.get(appointment.picId)?.fullName || "-",
+  }));
 
   return appointments;
 };
@@ -87,8 +113,11 @@ const createAppointment = async (bodyData) => {
       throw customError;
     }
 
-    const employeeData = await employeeService.getEmployeeById(bodyData.picId);
-    const clientData = await clientService.getClientById(bodyData.clientId);
+    // Fetch employee and client data once
+    const [employeeData, clientData] = await Promise.all([
+      employeeService.getEmployeeById(bodyData.picId),
+      clientService.getClientById(bodyData.clientId),
+    ]);
 
     if (
       bodyData.appointmentType.toLowerCase() === "treatment" &&
@@ -96,32 +125,10 @@ const createAppointment = async (bodyData) => {
       numberOfRepetition > 0
     ) {
       const mapBulkAppointment = [];
-      // for (let repetition = 0; repetition < numberOfRepetition; repetition++) {
-      //   const newDate = addBusinessDays(
-      //     new Date(format(bodyData.appointmentDate, "yyyy-MM-dd")),
-      //     7 * repetition
-      //   );
-      //   const newStartTime = addBusinessDays(
-      //     new Date(format(bodyData.bookingTimeStart, "yyyy-MM-dd HH:mm")),
-      //     7 * repetition
-      //   );
-      //   const newEndTime = addBusinessDays(
-      //     new Date(format(bodyData.bookingTimeEnd, "yyyy-MM-dd HH:mm")),
-      //     7 * repetition
-      //   );
-
-      //   mapBulkAppointment.push({
-      //     ...rest,
-      //     appointmentDate: newDate,
-      //     bookingTimeStart: newStartTime,
-      //     bookingTimeEnd: newEndTime,
-      //     title: `${bodyData.title} - Session ${repetition + 1}`,
-      //   });
-      // }
 
       let currentDate = new Date(bodyData.appointmentDate);
-      let repetitionCount = 0;
-      while (repetitionCount < numberOfRepetition) {
+      let repetitionCount = 1;
+      while (repetitionCount <= numberOfRepetition) {
         const dayName = format(currentDate, "EEEE"); // Monday, Tuesday, etc.
 
         if (therapyDays.includes(dayName)) {
@@ -141,9 +148,7 @@ const createAppointment = async (bodyData) => {
             appointmentDate: currentDate,
             bookingTimeStart: startTime,
             bookingTimeEnd: endTime,
-            title: `${bodyData.title} - ${bodyData.treatmentName} - Session ${
-              repetitionCount + 1
-            }`,
+            title: `${bodyData.title} - ${bodyData.treatmentName} - Session ${repetitionCount}`,
           });
 
           repetitionCount++;
@@ -152,6 +157,7 @@ const createAppointment = async (bodyData) => {
         // Move to next day
         currentDate = addDays(currentDate, 1);
       }
+
       const bulkCreatedAppointment = await appointmentRepository.bulkCreate(
         mapBulkAppointment,
         tr
@@ -162,49 +168,62 @@ const createAppointment = async (bodyData) => {
         throw customError;
       }
 
-      for (const appointment of bulkCreatedAppointment) {
-        const sendEmailToClient = await mailService.sendMail(
-          clientData.guardianEmail,
-          `New Appointment Confirmation: ${appointment.title} on ${format(
-            appointment.appointmentDate,
-            "dd MMM yyyy"
-          )}`,
-          "APPOINTMENT_CREATED",
-          {
-            guardianName: clientData.guardianName,
-            clientName: clientData.fullName,
-            picName: employeeData.fullName,
-            picType: appointment.picType,
-            appointmentTitle: appointment.title,
-            appointmentType: appointment.appointmentType,
-            appointmentDate: format(appointment.appointmentDate, "dd MMM yyyy"),
-            startTime: format(appointment.bookingTimeStart, "HH:mm"),
-            endTime: format(appointment.bookingTimeEnd, "HH:mm"),
-            roomName: roomOptions[appointment.roomId],
-            link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
-          }
-        );
+      // Commit transaction first, then queue emails
+      await tr.commit();
 
-        const sendEmailToPIC = await mailService.sendMail(
-          employeeData.email,
-          `New Appointment Assigned: ${appointment.title} with ${
-            clientData.fullName
-          } on ${format(appointment.appointmentDate, "dd MMM yyyy")}`,
-          "APPOINTMENT_PIC_ASSIGNED",
-          {
-            fullName: employeeData.fullName,
-            clientName: clientData.fullName,
-            picType: appointment.picType,
-            appointmentTitle: appointment.title,
-            appointmentType: appointment.appointmentType,
-            appointmentDate: format(appointment.appointmentDate, "dd MMM yyyy"),
-            startTime: format(appointment.bookingTimeStart, "HH:mm"),
-            endTime: format(appointment.bookingTimeEnd, "HH:mm"),
-            roomName: roomOptions[appointment.roomId],
-            link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
-          }
-        );
-      }
+      // Queue emails with rate limiting
+      setTimeout(() => {
+        bulkCreatedAppointment.forEach((appointment) => {
+          // Queue client email
+          emailQueue.add({
+            to: clientData.guardianEmail,
+            subject: `New Appointment Confirmation: ${
+              appointment.title
+            } on ${format(appointment.appointmentDate, "dd MMM yyyy")}`,
+            template: "APPOINTMENT_CREATED",
+            data: {
+              guardianName: clientData.guardianName,
+              clientName: clientData.fullName,
+              picName: employeeData.fullName,
+              picType: appointment.picType,
+              appointmentTitle: appointment.title,
+              appointmentType: appointment.appointmentType,
+              appointmentDate: format(
+                appointment.appointmentDate,
+                "dd MMM yyyy"
+              ),
+              startTime: format(appointment.bookingTimeStart, "HH:mm"),
+              endTime: format(appointment.bookingTimeEnd, "HH:mm"),
+              roomName: roomOptions[appointment.roomId],
+              link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+            },
+          });
+
+          // Queue PIC email
+          emailQueue.add({
+            to: employeeData.email,
+            subject: `New Appointment Assigned: ${appointment.title} with ${
+              clientData.fullName
+            } on ${format(appointment.appointmentDate, "dd MMM yyyy")}`,
+            template: "APPOINTMENT_PIC_ASSIGNED",
+            data: {
+              fullName: employeeData.fullName,
+              clientName: clientData.fullName,
+              picType: appointment.picType,
+              appointmentTitle: appointment.title,
+              appointmentType: appointment.appointmentType,
+              appointmentDate: format(
+                appointment.appointmentDate,
+                "dd MMM yyyy"
+              ),
+              startTime: format(appointment.bookingTimeStart, "HH:mm"),
+              endTime: format(appointment.bookingTimeEnd, "HH:mm"),
+              roomName: roomOptions[appointment.roomId],
+              link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+            },
+          });
+        });
+      }, 0);
     } else {
       const createdAppointment = await appointmentRepository.create(rest, tr);
       if (!createdAppointment) {
@@ -212,58 +231,64 @@ const createAppointment = async (bodyData) => {
         throw customError;
       }
 
-      const sendEmailToClient = await mailService.sendMail(
-        clientData.guardianEmail,
-        `New Appointment Confirmation: ${createdAppointment.title} on ${format(
-          createdAppointment.appointmentDate,
-          "dd MMM yyyy"
-        )}`,
-        "APPOINTMENT_CREATED",
-        {
-          guardianName: clientData.guardianName,
-          clientName: clientData.fullName,
-          picName: employeeData.fullName,
-          picType: createdAppointment.picType,
-          appointmentTitle: createdAppointment.title,
-          appointmentType: createdAppointment.appointmentType,
-          appointmentDate: format(
-            createdAppointment.appointmentDate,
-            "dd MMM yyyy"
-          ),
-          startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
-          endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
-          roomName: roomOptions[createdAppointment.roomId],
-          link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
-        }
-      );
+      // Commit transaction first, then queue emails
+      await tr.commit();
 
-      const sendEmailToPIC = await mailService.sendMail(
-        employeeData.email,
-        `New Appointment Assigned: ${createdAppointment.title} with ${
-          clientData.fullName
-        } on ${format(createdAppointment.appointmentDate, "dd MMM yyyy")}`,
-        "APPOINTMENT_PIC_ASSIGNED",
-        {
-          fullName: employeeData.fullName,
-          clientName: clientData.fullName,
-          picType: createdAppointment.picType,
-          appointmentTitle: createdAppointment.title,
-          appointmentType: createdAppointment.appointmentType,
-          appointmentDate: format(
+      // Queue emails with rate limiting
+      setTimeout(() => {
+        // Queue client email
+        emailQueue.add({
+          to: clientData.guardianEmail,
+          subject: `New Appointment Confirmation: ${
+            createdAppointment.title
+          } on ${format(createdAppointment.appointmentDate, "dd MMM yyyy")}`,
+          template: "APPOINTMENT_CREATED",
+          data: {
+            guardianName: clientData.guardianName,
+            clientName: clientData.fullName,
+            picName: employeeData.fullName,
+            picType: createdAppointment.picType,
+            appointmentTitle: createdAppointment.title,
+            appointmentType: createdAppointment.appointmentType,
+            appointmentDate: format(
+              createdAppointment.appointmentDate,
+              "dd MMM yyyy"
+            ),
+            startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
+            endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
+            roomName: roomOptions[createdAppointment.roomId],
+            link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+          },
+        });
+
+        // Queue PIC email
+        emailQueue.add({
+          to: employeeData.email,
+          subject: `New Appointment Assigned: ${
+            createdAppointment.title
+          } with ${clientData.fullName} on ${format(
             createdAppointment.appointmentDate,
             "dd MMM yyyy"
-          ),
-          startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
-          endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
-          roomName: roomOptions[createdAppointment.roomId],
-          link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
-        }
-      );
+          )}`,
+          template: "APPOINTMENT_PIC_ASSIGNED",
+          data: {
+            fullName: employeeData.fullName,
+            clientName: clientData.fullName,
+            picType: createdAppointment.picType,
+            appointmentTitle: createdAppointment.title,
+            appointmentType: createdAppointment.appointmentType,
+            appointmentDate: format(
+              createdAppointment.appointmentDate,
+              "dd MMM yyyy"
+            ),
+            startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
+            endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
+            roomName: roomOptions[createdAppointment.roomId],
+            link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+          },
+        });
+      }, 0);
     }
-
-    console.log("SAMPE SINI LINE 228 SEBELUM COMMIT");
-
-    await tr.commit();
 
     return;
   } catch (error) {
