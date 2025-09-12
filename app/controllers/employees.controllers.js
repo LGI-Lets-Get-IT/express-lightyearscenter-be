@@ -16,19 +16,37 @@ const getAll = async (req, res) => {
 
 const getAllByRolePsychologist = async (req, res) => {
   try {
+    const psychologists = await employeeService.getAllPsychologists();
+    res.jsonSuccess(
+      200,
+      "Successfully fetched all psychologists data",
+      psychologists
+    );
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+};
+
+const getAllByRolePsychologistWithAvailability = async (req, res) => {
+  try {
     let psychologists = [];
+    console.log("FASJFSAJFASJ");
     const { appointmentDate, timeStart, timeEnd } = req.query;
-    if (appointmentDate && timeStart && timeEnd) {
-      const dateToDay = format(appointmentDate, "EEEE");
-      psychologists = await employeeService.getAllEmployeesBySchedule(
+    console.log("ABC");
+    // Handle both single date and array of dates
+    const dates = Array.isArray(appointmentDate)
+      ? appointmentDate
+      : [appointmentDate];
+    const dateToDay = format(new Date(dates[0]), "EEEE"); // Use first date for day calculation
+
+    psychologists =
+      await employeeService.getAllEmployeesByScheduleWithAvailability(
         RoleConstant.PSYCHOLOGIST,
         dateToDay,
         timeStart,
-        timeEnd
+        timeEnd,
+        dates // Pass all dates to service
       );
-    } else {
-      psychologists = await employeeService.getAllPsychologists();
-    }
     res.jsonSuccess(
       200,
       "Successfully fetched all psychologists data",
@@ -41,19 +59,43 @@ const getAllByRolePsychologist = async (req, res) => {
 
 const getAllByRoleTherapist = async (req, res) => {
   try {
+    const therapists = await employeeService.getAllTherapists();
+    res.jsonSuccess(
+      200,
+      "Successfully fetched all therapists data",
+      therapists
+    );
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+};
+
+const getAllByRoleTherapistWithAvailability = async (req, res) => {
+  try {
     let therapists = [];
     const { appointmentDate, timeStart, timeEnd } = req.query;
-    if (appointmentDate && timeStart && timeEnd) {
-      const dateToDay = format(appointmentDate, "EEEE");
-      therapists = await employeeService.getAllEmployeesBySchedule(
+
+    console.log("=== CONTROLLER DEBUG ===");
+    console.log("Raw query params:", req.query);
+    console.log("Parsed params:", { appointmentDate, timeStart, timeEnd });
+
+    // Handle both single date and array of dates
+    const dates = Array.isArray(appointmentDate)
+      ? appointmentDate
+      : [appointmentDate];
+    const dateToDay = format(new Date(dates[0]), "EEEE"); // Use first date for day calculation
+
+    console.log("Processed dates:", dates);
+    console.log("Date to day:", dateToDay);
+
+    therapists =
+      await employeeService.getAllEmployeesByScheduleWithAvailability(
         RoleConstant.THERAPIST,
         dateToDay,
         timeStart,
-        timeEnd
+        timeEnd,
+        dates // Pass all dates to service
       );
-    } else {
-      therapists = await employeeService.getAllTherapists();
-    }
     res.jsonSuccess(
       200,
       "Successfully fetched all therapists data",
@@ -146,6 +188,8 @@ module.exports = {
   getAll,
   getAllByRolePsychologist,
   getAllByRoleTherapist,
+  getAllByRolePsychologistWithAvailability,
+  getAllByRoleTherapistWithAvailability,
   getById,
   updateById,
   updatePasswordById,

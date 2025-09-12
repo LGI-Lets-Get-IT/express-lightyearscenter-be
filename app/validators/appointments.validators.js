@@ -10,17 +10,17 @@ exports.appointmentSchema = {
     appointmentDate: Joi.string().required(),
     timeStart: Joi.date().greater("now").required(),
     timeEnd: Joi.date().greater(Joi.ref("timeStart")).required(),
-    treatmentId: Joi.number().when("appointmentType", {
+    treatmentId: Joi.number().allow(null).when("appointmentType", {
       is: "Treatment",
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-    numberOfRepetition: Joi.number().when("appointmentType", {
+    numberOfRepetition: Joi.number().allow(null).when("appointmentType", {
       is: "Treatment",
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-    therapyDays: Joi.array().when("appointmentType", {
+    therapyDays: Joi.array().allow(null).when("appointmentType", {
       is: "Treatment",
       then: Joi.required(),
       otherwise: Joi.optional(),
