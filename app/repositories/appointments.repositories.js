@@ -18,6 +18,7 @@ function AppointmentRepository(db) {
         "picId",
         "picType",
         "appointmentDate",
+        [db.sequelize.col("client_id"), "clientRawId"],
         [db.sequelize.col("client.uuid"), "clientId"],
         [db.sequelize.col("client.full_name"), "clientName"],
         [

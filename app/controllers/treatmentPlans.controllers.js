@@ -59,7 +59,8 @@ const getAll = async (req, res) => {
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         therapistId: req.user.id,
       });
-    } else if (!user?.role) {
+    } else if (req.user.role === rolesNameConstant.SCHOOL_PIC) {
+    } else if (!req.user?.role) {
       const findUser = await clientService.getClientByUuid(req.user.id);
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         clientId: findUser.id,

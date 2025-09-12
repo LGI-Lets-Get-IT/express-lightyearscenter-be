@@ -1,4 +1,5 @@
 const rolesNameConstant = require("../constants/rolesName.constant");
+const clientService = require("../services/clients.services");
 const assessmentService = require("../services/assessments.services");
 const treatmentPlanService = require("../services/treatmentPlans.services");
 const appointmentService = require("../services/appointments.services");
@@ -32,15 +33,18 @@ const getAll = async (req, res) => {
           }
         );
 
-        const clientIds = appointments.map((dt) => dt.clientId);
+        const clientIds = appointments.map((dt) => dt.clientRawId);
         if (clientIds.length) {
           assessments = await assessmentService.getAllAssessmentsByQueryParams({
             clientId: [clientIds],
           });
         }
+      } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
       } else if (!user?.role) {
+        console.log("USERR", user);
+        const clientData = await clientService.getClientByUuid(user.id);
         assessments = await assessmentService.getAllAssessmentsByQueryParams({
-          clientId: user.id,
+          clientId: clientData.id,
         });
       }
     }
