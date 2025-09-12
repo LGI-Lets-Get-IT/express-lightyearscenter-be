@@ -32,6 +32,12 @@ const getAllClientsById = async (clientIds) => {
   return clients;
 };
 
+const getAllClientsByUuid = async (clientUuids) => {
+  console.log("clientUuids SERV", clientUuids);
+  const clients = await clientRepository.findAllByUuid(clientUuids);
+  return clients;
+};
+
 const getClientById = async (clientId) => {
   const client = await clientRepository.findOneById(clientId);
 
@@ -280,6 +286,7 @@ module.exports = {
   getUserProfile,
   getAllClients,
   getAllClientsById,
+  getAllClientsByUuid,
   getClientById,
   getClientByUuid,
   getClientByUuidWithAppointments,

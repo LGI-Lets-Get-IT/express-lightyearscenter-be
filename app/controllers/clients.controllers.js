@@ -8,6 +8,7 @@ const getAll = async (req, res) => {
   const { user } = req;
   try {
     let clients = [];
+    console.log("SFAKJFSAJFSKJ", user.role);
     if (
       user.role === rolesNameConstant.SUPER_ADMIN ||
       user.role === rolesNameConstant.STAFF ||
@@ -21,12 +22,13 @@ const getAll = async (req, res) => {
           picType: rolesNameConstant.PSYCHOLOGIST,
         });
 
-      const relatedClientIds = appointments.map(
-        (appointment) => appointment.clientId
-      );
+      const relatedClientUuids = [
+        ...new Set(appointments.map((appointment) => appointment.clientId)),
+      ];
+      console.log("relatedClientIds", relatedClientUuids);
 
-      if (relatedClientIds.length) {
-        clients = await clientService.getAllClientsById(relatedClientIds);
+      if (relatedClientUuids.length) {
+        clients = await clientService.getAllClientsByUuid(relatedClientUuids);
       }
     } else if (user.role === rolesNameConstant.THERAPIST) {
       const plans = await treatmentPlanService.getAllPlansByQueryParams({

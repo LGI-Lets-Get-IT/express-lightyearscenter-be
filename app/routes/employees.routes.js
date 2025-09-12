@@ -14,8 +14,8 @@ router.get(
   verifyPermission(permissions.EMPLOYEES.VIEW),
   employeeController.getAll
 );
-// router.get("/psychologists", employeeController.getAllByRolePsychologist);
-// router.get("/therapists", employeeController.getAllByRoleTherapist);
+router.get("/psychologists", employeeController.getAllByRolePsychologist);
+router.get("/therapists", employeeController.getAllByRoleTherapist);
 router.get(
   "/psychologists/availability",
   employeeController.getAllByRolePsychologistWithAvailability
