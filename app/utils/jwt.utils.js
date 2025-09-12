@@ -21,7 +21,7 @@ const generateAccessToken = (payload) => {
 
   // Sign the payload with the access token secret and options
   return jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, {
-    expiresIn: "2m",
+    expiresIn: "5m",
   });
 };
 
@@ -42,7 +42,7 @@ const generateRefreshToken = (payload) => {
 
   // Sign the payload with the refresh token secret and options
   return jwt.sign(payload, `${process.env.REFRESH_TOKEN_SECRET}`, {
-    expiresIn: "5m",
+    expiresIn: "60m",
   });
 };
 

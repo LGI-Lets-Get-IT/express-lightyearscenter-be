@@ -207,6 +207,28 @@ function AppointmentRepository(db) {
     return !isAvailable;
   };
 
+  const checkPICAvailable = async (
+    picId,
+    appointmentDate,
+    bookingTimeStart,
+    bookingTimeEnd
+  ) => {
+    const isAvailable = await db.appointments.findOne({
+      where: {
+        picId,
+        appointmentDate,
+        bookingTimeStart: {
+          [db.Sequelize.Op.lt]: bookingTimeEnd,
+        },
+        bookingTimeEnd: {
+          [db.Sequelize.Op.gt]: bookingTimeStart,
+        },
+      },
+    });
+
+    return !isAvailable;
+  };
+
   return {
     findAll,
     findOneById,
@@ -214,6 +236,7 @@ function AppointmentRepository(db) {
     create,
     bulkCreate,
     checkRoomAvailable,
+    checkPICAvailable,
     updateById,
     deleteByIds,
   };

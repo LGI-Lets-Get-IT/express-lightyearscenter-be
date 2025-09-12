@@ -10,7 +10,10 @@ const mailService = require("../services/mail.services");
 const getAllEmployees = async () => {
   const employees = await employeeRepository.findAll();
 
-  return employees;
+  // Convert Sequelize models to plain objects
+  return employees.map((employee) =>
+    employee.toJSON ? employee.toJSON() : employee
+  );
 };
 
 const getAllPsychologists = async () => {
@@ -18,15 +21,21 @@ const getAllPsychologists = async () => {
     RoleConstant.PSYCHOLOGIST
   );
 
-  return psychologists;
+  // Convert Sequelize models to plain objects
+  return psychologists.map((psychologist) =>
+    psychologist.toJSON ? psychologist.toJSON() : psychologist
+  );
 };
 
 const getAllTherapists = async () => {
-  const psychologists = await employeeRepository.findAllByRoleId(
+  const therapists = await employeeRepository.findAllByRoleId(
     RoleConstant.THERAPIST
   );
 
-  return psychologists;
+  // Convert Sequelize models to plain objects
+  return therapists.map((therapist) =>
+    therapist.toJSON ? therapist.toJSON() : therapist
+  );
 };
 
 const getAllEmployeeSchedules = async () => {
@@ -36,15 +45,27 @@ const getAllEmployeeSchedules = async () => {
       RoleConstant.THERAPIST,
     ]);
 
-  return schedules;
+  // Convert Sequelize models to plain objects
+  return schedules.map((schedule) =>
+    schedule.toJSON ? schedule.toJSON() : schedule
+  );
 };
 
-const getAllEmployeesBySchedule = async (
+const getAllEmployeesByScheduleWithAvailability = async (
   roleId,
   appointmentDay,
   startTime,
-  endTime
+  endTime,
+  appointmentDate
 ) => {
+  console.log("getAllEmployeesByScheduleWithAvailability called with:", {
+    roleId,
+    appointmentDay,
+    startTime,
+    endTime,
+    appointmentDate,
+  });
+
   const schedules = await employeeRepository.findAllBySchedules(
     roleId,
     appointmentDay,
@@ -52,7 +73,48 @@ const getAllEmployeesBySchedule = async (
     endTime
   );
 
-  return schedules;
+  console.log("APPOINTMENTDAY", schedules, appointmentDate);
+
+  // Handle both single date and multiple dates
+  const datesToCheck = Array.isArray(appointmentDate)
+    ? appointmentDate
+    : [appointmentDate];
+
+  console.log("Dates to check for existing appointments:", datesToCheck);
+
+  // Check existing appointments for each employee across all dates
+  const schedulesWithAvailability = await Promise.all(
+    schedules.map(async (employee) => {
+      // Check if employee has existing appointments on ANY of the selected dates
+      const hasExistingAppointment = await Promise.all(
+        datesToCheck.map((date) =>
+          employeeRepository.checkEmployeeAppointment(
+            employee.id,
+            date,
+            startTime,
+            endTime
+          )
+        )
+      ).then((results) => results.some((hasAppointment) => hasAppointment));
+
+      // Convert Sequelize model to plain object to avoid circular references
+      const employeeData = employee.toJSON ? employee.toJSON() : employee;
+
+      console.log(`Employee ${employeeData.fullName}:`, {
+        hasExistingAppointment,
+        isAvailable: !hasExistingAppointment,
+        datesChecked: datesToCheck,
+      });
+
+      return {
+        ...employeeData,
+        hasExistingAppointment,
+        isAvailable: !hasExistingAppointment,
+      };
+    })
+  );
+
+  return schedulesWithAvailability;
 };
 
 const getScheduleByEmployeeId = async (employeeId) => {
@@ -243,7 +305,8 @@ module.exports = {
   getAllTherapists,
   getAllPsychologists,
   getAllEmployeeSchedules,
-  getAllEmployeesBySchedule,
+  // getAllEmployeesBySchedule,
+  getAllEmployeesByScheduleWithAvailability,
   getScheduleByEmployeeId,
   getEmployeeById,
   getEmployeeByEmail,

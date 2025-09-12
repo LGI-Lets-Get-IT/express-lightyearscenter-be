@@ -95,11 +95,130 @@ const getAppointmentsByClientUuid = async (clientUuid) => {
   return result;
 };
 
-const createAppointment = async (bodyData) => {
+const createAppointmentV1 = async (bodyData) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    // Parallel availability checks and data fetching for better performance
+    const [
+      checkPICAvailability,
+      checkRoomAvailability,
+      employeeData,
+      clientData,
+    ] = await Promise.all([
+      appointmentRepository.checkPICAvailable(
+        bodyData.picId,
+        bodyData.appointmentDate,
+        bodyData.bookingTimeStart,
+        bodyData.bookingTimeEnd
+      ),
+      appointmentRepository.checkRoomAvailable(
+        bodyData.roomId,
+        bodyData.appointmentDate,
+        bodyData.bookingTimeStart,
+        bodyData.bookingTimeEnd
+      ),
+      employeeService.getEmployeeById(bodyData.picId),
+      clientService.getClientById(bodyData.clientId),
+    ]);
+
+    if (!checkPICAvailability) {
+      customError.statusCode = 400;
+      customError.message = "PIC already has an appointment at that time";
+      throw customError;
+    }
+
+    if (!checkRoomAvailability) {
+      customError.statusCode = 400;
+      customError.message = "Room is already booked at that time";
+      throw customError;
+    }
+
+    const createdAppointment = await appointmentRepository.create(bodyData, tr);
+
+    if (!createdAppointment) {
+      customError.message = "Failed to create appointment data";
+      throw customError;
+    }
+
+    // Queue emails for background processing to avoid blocking response
+    const emailQueue = require("./emailQueue.service");
+
+    // Queue client email
+    emailQueue.add({
+      to: clientData.guardianEmail,
+      subject: `New Appointment Confirmation: ${
+        createdAppointment.title
+      } on ${format(createdAppointment.appointmentDate, "dd MMM yyyy")}`,
+      template: "APPOINTMENT_CREATED",
+      data: {
+        guardianName: clientData.guardianName,
+        clientName: clientData.fullName,
+        picName: employeeData.fullName,
+        picType: createdAppointment.picType,
+        appointmentTitle: createdAppointment.title,
+        appointmentType: createdAppointment.appointmentType,
+        appointmentDate: format(
+          createdAppointment.appointmentDate,
+          "dd MMM yyyy"
+        ),
+        startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
+        endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
+        roomName: roomOptions[createdAppointment.roomId],
+        link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+      },
+    });
+
+    // Queue PIC email
+    emailQueue.add({
+      to: employeeData.email,
+      subject: `New Appointment Assigned: ${createdAppointment.title} with ${
+        clientData.fullName
+      } on ${format(createdAppointment.appointmentDate, "dd MMM yyyy")}`,
+      template: "APPOINTMENT_PIC_ASSIGNED",
+      data: {
+        fullName: employeeData.fullName,
+        clientName: clientData.fullName,
+        picType: createdAppointment.picType,
+        appointmentTitle: createdAppointment.title,
+        appointmentType: createdAppointment.appointmentType,
+        appointmentDate: format(
+          createdAppointment.appointmentDate,
+          "dd MMM yyyy"
+        ),
+        startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
+        endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
+        roomName: roomOptions[createdAppointment.roomId],
+        link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+      },
+    });
+
+    await tr.commit();
+
+    return createdAppointment;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
+};
+
+const createAppointmentV2 = async (bodyData) => {
   const tr = await db.sequelize.transaction();
   const { treatmentId, numberOfRepetition, therapyDays, ...rest } = bodyData;
 
   try {
+    // Check PIC availability
+    const checkPICAvailability = await appointmentRepository.checkPICAvailable(
+      bodyData.picId,
+      bodyData.appointmentDate,
+      bodyData.bookingTimeStart,
+      bodyData.bookingTimeEnd
+    );
+    if (!checkPICAvailability) {
+      customError.statusCode = 400;
+      customError.message = "PIC already has an appointment at that time";
+      throw customError;
+    }
+
     const checkRoomAvailability =
       await appointmentRepository.checkRoomAvailable(
         bodyData.roomId,
@@ -297,6 +416,28 @@ const createAppointment = async (bodyData) => {
   }
 };
 
+const confirmAppointmentById = async (appointmentId) => {
+  const tr = await db.sequelize.transaction();
+
+  try {
+    const updateBody = {
+      isConfirmed: true,
+    };
+    const result = await appointmentRepository.updateById(
+      appointmentId,
+      updateBody,
+      tr
+    );
+
+    await tr.commit();
+
+    return result;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
+};
+
 const updateAppointmentById = async (appointmentId, bodyData) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -378,12 +519,191 @@ const deleteAppointmentByIds = async (appointmentIds) => {
   }
 };
 
+const createBulkAppointments = async (appointmentsData) => {
+  const tr = await db.sequelize.transaction();
+
+  try {
+    // Validate that all appointments have the same PIC
+    const picIds = [...new Set(appointmentsData.map((apt) => apt.picId))];
+    if (picIds.length > 1) {
+      customError.statusCode = 400;
+      customError.message = "All appointments must have the same PIC";
+      throw customError;
+    }
+
+    const picId = picIds[0];
+    const clientId = appointmentsData[0].clientId;
+    const roomId = appointmentsData[0].roomId;
+
+    // Fetch employee and client data once
+    const [employeeData, clientData] = await Promise.all([
+      employeeService.getEmployeeById(picId),
+      clientService.getClientById(clientId),
+    ]);
+
+    // Validate PIC availability for all dates
+    const employeeSchedule = await employeeService.getScheduleByEmployeeId(
+      picId
+    );
+
+    console.log("Employee schedule for PIC:", picId, employeeSchedule);
+
+    for (const appointment of appointmentsData) {
+      const appointmentDay = format(
+        new Date(appointment.appointmentDate),
+        "EEEE"
+      );
+
+      console.log(`Checking appointment for ${appointmentDay}:`, appointment);
+
+      // Check if PIC is available on this day
+      const daySchedule = employeeSchedule.schedules?.find((schedule) =>
+        schedule.availableDays.includes(appointmentDay)
+      );
+
+      console.log(`Day schedule for ${appointmentDay}:`, daySchedule);
+
+      if (!daySchedule) {
+        customError.statusCode = 400;
+        customError.message = `PIC is not available on ${appointmentDay}`;
+        throw customError;
+      }
+
+      // Check if time is within PIC's available hours
+      const appointmentStartTime = format(
+        new Date(appointment.bookingTimeStart),
+        "HH:mm"
+      );
+      const appointmentEndTime = format(
+        new Date(appointment.bookingTimeEnd),
+        "HH:mm"
+      );
+
+      console.log(
+        `Time check: ${appointmentStartTime}-${appointmentEndTime} vs ${daySchedule.availableStartTime}-${daySchedule.availableEndTime}`
+      );
+
+      if (
+        appointmentStartTime < daySchedule.availableStartTime ||
+        appointmentEndTime > daySchedule.availableEndTime
+      ) {
+        customError.statusCode = 400;
+        customError.message = `PIC is not available at the selected time on ${appointmentDay}`;
+        throw customError;
+      }
+
+      // Check PIC availability for each appointment
+      const checkPICAvailability =
+        await appointmentRepository.checkPICAvailable(
+          picId,
+          appointment.appointmentDate,
+          appointment.bookingTimeStart,
+          appointment.bookingTimeEnd
+        );
+
+      if (!checkPICAvailability) {
+        customError.statusCode = 400;
+        customError.message = `PIC already has an appointment on ${format(
+          new Date(appointment.appointmentDate),
+          "dd MMM yyyy"
+        )} at ${appointmentStartTime}-${appointmentEndTime}`;
+        throw customError;
+      }
+
+      // Check room availability for each appointment
+      const checkRoomAvailability =
+        await appointmentRepository.checkRoomAvailable(
+          roomId,
+          appointment.appointmentDate,
+          appointment.bookingTimeStart,
+          appointment.bookingTimeEnd
+        );
+
+      if (!checkRoomAvailability) {
+        customError.statusCode = 400;
+        customError.message = `Room is already booked on ${format(
+          new Date(appointment.appointmentDate),
+          "dd MMM yyyy"
+        )} at ${appointmentStartTime}-${appointmentEndTime}`;
+        throw customError;
+      }
+    }
+
+    // Create all appointments
+    const bulkCreatedAppointments = await appointmentRepository.bulkCreate(
+      appointmentsData,
+      tr
+    );
+
+    if (!bulkCreatedAppointments || bulkCreatedAppointments.length === 0) {
+      customError.statusCode = 400;
+      customError.message = "Failed to create bulk appointments";
+      throw customError;
+    }
+
+    // Commit transaction first, then queue emails
+    await tr.commit();
+
+    // Queue emails with rate limiting
+    setTimeout(() => {
+      bulkCreatedAppointments.forEach((appointment, index) => {
+        // Queue client email
+        emailQueue.add({
+          to: clientData.guardianEmail,
+          subject: `New Appointment Confirmation: ${
+            appointment.title
+          } on ${format(appointment.appointmentDate, "dd MMM yyyy")}`,
+          template: "APPOINTMENT_CREATED",
+          data: {
+            guardianName: clientData.guardianName,
+            clientName: clientData.fullName,
+            picName: employeeData.fullName,
+            picType: appointment.picType,
+            appointmentTitle: appointment.title,
+            appointmentType: appointment.appointmentType,
+            appointmentDate: format(appointment.appointmentDate, "dd MMM yyyy"),
+            startTime: format(appointment.bookingTimeStart, "HH:mm"),
+            endTime: format(appointment.bookingTimeEnd, "HH:mm"),
+            roomName: roomOptions[appointment.roomId],
+            link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+          },
+        });
+
+        // Queue PIC email (only once for bulk appointments)
+        if (index === 0) {
+          emailQueue.add({
+            to: employeeData.email,
+            subject: `New Appointment Assigned: ${appointmentsData.length} appointments with ${clientData.fullName}`,
+            template: "APPOINTMENT_PIC_ASSIGNED",
+            data: {
+              fullName: employeeData.fullName,
+              clientName: clientData.fullName,
+              appointmentCount: appointmentsData.length,
+              appointmentTitle: appointmentsData[0].title,
+              appointmentType: appointmentsData[0].appointmentType,
+              link: `https://dashboard.thelightyearscdc.com/appointments`,
+            },
+          });
+        }
+      });
+    }, 0);
+
+    return bulkCreatedAppointments;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
+};
+
 module.exports = {
   getAllAppointments,
   getAllAppointmentsByQueryParams,
   getAppointmentById,
   getAppointmentsByClientUuid,
-  createAppointment,
+  createAppointmentV1,
+  createAppointmentV2,
+  createBulkAppointments,
   updateAppointmentById,
   deleteAppointmentByIds,
+  confirmAppointmentById,
 };
