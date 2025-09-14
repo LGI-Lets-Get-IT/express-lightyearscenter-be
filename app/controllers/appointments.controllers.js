@@ -1,7 +1,5 @@
 const appointmentService = require("../services/appointments.services");
 const clientService = require("../services/clients.services");
-const employeeService = require("../services/employees.services");
-const roleConstant = require("../constants/roles.constant");
 const rolesNameConstant = require("../constants/rolesName.constant");
 
 const getAll = async (req, res) => {

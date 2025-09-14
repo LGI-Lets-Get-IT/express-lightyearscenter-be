@@ -58,11 +58,21 @@ const getDashboardData = async (req, res) => {
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         psychologistId: user.id,
       });
+
+      const relatedClientUuids = [
+        ...new Set(appointments.map((appointment) => appointment.clientId)),
+      ];
+
+      if (relatedClientUuids.length) {
+        clients = await clientService.getAllClientsByUuid(relatedClientUuids);
+      }
       data = {
         totalAppointments: appointments.length,
         totalAssessments: assessments.length,
         totalPlans: plans.length,
+        totalClients: clients.length,
       };
+    } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
     } else if (user.role === rolesNameConstant.THERAPIST) {
       appointments = await appointmentService.getAllAppointmentsByQueryParams({
         picId: user.id,
@@ -77,10 +87,14 @@ const getDashboardData = async (req, res) => {
           clientId: [clientIds],
         });
       }
+
+      clients = await clientService.getAllClientsById(clientIds);
+
       data = {
         totalAppointments: appointments.length,
         totalAssessments: assessments.length,
         totalPlans: plans.length,
+        totalClients: clients.length,
       };
     } else {
       const clientData = await clientService.getClientByUuidWithAppointments(
