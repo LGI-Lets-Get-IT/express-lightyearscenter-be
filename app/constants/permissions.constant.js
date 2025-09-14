@@ -72,6 +72,12 @@ const permissions = {
     UPDATE: "update_employees",
     DELETE: "delete_employees",
   },
+  PIC_SCHEDULES: {
+    CREATE: "create_pic_schedules",
+    VIEW: "view_pic_schedules",
+    UPDATE: "update_pic_schedules",
+    DELETE: "delete_pic_schedules",
+  },
 };
 
 // Auto-flatten for each module so we can spread (...permissions.APPOINTMENTS)

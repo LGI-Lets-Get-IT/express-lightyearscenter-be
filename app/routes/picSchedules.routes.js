@@ -7,30 +7,30 @@ const { assessmentSchema } = require("../validators/assessments.validators");
 
 router.post(
   "/",
-  verifyPermission(permissions.EMPLOYEES.CREATE),
+  verifyPermission(permissions.PIC_SCHEDULES.CREATE),
   // validateInput(assessmentSchema.create),
   picScheduleController.create
 );
 router.get(
   "/",
-  verifyPermission(permissions.EMPLOYEES.VIEW),
+  verifyPermission(permissions.PIC_SCHEDULES.VIEW),
   picScheduleController.getAll
 );
 router.get(
   "/:employeeId",
-  verifyPermission(permissions.EMPLOYEES.VIEW),
+  verifyPermission(permissions.PIC_SCHEDULES.VIEW),
   // validateInput(assessmentSchema.view),
   picScheduleController.getByEmployeeId
 );
 router.put(
   "/:employeeId",
-  verifyPermission(permissions.ASSESSMENTS.UPDATE),
+  verifyPermission(permissions.PIC_SCHEDULES.UPDATE),
   // validateInput(assessmentSchema.update),
   picScheduleController.updateByEmployeeId
 );
 router.delete(
   "/",
-  verifyPermission(permissions.ASSESSMENTS.DELETE),
+  verifyPermission(permissions.PIC_SCHEDULES.DELETE),
   // validateInput(assessmentSchema.delete),
   picScheduleController.deleteIds
 );

@@ -30,10 +30,13 @@ module.exports = {
     ...permissions.CLIENTS.ALL,
     ...permissions.SCHOOLS.ALL,
     ...permissions.EMPLOYEES.ALL,
+    ...permissions.PIC_SCHEDULES.ALL,
   ],
   [STAFF]: [
     permissions.DASHBOARD.VIEW,
     permissions.SCHOOLS.VIEW,
+    permissions.PIC_SCHEDULES.VIEW,
+    permissions.SETTINGS.VIEW,
     ...permissions.APPOINTMENTS.ALL,
     ...permissions.CLIENTS.ALL,
   ],
