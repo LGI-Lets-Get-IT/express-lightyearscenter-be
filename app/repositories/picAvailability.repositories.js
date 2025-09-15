@@ -48,11 +48,22 @@ function PicAvailabilityRepository(db) {
     );
   };
 
-  const deleteByIds = (id, transaction) => {
+  const deleteByIds = (scheduleIds, transaction) => {
     return db.picAvailabilities.destroy(
       {
         where: {
-          id,
+          id: scheduleIds,
+        },
+      },
+      { transaction }
+    );
+  };
+
+  const deleteByEmployeeId = (employeeId, transaction) => {
+    return db.picAvailabilities.destroy(
+      {
+        where: {
+          employeeId,
         },
       },
       { transaction }
@@ -66,6 +77,7 @@ function PicAvailabilityRepository(db) {
     bulkCreate,
     updateById,
     deleteByIds,
+    deleteByEmployeeId,
   };
 }
 

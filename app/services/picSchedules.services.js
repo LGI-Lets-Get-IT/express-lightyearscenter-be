@@ -71,6 +71,23 @@ const updateScheduleById = async (id, bodyData) => {
   }
 };
 
+const deleteSchedulesByEmployeeId = async (employeeId) => {
+  const tr = await db.sequelize.transaction();
+  try {
+    const deletedSchedules = await picAvailabilityRepository.deleteByEmployeeId(
+      employeeId,
+      tr
+    );
+
+    await tr.commit();
+
+    return deletedSchedules;
+  } catch (error) {
+    await tr.rollback();
+    throw error;
+  }
+};
+
 const deleteScheduleByIds = async (scheduleIds) => {
   const tr = await db.sequelize.transaction();
   try {
@@ -99,5 +116,6 @@ module.exports = {
   getScheduleByEmployeeId,
   createSchedule,
   updateScheduleById,
+  deleteSchedulesByEmployeeId,
   deleteScheduleByIds,
 };

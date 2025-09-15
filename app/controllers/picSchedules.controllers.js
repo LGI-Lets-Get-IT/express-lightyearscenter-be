@@ -56,25 +56,31 @@ const create = async (req, res) => {
 
 const updateByEmployeeId = async (req, res) => {
   try {
-    const { scheduleId } = req.params;
-    const { appointmentId, clientId, psychologistId, testId, result } =
-      req.body;
+    const { employeeId } = req.params;
+    const { schedules } = req.body;
 
-    const bodyData = {
-      appointmentId,
-      clientId,
-      psychologistId,
-      testTypeId: testId,
-      result,
-    };
-    const updatedAssessment = await picScheduleService.updateScheduleById(
-      scheduleId,
-      bodyData
+    // First, delete all existing schedules for this employee
+    await picScheduleService.deleteSchedulesByEmployeeId(employeeId);
+
+    // Then create new schedules
+    const mappedBody = [];
+    for (const schedule of schedules) {
+      mappedBody.push({
+        employeeId,
+        availableDays: schedule.availableDays,
+        availableStartTime: schedule.availableStartTime,
+        availableEndTime: schedule.availableEndTime,
+      });
+    }
+
+    const updatedSchedules = await picScheduleService.createSchedule(
+      mappedBody
     );
+
     res.jsonSuccess(
       200,
-      "Successfully updated assessment data",
-      updatedAssessment
+      "Successfully updated PIC schedule data",
+      updatedSchedules
     );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
