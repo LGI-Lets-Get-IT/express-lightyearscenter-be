@@ -18,6 +18,11 @@ const customError = new Error();
 const roomOptions = require("../constants/rooms.constant");
 
 const getAllAppointments = async () => {
+  console.log(
+    "DATE",
+    format("2025-09-22", "yyyy-MM-dd"),
+    format("2025-09-22", "EEEE")
+  );
   const result = await appointmentRepository.findAll();
 
   // Get all unique PIC IDs to fetch employee data in one query
