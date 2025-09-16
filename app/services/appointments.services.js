@@ -616,11 +616,29 @@ const createBulkAppointments = async (appointmentsData) => {
       //   new Date(appointment.bookingTimeEnd),
       //   "HH:mm"
       // );
-      const appointmentStartTime = format(
-        appointment.bookingTimeStart,
-        "HH:mm"
+      // Fix timezone issue: Convert UTC times to local time for comparison
+      const appointmentStartTimeUTC = new Date(appointment.bookingTimeStart);
+      const appointmentEndTimeUTC = new Date(appointment.bookingTimeEnd);
+
+      // Get local time by using the server's timezone
+      const appointmentStartTime = appointmentStartTimeUTC.toLocaleTimeString(
+        "en-US",
+        {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "Asia/Jakarta", // +7 timezone
+        }
       );
-      const appointmentEndTime = format(appointment.bookingTimeEnd, "HH:mm");
+      const appointmentEndTime = appointmentEndTimeUTC.toLocaleTimeString(
+        "en-US",
+        {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "Asia/Jakarta", // +7 timezone
+        }
+      );
 
       console.log(
         `Time check: ${appointmentStartTime}-${appointmentEndTime} vs ${daySchedule.availableStartTime}-${daySchedule.availableEndTime}`
