@@ -37,7 +37,26 @@ const getAllByRolePsychologistWithAvailability = async (req, res) => {
     const dates = Array.isArray(appointmentDate)
       ? appointmentDate
       : [appointmentDate];
-    const dateToDay = format(new Date(dates[0]), "EEEE"); // Use first date for day calculation
+
+    // Fix timezone issue: Parse date without UTC conversion
+    const dateStr = dates[0];
+    const dateParts = dateStr.split("-");
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+    const day = parseInt(dateParts[2]);
+    const dateObj = new Date(year, month, day);
+
+    // Get day name using JavaScript's built-in method to avoid UTC conversion
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const dateToDay = dayNames[dateObj.getDay()];
 
     psychologists =
       await employeeService.getAllEmployeesByScheduleWithAvailability(
@@ -83,7 +102,26 @@ const getAllByRoleTherapistWithAvailability = async (req, res) => {
     const dates = Array.isArray(appointmentDate)
       ? appointmentDate
       : [appointmentDate];
-    const dateToDay = format(new Date(dates[0]), "EEEE"); // Use first date for day calculation
+
+    // Fix timezone issue: Parse date without UTC conversion
+    const dateStr = dates[0];
+    const dateParts = dateStr.split("-");
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+    const day = parseInt(dateParts[2]);
+    const dateObj = new Date(year, month, day);
+
+    // Get day name using JavaScript's built-in method to avoid UTC conversion
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const dateToDay = dayNames[dateObj.getDay()];
 
     console.log("Processed dates:", dates);
     console.log("Date to day:", dateToDay);

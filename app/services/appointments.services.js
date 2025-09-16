@@ -248,7 +248,17 @@ const createAppointmentV2 = async (bodyData) => {
       let currentDate = new Date(bodyData.appointmentDate);
       let repetitionCount = 1;
       while (repetitionCount <= numberOfRepetition) {
-        const dayName = format(currentDate, "EEEE"); // Monday, Tuesday, etc.
+        // Fix timezone issue: Get day name without UTC conversion
+        const dayNames = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        const dayName = dayNames[currentDate.getDay()];
 
         if (therapyDays.includes(dayName)) {
           // Adjust start and end times for this date
@@ -565,7 +575,18 @@ const createBulkAppointments = async (appointmentsData) => {
         appointment.appointmentDate,
         format(appointment.appointmentDate, "yyyy-MM-dd HH:mm:ss xx")
       );
-      const appointmentDay = format(appointment.appointmentDate, "EEEE");
+      // Fix timezone issue: Get day name without UTC conversion
+      const dayNames = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      const appointmentDay =
+        dayNames[new Date(appointment.appointmentDate).getDay()];
 
       console.log(`Checking appointment for ${appointmentDay}:`, appointment);
 
