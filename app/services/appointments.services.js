@@ -546,13 +546,20 @@ const createBulkAppointments = async (appointmentsData) => {
       picId
     );
 
-    console.log("Employee schedule for PIC:", picId, employeeSchedule);
+    console.log(
+      "Employee schedule for PIC:",
+      picId,
+      employeeSchedule,
+      employeeSchedule.schedules
+    );
 
     for (const appointment of appointmentsData) {
-      const appointmentDay = format(
-        new Date(appointment.appointmentDate),
-        "EEEE"
-      );
+      // const appointmentDay = format(
+      //   new Date(appointment.appointmentDate),
+      //   "EEEE"
+      // );
+      console.log("APPOINTMENTT DATE", appointment.appointmentDate);
+      const appointmentDay = format(appointment.appointmentDate, "EEEE");
 
       console.log(`Checking appointment for ${appointmentDay}:`, appointment);
 
