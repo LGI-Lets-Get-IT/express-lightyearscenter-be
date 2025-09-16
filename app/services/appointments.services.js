@@ -531,6 +531,8 @@ const createBulkAppointments = async (appointmentsData) => {
       throw customError;
     }
 
+    console.log("appointmentsData", appointmentsData);
+
     const picId = picIds[0];
     const clientId = appointmentsData[0].clientId;
     const roomId = appointmentsData[0].roomId;
@@ -558,7 +560,11 @@ const createBulkAppointments = async (appointmentsData) => {
       //   new Date(appointment.appointmentDate),
       //   "EEEE"
       // );
-      console.log("APPOINTMENTT DATE", appointment.appointmentDate);
+      console.log(
+        "APPOINTMENTT DATE",
+        appointment.appointmentDate,
+        format(appointment.appointmentDate, "yyyy-MM-dd HH:mm:ss xx")
+      );
       const appointmentDay = format(appointment.appointmentDate, "EEEE");
 
       console.log(`Checking appointment for ${appointmentDay}:`, appointment);
