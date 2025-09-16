@@ -34,9 +34,9 @@ module.exports = {
   ],
   [STAFF]: [
     permissions.DASHBOARD.VIEW,
-    permissions.SCHOOLS.VIEW,
     permissions.PIC_SCHEDULES.VIEW,
     permissions.SETTINGS.VIEW,
+    ...permissions.SCHOOLS.ALL,
     ...permissions.APPOINTMENTS.ALL,
     ...permissions.CLIENTS.ALL,
   ],
