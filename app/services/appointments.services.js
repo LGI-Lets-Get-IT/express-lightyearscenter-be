@@ -549,10 +549,11 @@ const createBulkAppointments = async (appointmentsData) => {
     console.log("Employee schedule for PIC:", picId, employeeSchedule);
 
     for (const appointment of appointmentsData) {
-      const appointmentDay = format(
-        new Date(appointment.appointmentDate),
-        "EEEE"
-      );
+      // const appointmentDay = format(
+      //   new Date(appointment.appointmentDate),
+      //   "EEEE"
+      // );
+      const appointmentDay = format(appointment.appointmentDate, "EEEE");
 
       console.log(`Checking appointment for ${appointmentDay}:`, appointment);
 
@@ -570,14 +571,19 @@ const createBulkAppointments = async (appointmentsData) => {
       }
 
       // Check if time is within PIC's available hours
+      // const appointmentStartTime = format(
+      //   new Date(appointment.bookingTimeStart),
+      //   "HH:mm"
+      // );
+      // const appointmentEndTime = format(
+      //   new Date(appointment.bookingTimeEnd),
+      //   "HH:mm"
+      // );
       const appointmentStartTime = format(
-        new Date(appointment.bookingTimeStart),
+        appointment.bookingTimeStart,
         "HH:mm"
       );
-      const appointmentEndTime = format(
-        new Date(appointment.bookingTimeEnd),
-        "HH:mm"
-      );
+      const appointmentEndTime = format(appointment.bookingTimeEnd, "HH:mm");
 
       console.log(
         `Time check: ${appointmentStartTime}-${appointmentEndTime} vs ${daySchedule.availableStartTime}-${daySchedule.availableEndTime}`
@@ -604,7 +610,8 @@ const createBulkAppointments = async (appointmentsData) => {
       if (!checkPICAvailability) {
         customError.statusCode = 400;
         customError.message = `PIC already has an appointment on ${format(
-          new Date(appointment.appointmentDate),
+          // new Date(appointment.appointmentDate),
+          appointment.appointmentDate,
           "dd MMM yyyy"
         )} at ${appointmentStartTime}-${appointmentEndTime}`;
         throw customError;
@@ -622,7 +629,8 @@ const createBulkAppointments = async (appointmentsData) => {
       if (!checkRoomAvailability) {
         customError.statusCode = 400;
         customError.message = `Room is already booked on ${format(
-          new Date(appointment.appointmentDate),
+          // new Date(appointment.appointmentDate),
+          appointment.appointmentDate,
           "dd MMM yyyy"
         )} at ${appointmentStartTime}-${appointmentEndTime}`;
         throw customError;
