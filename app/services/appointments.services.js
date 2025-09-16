@@ -541,8 +541,6 @@ const createBulkAppointments = async (appointmentsData) => {
       throw customError;
     }
 
-    console.log("appointmentsData", appointmentsData);
-
     const picId = picIds[0];
     const clientId = appointmentsData[0].clientId;
     const roomId = appointmentsData[0].roomId;
@@ -575,7 +573,14 @@ const createBulkAppointments = async (appointmentsData) => {
         appointment.appointmentDate,
         format(appointment.appointmentDate, "yyyy-MM-dd HH:mm:ss xx")
       );
-      // Fix timezone issue: Get day name without UTC conversion
+      // Fix timezone issue: Parse date without UTC conversion
+      const dateStr = appointment.appointmentDate.split(" ")[0]; // Extract YYYY-MM-DD part
+      const dateParts = dateStr.split("-");
+      const year = parseInt(dateParts[0]);
+      const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+      const day = parseInt(dateParts[2]);
+      const dateObj = new Date(year, month, day);
+
       const dayNames = [
         "Sunday",
         "Monday",
@@ -585,8 +590,7 @@ const createBulkAppointments = async (appointmentsData) => {
         "Friday",
         "Saturday",
       ];
-      const appointmentDay =
-        dayNames[new Date(appointment.appointmentDate).getDay()];
+      const appointmentDay = dayNames[dateObj.getDay()];
 
       console.log(`Checking appointment for ${appointmentDay}:`, appointment);
 

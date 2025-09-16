@@ -257,8 +257,6 @@ const createBulk = async (req, res) => {
       treatmentId: appointment.treatmentId,
     }));
 
-    console.log("TRANSFERAPPOINTMENTS", transformedAppointments);
-
     const createdAppointments = await appointmentService.createBulkAppointments(
       transformedAppointments
     );
