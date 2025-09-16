@@ -17,6 +17,30 @@ const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
 const customError = new Error();
 const roomOptions = require("../constants/rooms.constant");
 
+// Helper function to format dates and times for emails in local timezone
+const formatForEmail = (date, formatString) => {
+  if (formatString === "dd MMM yyyy") {
+    // For dates, convert to local timezone
+    const localDate = new Date(date);
+    return localDate.toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      timeZone: "Asia/Jakarta",
+    });
+  } else if (formatString === "HH:mm") {
+    // For times, convert to local timezone
+    const localTime = new Date(date);
+    return localTime.toLocaleTimeString("en-US", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Asia/Jakarta",
+    });
+  }
+  return format(date, formatString);
+};
+
 const getAllAppointments = async () => {
   console.log(
     "DATE",
@@ -153,7 +177,10 @@ const createAppointmentV1 = async (bodyData) => {
       to: clientData.guardianEmail,
       subject: `New Appointment Confirmation: ${
         createdAppointment.title
-      } on ${format(createdAppointment.appointmentDate, "dd MMM yyyy")}`,
+      } on ${formatForEmail(
+        createdAppointment.appointmentDate,
+        "dd MMM yyyy"
+      )}`,
       template: "APPOINTMENT_CREATED",
       data: {
         guardianName: clientData.guardianName,
@@ -162,12 +189,12 @@ const createAppointmentV1 = async (bodyData) => {
         picType: createdAppointment.picType,
         appointmentTitle: createdAppointment.title,
         appointmentType: createdAppointment.appointmentType,
-        appointmentDate: format(
+        appointmentDate: formatForEmail(
           createdAppointment.appointmentDate,
           "dd MMM yyyy"
         ),
-        startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
-        endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
+        startTime: formatForEmail(createdAppointment.bookingTimeStart, "HH:mm"),
+        endTime: formatForEmail(createdAppointment.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[createdAppointment.roomId],
         link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
       },
@@ -178,7 +205,10 @@ const createAppointmentV1 = async (bodyData) => {
       to: employeeData.email,
       subject: `New Appointment Assigned: ${createdAppointment.title} with ${
         clientData.fullName
-      } on ${format(createdAppointment.appointmentDate, "dd MMM yyyy")}`,
+      } on ${formatForEmail(
+        createdAppointment.appointmentDate,
+        "dd MMM yyyy"
+      )}`,
       template: "APPOINTMENT_PIC_ASSIGNED",
       data: {
         fullName: employeeData.fullName,
@@ -186,12 +216,12 @@ const createAppointmentV1 = async (bodyData) => {
         picType: createdAppointment.picType,
         appointmentTitle: createdAppointment.title,
         appointmentType: createdAppointment.appointmentType,
-        appointmentDate: format(
+        appointmentDate: formatForEmail(
           createdAppointment.appointmentDate,
           "dd MMM yyyy"
         ),
-        startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
-        endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
+        startTime: formatForEmail(createdAppointment.bookingTimeStart, "HH:mm"),
+        endTime: formatForEmail(createdAppointment.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[createdAppointment.roomId],
         link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
       },
@@ -313,7 +343,7 @@ const createAppointmentV2 = async (bodyData) => {
             to: clientData.guardianEmail,
             subject: `New Appointment Confirmation: ${
               appointment.title
-            } on ${format(appointment.appointmentDate, "dd MMM yyyy")}`,
+            } on ${formatForEmail(appointment.appointmentDate, "dd MMM yyyy")}`,
             template: "APPOINTMENT_CREATED",
             data: {
               guardianName: clientData.guardianName,
@@ -322,12 +352,12 @@ const createAppointmentV2 = async (bodyData) => {
               picType: appointment.picType,
               appointmentTitle: appointment.title,
               appointmentType: appointment.appointmentType,
-              appointmentDate: format(
+              appointmentDate: formatForEmail(
                 appointment.appointmentDate,
                 "dd MMM yyyy"
               ),
-              startTime: format(appointment.bookingTimeStart, "HH:mm"),
-              endTime: format(appointment.bookingTimeEnd, "HH:mm"),
+              startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
+              endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
               roomName: roomOptions[appointment.roomId],
               link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
             },
@@ -338,7 +368,7 @@ const createAppointmentV2 = async (bodyData) => {
             to: employeeData.email,
             subject: `New Appointment Assigned: ${appointment.title} with ${
               clientData.fullName
-            } on ${format(appointment.appointmentDate, "dd MMM yyyy")}`,
+            } on ${formatForEmail(appointment.appointmentDate, "dd MMM yyyy")}`,
             template: "APPOINTMENT_PIC_ASSIGNED",
             data: {
               fullName: employeeData.fullName,
@@ -346,12 +376,12 @@ const createAppointmentV2 = async (bodyData) => {
               picType: appointment.picType,
               appointmentTitle: appointment.title,
               appointmentType: appointment.appointmentType,
-              appointmentDate: format(
+              appointmentDate: formatForEmail(
                 appointment.appointmentDate,
                 "dd MMM yyyy"
               ),
-              startTime: format(appointment.bookingTimeStart, "HH:mm"),
-              endTime: format(appointment.bookingTimeEnd, "HH:mm"),
+              startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
+              endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
               roomName: roomOptions[appointment.roomId],
               link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
             },
@@ -466,7 +496,7 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
     const clientData = await clientService.getClientById(bodyData.clientId);
     const sendEmailToClient = await mailService.sendMail(
       clientData.guardianEmail,
-      `Appointment Updated: ${bodyData.title} on ${format(
+      `Appointment Updated: ${bodyData.title} on ${formatForEmail(
         bodyData.appointmentDate,
         "dd MMM yyyy"
       )}`,
@@ -478,9 +508,12 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
         picType: bodyData.picType,
         appointmentTitle: bodyData.title,
         appointmentType: bodyData.appointmentType,
-        appointmentDate: format(bodyData.appointmentDate, "dd MMM yyyy"),
-        startTime: format(bodyData.bookingTimeStart, "HH:mm"),
-        endTime: format(bodyData.bookingTimeEnd, "HH:mm"),
+        appointmentDate: formatForEmail(
+          bodyData.appointmentDate,
+          "dd MMM yyyy"
+        ),
+        startTime: formatForEmail(bodyData.bookingTimeStart, "HH:mm"),
+        endTime: formatForEmail(bodyData.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[bodyData.roomId],
         link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
       }
@@ -490,7 +523,7 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
       employeeData.email,
       `Appointment Updated: ${bodyData.title} with ${
         clientData.fullName
-      } on ${format(bodyData.appointmentDate, "dd MMM yyyy")}`,
+      } on ${formatForEmail(bodyData.appointmentDate, "dd MMM yyyy")}`,
       "APPOINTMENT_PIC_UPDATED",
       {
         fullName: employeeData.fullName,
@@ -498,9 +531,12 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
         picType: bodyData.picType,
         appointmentTitle: bodyData.title,
         appointmentType: bodyData.appointmentType,
-        appointmentDate: format(bodyData.appointmentDate, "dd MMM yyyy"),
-        startTime: format(bodyData.bookingTimeStart, "HH:mm"),
-        endTime: format(bodyData.bookingTimeEnd, "HH:mm"),
+        appointmentDate: formatForEmail(
+          bodyData.appointmentDate,
+          "dd MMM yyyy"
+        ),
+        startTime: formatForEmail(bodyData.bookingTimeStart, "HH:mm"),
+        endTime: formatForEmail(bodyData.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[bodyData.roomId],
         link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
       }
@@ -720,7 +756,7 @@ const createBulkAppointments = async (appointmentsData) => {
           to: clientData.guardianEmail,
           subject: `New Appointment Confirmation: ${
             appointment.title
-          } on ${format(appointment.appointmentDate, "dd MMM yyyy")}`,
+          } on ${formatForEmail(appointment.appointmentDate, "dd MMM yyyy")}`,
           template: "APPOINTMENT_CREATED",
           data: {
             guardianName: clientData.guardianName,
@@ -729,9 +765,12 @@ const createBulkAppointments = async (appointmentsData) => {
             picType: appointment.picType,
             appointmentTitle: appointment.title,
             appointmentType: appointment.appointmentType,
-            appointmentDate: format(appointment.appointmentDate, "dd MMM yyyy"),
-            startTime: format(appointment.bookingTimeStart, "HH:mm"),
-            endTime: format(appointment.bookingTimeEnd, "HH:mm"),
+            appointmentDate: formatForEmail(
+              appointment.appointmentDate,
+              "dd MMM yyyy"
+            ),
+            startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
+            endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
             roomName: roomOptions[appointment.roomId],
             link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
           },
