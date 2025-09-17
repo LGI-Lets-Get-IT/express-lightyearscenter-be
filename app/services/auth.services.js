@@ -18,10 +18,42 @@ const clientRepository = require("../repositories/clients.repositories")(db);
 const customError = new Error();
 
 const login = async (currentToken, email, password) => {
+  // Check if user is already logged in with a valid token
   if (currentToken && currentToken !== "undefined") {
-    customError.statusCode = 403;
-    customError.message = "You are already logged in";
-    throw customError;
+    try {
+      // Validate the existing token
+      const decodedToken = decodeToken(
+        currentToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        "refresh"
+      );
+
+      // Check if the token belongs to the same user trying to log in
+      let existingUser = await clientRepository.findOneByRefreshToken(
+        currentToken
+      );
+      if (!existingUser) {
+        existingUser = await employeeRepository.findOneByRefreshToken(
+          currentToken
+        );
+      }
+
+      if (existingUser) {
+        const existingEmail =
+          existingUser?.email ?? existingUser?.guardianEmail;
+        if (existingEmail === email) {
+          customError.statusCode = 403;
+          customError.message = "You are already logged in";
+          throw customError;
+        }
+      }
+    } catch (error) {
+      // If token is invalid/expired, continue with login process
+      console.log(
+        "Existing token is invalid, proceeding with login:",
+        error.message
+      );
+    }
   }
 
   let userData = await clientRepository.findOneByEmail(email);
@@ -62,6 +94,7 @@ const login = async (currentToken, email, password) => {
       : rolePermissionsMappingConfig[roleConstant.CLIENT],
   });
 
+  // Clear any existing tokens for this user before setting new ones
   const updatedToken = await userData.update({
     refreshToken: refreshToken,
   });
@@ -89,8 +122,10 @@ const login = async (currentToken, email, password) => {
 
 const logout = async (currentToken) => {
   if (!currentToken || currentToken == "undefined") {
+    // If no token provided, consider logout successful (user might have already logged out)
+    // return { message: "Already logged out" };
     customError.statusCode = 401;
-    customError.message = "You are not logged in";
+    customError.message = "You are already logged out";
     throw customError;
   }
 
@@ -98,6 +133,8 @@ const logout = async (currentToken) => {
   if (!userData) {
     userData = await employeeRepository.findOneByRefreshToken(currentToken);
     if (!userData) {
+      // If token not found in database, consider logout successful
+      // return { message: "Token already invalidated" };
       customError.statusCode = 404;
       customError.message = "Token is invalid or expired";
       throw customError;
