@@ -30,6 +30,16 @@ const getAll = async (req, res) => {
       appointments = await appointmentService.getAllAppointmentsByQueryParams(
         queryParams
       );
+    } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+      // Get the school ID for the School PIC user
+      const schoolId = user.schoolId; // Assuming the user object has schoolId
+      const queryParams = {
+        schoolId: schoolId,
+      };
+
+      appointments = await appointmentService.getAllAppointmentsByQueryParams(
+        queryParams
+      );
     } else if (!user?.role) {
       const findUser = await clientService.getClientByUuid(user.id);
       const queryParams = {

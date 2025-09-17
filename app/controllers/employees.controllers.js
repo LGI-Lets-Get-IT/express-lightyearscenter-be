@@ -157,7 +157,8 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { fullName, email, phoneNumber, roleId, isActive } = req.body;
+    const { fullName, email, phoneNumber, roleId, schoolId, isActive } =
+      req.body;
 
     const generatedPassword = await generateRandomPassword();
     const bodyData = {
@@ -165,6 +166,7 @@ const create = async (req, res) => {
       email,
       phoneNumber,
       roleId,
+      schoolId,
       isActive,
       password: generatedPassword,
     };

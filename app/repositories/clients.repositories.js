@@ -20,6 +20,14 @@ function ClientRepository(db) {
     });
   };
 
+  const findAllBySchoolId = (schoolId) => {
+    return db.clients.findAll({
+      where: {
+        schoolId,
+      },
+    });
+  };
+
   const findOneById = (id) => {
     return db.clients.findOne({
       where: {
@@ -234,6 +242,7 @@ function ClientRepository(db) {
   return {
     findAll,
     findAllById,
+    findAllBySchoolId,
     findOneById,
     findAllByUuid,
     findOneByUuid,

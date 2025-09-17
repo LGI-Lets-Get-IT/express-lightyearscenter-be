@@ -1,7 +1,6 @@
 const clientService = require("../services/clients.services");
 const appointmentService = require("../services/appointments.services");
 const treatmentPlanService = require("../services/treatmentPlans.services");
-const generateRandomPassword = require("../utils/generatePassword.utils");
 const rolesNameConstant = require("../constants/rolesName.constant");
 
 const getAll = async (req, res) => {
@@ -38,6 +37,8 @@ const getAll = async (req, res) => {
       if (relatedClientIds.length) {
         clients = await clientService.getAllClientsById(relatedClientIds);
       }
+    } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+      clients = await clientService.getAllClientsBySchoolId(user.schoolId);
     }
 
     res.jsonSuccess(200, "Successfully fetched all clients data", clients);

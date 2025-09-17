@@ -27,6 +27,11 @@ const getAllClients = async () => {
   return clients;
 };
 
+const getAllClientsBySchoolId = async (schoolId) => {
+  const clients = await clientRepository.findAllBySchoolId(schoolId);
+  return clients;
+};
+
 const getAllClientsById = async (clientIds) => {
   const clients = await clientRepository.findAllById(clientIds);
   return clients;
@@ -285,6 +290,7 @@ const deleteClientByUuids = async (clientIds) => {
 module.exports = {
   getUserProfile,
   getAllClients,
+  getAllClientsBySchoolId,
   getAllClientsById,
   getAllClientsByUuid,
   getClientById,

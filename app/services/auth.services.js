@@ -78,6 +78,7 @@ const login = async (currentToken, email, password) => {
     fullName: userData?.fullName,
     email: userData?.email ?? userData?.guardianEmail,
     ...(userData?.role && { role: userData?.role?.name }),
+    ...(userData?.schoolId && { schoolId: userData?.schoolId }),
     // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     permissions: userData?.roleId
       ? rolePermissionsMappingConfig[userData?.roleId]
@@ -88,6 +89,7 @@ const login = async (currentToken, email, password) => {
     fullName: userData?.fullName,
     email: userData?.email ?? userData?.guardianEmail,
     ...(userData?.role && { role: userData?.role?.name }),
+    ...(userData?.schoolId && { schoolId: userData?.schoolId }),
     // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     permissions: userData?.roleId
       ? rolePermissionsMappingConfig[userData?.roleId]
@@ -111,6 +113,7 @@ const login = async (currentToken, email, password) => {
       email: userData?.email ?? userData?.guardianEmail,
       fullName: userData?.fullName,
       ...(userData?.role && { role: userData?.role?.name }),
+      ...(userData?.schoolId && { schoolId: userData?.schoolId }),
       permissions: userData?.roleId
         ? rolePermissionsMappingConfig[userData?.roleId]
         : rolePermissionsMappingConfig[roleConstant.CLIENT],
@@ -205,6 +208,7 @@ const getRefreshToken = async (currentToken) => {
     email: userData?.email ?? userData?.guardianEmail,
     fullName: userData?.fullName,
     ...(userData?.role && { role: userData?.role?.name }),
+    ...(userData?.schoolId && { schoolId: userData?.schoolId }),
     permissions: userData?.roleId
       ? rolePermissionsMappingConfig[userData?.roleId]
       : rolePermissionsMappingConfig[roleConstant.CLIENT],
@@ -238,6 +242,7 @@ const getRefreshToken = async (currentToken) => {
       email: userData?.email ?? userData?.guardianEmail,
       fullName: userData?.fullName,
       ...(userData?.role && { role: userData?.role?.name }),
+      ...(userData?.schoolId && { schoolId: userData?.schoolId }),
       permissions: userData?.roleId
         ? rolePermissionsMappingConfig[userData?.roleId]
         : rolePermissionsMappingConfig[roleConstant.CLIENT],

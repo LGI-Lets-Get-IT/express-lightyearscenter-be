@@ -133,12 +133,12 @@ const getEmployeeByEmail = async (email) => {
 const getEmployeeById = async (employeeId) => {
   const employee = await employeeRepository.findOneById(employeeId);
 
-  if (!employee) {
-    customError.statusCode = 404;
-    customError.message = "Employee data not found";
+  // if (!employee) {
+  //   customError.statusCode = 404;
+  //   customError.message = "Employee data not found";
 
-    throw customError;
-  }
+  //   throw customError;
+  // }
 
   return employee;
 };

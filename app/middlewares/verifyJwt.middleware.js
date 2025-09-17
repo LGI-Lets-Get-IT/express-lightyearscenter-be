@@ -34,6 +34,7 @@ const verifyJwt = (req, res, next) => {
         id: decodedToken.id,
         fullName: decodedToken.fullName,
         email: decodedToken.email,
+        ...(decodedToken?.schoolId && { schoolId: decodedToken.schoolId }),
         ...(decodedToken?.role && { role: decodedToken.role }),
       };
       req.permissions = decodedToken.permissions;

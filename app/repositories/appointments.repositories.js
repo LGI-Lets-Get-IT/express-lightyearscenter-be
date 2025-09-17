@@ -1,9 +1,28 @@
 function AppointmentRepository(db) {
   const findAll = (queryParams) => {
-    let whereOptions;
+    let whereOptions = {};
+    let includeOptions = [
+      {
+        model: db.clients,
+        as: "client",
+        attributes: [],
+      },
+    ];
+
     if (queryParams) {
-      whereOptions = queryParams;
+      // Handle schoolId filtering through client relationship
+      if (queryParams.schoolId) {
+        includeOptions[0].where = {
+          schoolId: queryParams.schoolId,
+        };
+        // Remove schoolId from main where clause since it's handled in include
+        const { schoolId, ...otherParams } = queryParams;
+        whereOptions = otherParams;
+      } else {
+        whereOptions = queryParams;
+      }
     }
+
     return db.appointments.findAll({
       raw: true,
       where: whereOptions,
@@ -52,13 +71,7 @@ function AppointmentRepository(db) {
         ],
         "isConfirmed",
       ],
-      include: [
-        {
-          model: db.clients,
-          as: "client",
-          attributes: [],
-        },
-      ],
+      include: includeOptions,
     });
   };
 

@@ -138,6 +138,7 @@ function EmployeeRepository(db) {
         "email",
         "isActive",
         [db.sequelize.col("role.name"), "roleName"],
+        [db.sequelize.col(`school.name`), "schoolName"],
         "createdAt",
         "updatedAt",
       ],
@@ -149,6 +150,11 @@ function EmployeeRepository(db) {
           model: db.roles,
           as: "role",
           attributes: ["name"],
+        },
+        {
+          model: db.schools,
+          as: "school",
+          attributes: [],
         },
       ],
     });

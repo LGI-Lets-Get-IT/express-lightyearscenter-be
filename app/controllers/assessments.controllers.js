@@ -40,6 +40,12 @@ const getAll = async (req, res) => {
           });
         }
       } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+        const queryParams = {
+          schoolId: user.schoolId,
+        };
+        assessments = await assessmentService.getAllAssessmentsByQueryParams(
+          queryParams
+        );
       } else if (!user?.role) {
         console.log("USERR", user);
         const clientData = await clientService.getClientByUuid(user.id);
