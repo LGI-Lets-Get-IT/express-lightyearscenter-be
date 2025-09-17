@@ -13,8 +13,8 @@ const userLogin = async (req, res) => {
       httpOnly: true,
       sameSite: "Strict",
       secure: true,
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day to match JWT expiration
-      // maxAge: 1 * 60 * 60 * 1000, // OLD CODE - commented out (6 minutes)
+      // maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day to match JWT expiration
+      maxAge: 5 * 60 * 1000,
     });
 
     // FIXED: Align cookie expiration with JWT expiration (60 minutes)
@@ -22,8 +22,8 @@ const userLogin = async (req, res) => {
       httpOnly: true,
       sameSite: "Strict",
       secure: true,
-      maxAge: 60 * 60 * 1000, // 60 minutes to match JWT expiration
-      // maxAge: 5 * 60 * 1000, // OLD CODE - commented out (3 minutes)
+      // maxAge: 60 * 60 * 1000, // 60 minutes to match JWT expiration
+      maxAge: 2 * 60 * 1000, // OLD CODE - commented out (3 minutes)
     });
 
     res.jsonSuccess(200, "Login successful", loginData);
@@ -75,16 +75,16 @@ const userRefreshToken = async (req, res) => {
       httpOnly: true,
       sameSite: "Strict",
       secure: true,
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day to match JWT expiration
-      // maxAge: 1 * 60 * 60 * 1000, // local testing purpose, 5 minutes
+      // maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day to match JWT expiration
+      maxAge: 5 * 60 * 1000, // local testing purpose, 5 minutes
     });
 
     res.cookie("accessToken", newTokenData.accessToken, {
       httpOnly: true,
       sameSite: "Strict",
       secure: true,
-      maxAge: 60 * 60 * 1000, // 60 minutes to match JWT expiration // local testing purpose, 2 minutes
-      // maxAge: 5 * 60 * 1000,
+      // maxAge: 60 * 60 * 1000, // 60 minutes to match JWT expiration // local testing purpose, 2 minutes
+      maxAge: 2 * 60 * 1000,
     });
 
     res.jsonSuccess(200, "Successfully get new refresh token", newTokenData);
