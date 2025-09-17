@@ -211,26 +211,26 @@ const getRefreshToken = async (currentToken) => {
   });
 
   // FIXED: Generate new refresh token and update in database
-  const newRefreshToken = generateRefreshToken({
-    id: userData?.uuid ?? userData?.id,
-    email: userData?.email ?? userData?.guardianEmail,
-    fullName: userData?.fullName,
-    ...(userData?.role && { role: userData?.role?.name }),
-    permissions: userData?.roleId
-      ? rolePermissionsMappingConfig[userData?.roleId]
-      : rolePermissionsMappingConfig[roleConstant.CLIENT],
-  });
+  // const newRefreshToken = generateRefreshToken({
+  //   id: userData?.uuid ?? userData?.id,
+  //   email: userData?.email ?? userData?.guardianEmail,
+  //   fullName: userData?.fullName,
+  //   ...(userData?.role && { role: userData?.role?.name }),
+  //   permissions: userData?.roleId
+  //     ? rolePermissionsMappingConfig[userData?.roleId]
+  //     : rolePermissionsMappingConfig[roleConstant.CLIENT],
+  // });
 
   // Update the refresh token in database
-  const updatedUser = await userData.update({
-    refreshToken: newRefreshToken,
-  });
+  // const updatedUser = await userData.update({
+  //   refreshToken: newRefreshToken,
+  // });
 
-  if (!updatedUser) {
-    customError.statusCode = 500;
-    customError.message = "Failed to update refresh token";
-    throw customError;
-  }
+  // if (!updatedUser) {
+  //   customError.statusCode = 500;
+  //   customError.message = "Failed to update refresh token";
+  //   throw customError;
+  // }
 
   return {
     user: {
@@ -243,7 +243,7 @@ const getRefreshToken = async (currentToken) => {
         : rolePermissionsMappingConfig[roleConstant.CLIENT],
     },
     accessToken: newAccessToken,
-    refreshToken: newRefreshToken, // FIXED: Return new refresh token
+    // refreshToken: newRefreshToken, // FIXED: Return new refresh token
   };
 };
 
