@@ -16,6 +16,8 @@ module.exports = {
           model: "employees",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       availableDays: {
         type: Sequelize.ARRAY(Sequelize.STRING),

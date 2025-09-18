@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
           model: "Employee",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       availableDays: {
         type: DataTypes.ARRAY(DataTypes.STRING),

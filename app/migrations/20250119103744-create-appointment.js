@@ -15,7 +15,7 @@ module.exports = {
       },
       picType: {
         type: Sequelize.STRING(64),
-        field: 'pic_type',
+        field: "pic_type",
       },
       clientId: {
         type: Sequelize.INTEGER,
@@ -24,8 +24,8 @@ module.exports = {
           model: "clients",
           key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       // roomId: {
       //   type: Sequelize.INTEGER,
@@ -36,7 +36,7 @@ module.exports = {
       },
       appointmentType: {
         type: Sequelize.STRING(32),
-        field: 'appointment_type'
+        field: "appointment_type",
       },
       // appointmentDate: {
       //   type: Sequelize.DATE,

@@ -21,9 +21,9 @@ module.exports = (sequelize, DataTypes) => {
         as: "client",
       });
       this.hasMany(models.clientAssessments, {
-        foreignKey: 'appointmentId',
-        as: 'assessments'
-      })
+        foreignKey: "appointmentId",
+        as: "assessments",
+      });
     }
   }
   Appointment.init(
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       picType: {
         type: DataTypes.STRING(64),
-        field: 'pic_type',
+        field: "pic_type",
       },
       clientId: {
         type: DataTypes.INTEGER,
@@ -43,12 +43,12 @@ module.exports = (sequelize, DataTypes) => {
           model: "Client",
           key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       roomId: {
         type: DataTypes.INTEGER,
-        field: 'room_id',
+        field: "room_id",
       },
       title: DataTypes.STRING(64),
       appointmentType: {
@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       appointmentDate: {
         type: DataTypes.DATE,
-        field: 'appointment_date',
+        field: "appointment_date",
       },
       bookingTimeStart: {
         type: DataTypes.DATE,
@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       isConfirmed: {
         type: DataTypes.BOOLEAN,
-        field: 'is_confirmed',
+        field: "is_confirmed",
         defaultValue: false,
       },
     },

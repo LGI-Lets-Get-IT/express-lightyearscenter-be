@@ -1,7 +1,5 @@
 const appointmentService = require("../services/appointments.services");
 const clientService = require("../services/clients.services");
-const employeeService = require("../services/employees.services");
-const roleConstant = require("../constants/roles.constant");
 const rolesNameConstant = require("../constants/rolesName.constant");
 
 const getAll = async (req, res) => {
@@ -27,6 +25,16 @@ const getAll = async (req, res) => {
       const queryParams = {
         picId: user.id,
         picType: rolesNameConstant.THERAPIST,
+      };
+
+      appointments = await appointmentService.getAllAppointmentsByQueryParams(
+        queryParams
+      );
+    } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+      // Get the school ID for the School PIC user
+      const schoolId = user.schoolId; // Assuming the user object has schoolId
+      const queryParams = {
+        schoolId: schoolId,
       };
 
       appointments = await appointmentService.getAllAppointmentsByQueryParams(
@@ -107,10 +115,10 @@ const create = async (req, res) => {
       timeEnd,
       appointmentDate,
       appointmentType,
-      treatmentId,
-      treatmentName,
-      numberOfRepetition,
-      therapyDays,
+      // treatmentId,
+      // treatmentName,
+      // numberOfRepetition,
+      // therapyDays,
     } = req.body;
 
     const bodyData = {
@@ -126,13 +134,13 @@ const create = async (req, res) => {
       appointmentDate,
       bookingTimeStart: timeStart,
       bookingTimeEnd: timeEnd,
-      treatmentId,
-      treatmentName,
-      numberOfRepetition,
-      therapyDays,
+      // treatmentId,
+      // treatmentName,
+      // numberOfRepetition,
+      // therapyDays,
     };
 
-    const createdAppointment = await appointmentService.createAppointment(
+    const createdAppointment = await appointmentService.createAppointmentV1(
       bodyData
     );
 
@@ -193,14 +201,17 @@ const confirmPicAttendanceById = async (req, res) => {
     const bodyData = {
       isConfirmed: true,
     };
-    const updatedAppointment = await appointmentService.updateAppointmentById(
-      appointmentId,
-      bodyData
-    );
+    console.log("APPOINTMENTID", appointmentId);
+    // const updatedAppointment = await appointmentService.updateAppointmentById(
+    //   appointmentId,
+    //   bodyData
+    // );
+    const confirmedAppointment =
+      await appointmentService.confirmAppointmentById(appointmentId);
     res.jsonSuccess(
       200,
       "Successfully confirmed attandence",
-      updatedAppointment
+      confirmedAppointment
     );
   } catch (error) {
     res.jsonFailed(error?.statusCode, error?.message, error);
@@ -224,8 +235,55 @@ const deleteIds = async (req, res) => {
   }
 };
 
+const createBulk = async (req, res) => {
+  try {
+    const { appointments } = req.body;
+
+    if (
+      !appointments ||
+      !Array.isArray(appointments) ||
+      appointments.length === 0
+    ) {
+      return res.jsonFailed(
+        400,
+        "Appointments array is required and must not be empty"
+      );
+    }
+
+    // Transform the appointments data to match the expected format
+    const transformedAppointments = appointments.map((appointment) => ({
+      title: appointment.title,
+      clientId: appointment.clientId,
+      picId: appointment.picId,
+      roomId: appointment.roomId,
+      picType:
+        appointment.appointmentType.toLowerCase() === "treatment"
+          ? "Therapist"
+          : "Psychologist",
+      appointmentType: appointment.appointmentType,
+      appointmentDate: appointment.appointmentDate,
+      bookingTimeStart: appointment.timeStart,
+      bookingTimeEnd: appointment.timeEnd,
+      treatmentId: appointment.treatmentId,
+    }));
+
+    const createdAppointments = await appointmentService.createBulkAppointments(
+      transformedAppointments
+    );
+
+    res.jsonSuccess(
+      201,
+      `Successfully created ${createdAppointments.length} bulk appointments`,
+      createdAppointments
+    );
+  } catch (error) {
+    res.jsonFailed(error?.statusCode, error?.message, error);
+  }
+};
+
 module.exports = {
   create,
+  createBulk,
   getAll,
   getById,
   getForTreatmentProgress,

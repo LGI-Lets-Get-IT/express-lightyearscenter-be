@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "role_id",
         as: "role",
       });
+      this.belongsTo(models.schools, {
+        foreignKey: "school_id",
+        as: "school",
+      });
       this.hasMany(models.picAvailabilities, {
         foreignKey: "employee_id",
         as: "schedules",
@@ -25,6 +29,17 @@ module.exports = (sequelize, DataTypes) => {
         field: "role_id",
         references: {
           model: "Role",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
+      schoolId: {
+        type: DataTypes.INTEGER,
+        field: "school_id",
+        allowNull: true,
+        references: {
+          model: "School",
           key: "id",
         },
         onUpdate: "CASCADE",

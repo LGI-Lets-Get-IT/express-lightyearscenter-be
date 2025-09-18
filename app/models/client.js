@@ -121,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowShareData: {
         type: DataTypes.BOOLEAN,
-        field: "is_active",
+        field: "allow_share_data",
         defaultValue: true,
       },
       isActive: {

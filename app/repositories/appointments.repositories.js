@@ -1,9 +1,28 @@
 function AppointmentRepository(db) {
   const findAll = (queryParams) => {
-    let whereOptions;
+    let whereOptions = {};
+    let includeOptions = [
+      {
+        model: db.clients,
+        as: "client",
+        attributes: [],
+      },
+    ];
+
     if (queryParams) {
-      whereOptions = queryParams;
+      // Handle schoolId filtering through client relationship
+      if (queryParams.schoolId) {
+        includeOptions[0].where = {
+          schoolId: queryParams.schoolId,
+        };
+        // Remove schoolId from main where clause since it's handled in include
+        const { schoolId, ...otherParams } = queryParams;
+        whereOptions = otherParams;
+      } else {
+        whereOptions = queryParams;
+      }
     }
+
     return db.appointments.findAll({
       raw: true,
       where: whereOptions,
@@ -18,6 +37,7 @@ function AppointmentRepository(db) {
         "picId",
         "picType",
         "appointmentDate",
+        [db.sequelize.col("client_id"), "clientRawId"],
         [db.sequelize.col("client.uuid"), "clientId"],
         [db.sequelize.col("client.full_name"), "clientName"],
         [
@@ -51,13 +71,7 @@ function AppointmentRepository(db) {
         ],
         "isConfirmed",
       ],
-      include: [
-        {
-          model: db.clients,
-          as: "client",
-          attributes: [],
-        },
-      ],
+      include: includeOptions,
     });
   };
 
@@ -207,6 +221,28 @@ function AppointmentRepository(db) {
     return !isAvailable;
   };
 
+  const checkPICAvailable = async (
+    picId,
+    appointmentDate,
+    bookingTimeStart,
+    bookingTimeEnd
+  ) => {
+    const isAvailable = await db.appointments.findOne({
+      where: {
+        picId,
+        appointmentDate,
+        bookingTimeStart: {
+          [db.Sequelize.Op.lt]: bookingTimeEnd,
+        },
+        bookingTimeEnd: {
+          [db.Sequelize.Op.gt]: bookingTimeStart,
+        },
+      },
+    });
+
+    return !isAvailable;
+  };
+
   return {
     findAll,
     findOneById,
@@ -214,6 +250,7 @@ function AppointmentRepository(db) {
     create,
     bulkCreate,
     checkRoomAvailable,
+    checkPICAvailable,
     updateById,
     deleteByIds,
   };

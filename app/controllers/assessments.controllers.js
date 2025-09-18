@@ -1,4 +1,5 @@
 const rolesNameConstant = require("../constants/rolesName.constant");
+const clientService = require("../services/clients.services");
 const assessmentService = require("../services/assessments.services");
 const treatmentPlanService = require("../services/treatmentPlans.services");
 const appointmentService = require("../services/appointments.services");
@@ -31,16 +32,39 @@ const getAll = async (req, res) => {
             picType: rolesNameConstant.THERAPIST,
           }
         );
+        plans = await treatmentPlanService.getAllPlansByQueryParams({
+          therapistId: user.id,
+        });
 
-        const clientIds = appointments.map((dt) => dt.clientId);
-        if (clientIds.length) {
+        const clientIds = plans.map((dt) => dt.clientId);
+        const clientIds2 = appointments.map((dt) => dt.clientRawId);
+        const mergedClientIds = Array.from(
+          new Set([...clientIds, ...clientIds2])
+        );
+        if (mergedClientIds.length > 0) {
           assessments = await assessmentService.getAllAssessmentsByQueryParams({
-            clientId: [clientIds],
+            clientId: [mergedClientIds],
           });
         }
+
+        // const clientIds = appointments.map((dt) => dt.clientRawId);
+        // if (clientIds.length) {
+        //   assessments = await assessmentService.getAllAssessmentsByQueryParams({
+        //     clientId: [clientIds],
+        //   });
+        // }
+      } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+        const queryParams = {
+          schoolId: user.schoolId,
+        };
+        assessments = await assessmentService.getAllAssessmentsByQueryParams(
+          queryParams
+        );
       } else if (!user?.role) {
+        console.log("USERR", user);
+        const clientData = await clientService.getClientByUuid(user.id);
         assessments = await assessmentService.getAllAssessmentsByQueryParams({
-          clientId: user.id,
+          clientId: clientData.id,
         });
       }
     }

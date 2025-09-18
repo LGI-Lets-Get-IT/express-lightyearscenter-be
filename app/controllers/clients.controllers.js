@@ -1,13 +1,13 @@
 const clientService = require("../services/clients.services");
 const appointmentService = require("../services/appointments.services");
 const treatmentPlanService = require("../services/treatmentPlans.services");
-const generateRandomPassword = require("../utils/generatePassword.utils");
 const rolesNameConstant = require("../constants/rolesName.constant");
 
 const getAll = async (req, res) => {
   const { user } = req;
   try {
     let clients = [];
+    console.log("SFAKJFSAJFSKJ", user.role);
     if (
       user.role === rolesNameConstant.SUPER_ADMIN ||
       user.role === rolesNameConstant.STAFF ||
@@ -15,27 +15,58 @@ const getAll = async (req, res) => {
     ) {
       clients = await clientService.getAllClients();
     } else if (user.role === rolesNameConstant.PSYCHOLOGIST) {
+      const plans = await treatmentPlanService.getAllPlansByQueryParams({
+        psychologistId: user.id,
+      });
       const appointments =
         await appointmentService.getAllAppointmentsByQueryParams({
           picId: user.id,
           picType: rolesNameConstant.PSYCHOLOGIST,
         });
 
-      const relatedClientIds = appointments.map(
-        (appointment) => appointment.clientId
+      const clientIds = plans.map((dt) => dt.clientId);
+      const clientIds2 = appointments.map((dt) => dt.clientRawId);
+      const mergedClientIds = Array.from(
+        new Set([...clientIds, ...clientIds2])
       );
-
-      if (relatedClientIds.length) {
-        clients = await clientService.getAllClientsById(relatedClientIds);
+      if (mergedClientIds.length > 0) {
+        clients = await clientService.getAllClientsById(mergedClientIds);
       }
+
+      // const relatedClientUuids = [
+      //   ...new Set(appointments.map((appointment) => appointment.clientId)),
+      // ];
+      // console.log("relatedClientIds", relatedClientUuids);
+
+      // if (relatedClientUuids.length) {
+      //   clients = await clientService.getAllClientsByUuid(relatedClientUuids);
+      // }
     } else if (user.role === rolesNameConstant.THERAPIST) {
+      const appointments =
+        await appointmentService.getAllAppointmentsByQueryParams({
+          picId: user.id,
+          picType: rolesNameConstant.THERAPIST,
+        });
       const plans = await treatmentPlanService.getAllPlansByQueryParams({
         therapistId: user.id,
       });
-      const relatedClientIds = plans.map((plan) => plan.clientId);
-      if (relatedClientIds.length) {
-        clients = await clientService.getAllClientsById(relatedClientIds);
+      const clientIds = plans.map((dt) => dt.clientId);
+      const clientIds2 = appointments.map((dt) => dt.clientRawId);
+      const mergedClientIds = Array.from(
+        new Set([...clientIds, ...clientIds2])
+      );
+      if (mergedClientIds.length > 0) {
+        clients = await clientService.getAllClientsById(mergedClientIds);
       }
+      // const plans = await treatmentPlanService.getAllPlansByQueryParams({
+      //   therapistId: user.id,
+      // });
+      // const relatedClientIds = plans.map((plan) => plan.clientId);
+      // if (relatedClientIds.length) {
+      //   clients = await clientService.getAllClientsById(relatedClientIds);
+      // }
+    } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+      clients = await clientService.getAllClientsBySchoolId(user.schoolId);
     }
 
     res.jsonSuccess(200, "Successfully fetched all clients data", clients);
