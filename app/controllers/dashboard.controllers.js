@@ -73,6 +73,24 @@ const getDashboardData = async (req, res) => {
         totalClients: clients.length,
       };
     } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+      const schoolId = user.schoolId; // Assuming the user object has schoolId
+      const queryParams = {
+        schoolId: schoolId,
+      };
+      appointments = await appointmentService.getAllAppointmentsByQueryParams(
+        queryParams
+      );
+      assessments = await assessmentService.getAllAssessmentsByQueryParams(
+        queryParams
+      );
+      plans = await treatmentPlanService.getAllPlansByQueryParams(queryParams);
+      clients = await clientService.getAllClientsBySchoolId(schoolId);
+      data = {
+        totalAppointments: appointments.length,
+        totalAssessments: assessments.length,
+        totalPlans: plans.length,
+        totalClients: clients.length,
+      };
     } else if (user.role === rolesNameConstant.THERAPIST) {
       appointments = await appointmentService.getAllAppointmentsByQueryParams({
         picId: user.id,
