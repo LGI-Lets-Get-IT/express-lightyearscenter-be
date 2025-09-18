@@ -553,6 +553,10 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
 const deleteAppointmentByIds = async (appointmentIds) => {
   const tr = await db.sequelize.transaction();
   try {
+    const deletedAppointmentData = await appointmentRepository.findOneById(
+      ...appointmentIds
+    );
+    console.log("deletedAppointmentData", deletedAppointmentData);
     const deletedAppointments = await appointmentRepository.deleteByIds(
       appointmentIds,
       tr
@@ -561,6 +565,57 @@ const deleteAppointmentByIds = async (appointmentIds) => {
       customError.message = "Failed to delete appointment data";
       throw customError;
     }
+
+    const employeeData = await employeeService.getEmployeeById(
+      deletedAppointmentData.picId
+    );
+    const sendEmailToClient = await mailService.sendMail(
+      deletedAppointmentData.client?.guardianEmail,
+      `Appointment Cancelled: ${
+        deletedAppointmentData.title
+      } on ${formatForEmail(
+        deletedAppointmentData.appointmentDate,
+        "dd MMM yyyy"
+      )}`,
+      "APPOINTMENT_PIC_CANCELLED",
+      {
+        guardianName: deletedAppointmentData.client?.guardianName,
+        clientName: deletedAppointmentData.client?.fullName,
+        picName: employeeData.fullName,
+        picType: deletedAppointmentData.picType,
+        appointmentTitle: deletedAppointmentData.title,
+        appointmentType: deletedAppointmentData.appointmentType,
+        appointmentDate: formatForEmail(
+          deletedAppointmentData.appointmentDate,
+          "dd MMM yyyy"
+        ),
+        appointmentTime: deletedAppointmentData.appointmentTime,
+        roomName: roomOptions[deletedAppointmentData.roomId],
+      }
+    );
+
+    // const sendEmailToPIC = await mailService.sendMail(
+    //   employeeData.email,
+    //   `Appointment Cancelled: ${bodyData.title} with ${
+    //     clientData.fullName
+    //   } on ${formatForEmail(bodyData.appointmentDate, "dd MMM yyyy")}`,
+    //   "APPOINTMENT_PIC_UPDATED",
+    //   {
+    //     fullName: employeeData.fullName,
+    //     clientName: clientData.fullName,
+    //     picType: bodyData.picType,
+    //     appointmentTitle: bodyData.title,
+    //     appointmentType: bodyData.appointmentType,
+    //     appointmentDate: formatForEmail(
+    //       bodyData.appointmentDate,
+    //       "dd MMM yyyy"
+    //     ),
+    //     startTime: formatForEmail(bodyData.bookingTimeStart, "HH:mm"),
+    //     endTime: formatForEmail(bodyData.bookingTimeEnd, "HH:mm"),
+    //     roomName: roomOptions[bodyData.roomId],
+    //     link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
+    //   }
+    // );
     await tr.commit();
 
     return deletedAppointments;
