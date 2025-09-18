@@ -107,7 +107,9 @@ const getDashboardData = async (req, res) => {
       appointments = await appointmentService.getAllAppointmentsByQueryParams({
         clientId: clientData.id,
       });
-      assessments = await assessmentService.getAllAssessments();
+      assessments = await assessmentService.getAllAssessmentsByQueryParams({
+        clientId: clientData.id,
+      });
       plans = await treatmentPlanService.getAllPlansByClientId(user.id);
       data = {
         totalAppointments: appointments.length,
