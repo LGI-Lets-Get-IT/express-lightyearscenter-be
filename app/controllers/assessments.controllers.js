@@ -32,13 +32,27 @@ const getAll = async (req, res) => {
             picType: rolesNameConstant.THERAPIST,
           }
         );
+        plans = await treatmentPlanService.getAllPlansByQueryParams({
+          therapistId: user.id,
+        });
 
-        const clientIds = appointments.map((dt) => dt.clientRawId);
-        if (clientIds.length) {
+        const clientIds = plans.map((dt) => dt.clientId);
+        const clientIds2 = appointments.map((dt) => dt.clientRawId);
+        const mergedClientIds = Array.from(
+          new Set([...clientIds, ...clientIds2])
+        );
+        if (mergedClientIds.length > 0) {
           assessments = await assessmentService.getAllAssessmentsByQueryParams({
-            clientId: [clientIds],
+            clientId: [mergedClientIds],
           });
         }
+
+        // const clientIds = appointments.map((dt) => dt.clientRawId);
+        // if (clientIds.length) {
+        //   assessments = await assessmentService.getAllAssessmentsByQueryParams({
+        //     clientId: [clientIds],
+        //   });
+        // }
       } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
         const queryParams = {
           schoolId: user.schoolId,

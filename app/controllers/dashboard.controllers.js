@@ -81,12 +81,17 @@ const getDashboardData = async (req, res) => {
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         therapistId: user.id,
       });
+
       const clientIds = plans.map((dt) => dt.clientId);
-      if (clientIds.length > 0) {
+      const clientIds2 = appointments.map((dt) => dt.clientRawId);
+      const mergedClientIds = Array.from(
+        new Set([...clientIds, ...clientIds2])
+      );
+      if (mergedClientIds.length > 0) {
         assessments = await assessmentService.getAllAssessmentsByQueryParams({
-          clientId: [clientIds],
+          clientId: [mergedClientIds],
         });
-        clients = await clientService.getAllClientsById(clientIds);
+        clients = await clientService.getAllClientsById(mergedClientIds);
       }
 
       data = {
