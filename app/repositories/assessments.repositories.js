@@ -100,7 +100,14 @@ function ClientAssessmentRepository(db) {
       where: {
         id,
       },
-      attributes: ["id", "result", "createdAt", "updatedAt"],
+      attributes: [
+        "id",
+        "isInCenterAssessment",
+        "assessmentDate",
+        "result",
+        "createdAt",
+        "updatedAt",
+      ],
       include: [
         {
           model: db.clients,

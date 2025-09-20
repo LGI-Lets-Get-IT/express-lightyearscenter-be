@@ -577,7 +577,7 @@ const deleteAppointmentByIds = async (appointmentIds) => {
         deletedAppointmentData.appointmentDate,
         "dd MMM yyyy"
       )}`,
-      "APPOINTMENT_PIC_CANCELLED",
+      "APPOINTMENT_CANCELLED",
       {
         guardianName: deletedAppointmentData.client?.guardianName,
         clientName: deletedAppointmentData.client?.fullName,

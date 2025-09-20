@@ -75,6 +75,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         field: "assessment_date",
       },
+      isInCenterAssessment: {
+        type: DataTypes.BOOLEAN,
+        field: "is_in_center_assessment",
+      },
     },
     {
       sequelize,

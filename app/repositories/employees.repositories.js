@@ -133,6 +133,7 @@ function EmployeeRepository(db) {
       attributes: [
         "id",
         "roleId",
+        "schoolId",
         "fullName",
         "phoneNumber",
         "email",

@@ -20,8 +20,9 @@ module.exports = {
   [SUPER_ADMIN]: [
     permissions.DASHBOARD.VIEW,
     permissions.SETTINGS.VIEW,
+    permissions.ASSESSMENTS.VIEW,
     ...permissions.APPOINTMENTS.ALL,
-    ...permissions.ASSESSMENTS.ALL,
+    // ...permissions.ASSESSMENTS.ALL,
     ...permissions.TREATMENT_PLANS.ALL,
     ...permissions.TREATMENT_TYPES.ALL,
     ...permissions.TREATMENT_SESSIONS.ALL,
@@ -61,7 +62,7 @@ module.exports = {
     permissions.TEST_TYPES.VIEW,
     permissions.TREATMENT_PLANS.VIEW,
     permissions.TREATMENT_TYPES.VIEW,
-    permissions.ASSESSMENTS.VIEW,
+    ...permissions.ASSESSMENTS.ALL,
     ...permissions.TREATMENT_SESSIONS.ALL,
   ],
   [SPED_TEACHER]: [

@@ -108,8 +108,15 @@ const getByAppointmentId = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { appointmentId, clientId, psychologistId, testId, result } =
-      req.body;
+    const {
+      appointmentId,
+      clientId,
+      psychologistId,
+      testId,
+      result,
+      assessmentDate,
+      isInCenterAssessment,
+    } = req.body;
 
     const bodyData = {
       appointmentId,
@@ -117,6 +124,8 @@ const create = async (req, res) => {
       psychologistId,
       testTypeId: testId,
       result,
+      isInCenterAssessment,
+      assessmentDate,
     };
 
     const createdAppointment = await assessmentService.createAssessment(

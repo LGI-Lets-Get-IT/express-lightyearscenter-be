@@ -24,7 +24,7 @@ router.get(
 router.put(
   "/:assessmentId",
   verifyPermission(permissions.ASSESSMENTS.UPDATE),
-  validateInput(assessmentSchema.update),
+  // validateInput(assessmentSchema.update),
   assessmentController.updateById
 );
 router.delete(
