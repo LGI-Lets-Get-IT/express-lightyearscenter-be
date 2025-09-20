@@ -10,7 +10,12 @@ const schoolService = require("../services/schools.services");
 const getDashboardData = async (req, res) => {
   try {
     const { user } = req;
-    let assessments, appointments, employees, clients, plans, schools;
+    let assessments = [],
+      appointments = [],
+      employees = [],
+      clients = [],
+      plans = [],
+      schools = [];
 
     let data = {};
     if (
@@ -53,10 +58,38 @@ const getDashboardData = async (req, res) => {
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         psychologistId: user.id,
       });
+
+      const relatedClientUuids = [
+        ...new Set(appointments.map((appointment) => appointment.clientId)),
+      ];
+
+      if (relatedClientUuids.length) {
+        clients = await clientService.getAllClientsByUuid(relatedClientUuids);
+      }
       data = {
         totalAppointments: appointments.length,
         totalAssessments: assessments.length,
         totalPlans: plans.length,
+        totalClients: clients.length,
+      };
+    } else if (user.role === rolesNameConstant.SCHOOL_PIC) {
+      const schoolId = user.schoolId; // Assuming the user object has schoolId
+      const queryParams = {
+        schoolId: schoolId,
+      };
+      appointments = await appointmentService.getAllAppointmentsByQueryParams(
+        queryParams
+      );
+      assessments = await assessmentService.getAllAssessmentsByQueryParams(
+        queryParams
+      );
+      plans = await treatmentPlanService.getAllPlansByQueryParams(queryParams);
+      clients = await clientService.getAllClientsBySchoolId(schoolId);
+      data = {
+        totalAppointments: appointments.length,
+        totalAssessments: assessments.length,
+        totalPlans: plans.length,
+        totalClients: clients.length,
       };
     } else if (user.role === rolesNameConstant.THERAPIST) {
       appointments = await appointmentService.getAllAppointmentsByQueryParams({
@@ -66,14 +99,24 @@ const getDashboardData = async (req, res) => {
       plans = await treatmentPlanService.getAllPlansByQueryParams({
         therapistId: user.id,
       });
+
       const clientIds = plans.map((dt) => dt.clientId);
-      assessments = await assessmentService.getAllAssessmentsByQueryParams({
-        clientId: [clientIds],
-      });
+      const clientIds2 = appointments.map((dt) => dt.clientRawId);
+      const mergedClientIds = Array.from(
+        new Set([...clientIds, ...clientIds2])
+      );
+      if (mergedClientIds.length > 0) {
+        assessments = await assessmentService.getAllAssessmentsByQueryParams({
+          clientId: [mergedClientIds],
+        });
+        clients = await clientService.getAllClientsById(mergedClientIds);
+      }
+
       data = {
         totalAppointments: appointments.length,
         totalAssessments: assessments.length,
         totalPlans: plans.length,
+        totalClients: clients.length,
       };
     } else {
       const clientData = await clientService.getClientByUuidWithAppointments(
@@ -82,7 +125,9 @@ const getDashboardData = async (req, res) => {
       appointments = await appointmentService.getAllAppointmentsByQueryParams({
         clientId: clientData.id,
       });
-      assessments = await assessmentService.getAllAssessments();
+      assessments = await assessmentService.getAllAssessmentsByQueryParams({
+        clientId: clientData.id,
+      });
       plans = await treatmentPlanService.getAllPlansByClientId(user.id);
       data = {
         totalAppointments: appointments.length,

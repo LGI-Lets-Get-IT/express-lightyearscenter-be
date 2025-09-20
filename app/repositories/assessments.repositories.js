@@ -1,55 +1,113 @@
 function ClientAssessmentRepository(db) {
   const findAll = (queryParams) => {
+    let whereOptions = {};
+    let includeOptions = [
+      {
+        model: db.appointments,
+        as: "appointment",
+        attributes: [],
+      },
+      {
+        model: db.employees,
+        as: "psychologist",
+        attributes: [],
+      },
+      {
+        model: db.clients,
+        as: "client",
+        attributes: [],
+      },
+      {
+        model: db.testTypes,
+        as: "testType",
+        attributes: [],
+      },
+    ];
+
+    if (queryParams) {
+      if (queryParams.schoolId) {
+        includeOptions[2].where = {
+          schoolId: queryParams.schoolId,
+        };
+      }
+      const { schoolId, ...otherParams } = queryParams;
+      whereOptions = otherParams;
+    } else {
+      whereOptions = queryParams;
+    }
+
     return db.clientAssessments.findAll({
-      ...(queryParams && { where: queryParams }),
       raw: true,
+      where: whereOptions,
       attributes: [
         "id",
         [db.sequelize.col(`client.uuid`), "clientId"],
         [db.sequelize.col(`client.full_name`), "clientName"],
         [db.sequelize.col(`psychologist.full_name`), "assessedBy"],
         [db.sequelize.col(`testType.name`), "testName"],
-        ["created_at", "assessmentDate"],
-        // [
-        //   db.sequelize.fn(
-        //     "TO_CHAR",
-        //     db.sequelize.col("clientAssessment.created_at"),
-        //     "DD Mon YYYY"
-        //   ),
-        //   "assessmentDate",
-        // ],
+        "assessmentDate",
       ],
-      include: [
-        {
-          model: db.appointments,
-          as: "appointment",
-          attributes: [],
-        },
-        {
-          model: db.employees,
-          as: "psychologist",
-          attributes: [],
-        },
-        {
-          model: db.clients,
-          as: "client",
-          attributes: [],
-        },
-        {
-          model: db.testTypes,
-          as: "testType",
-          attributes: [],
-        },
-      ],
+      include: includeOptions,
     });
   };
+  // const findAll = (queryParams) => {
+  //   return db.clientAssessments.findAll({
+  //     ...(queryParams && { where: queryParams }),
+  //     raw: true,
+  //     attributes: [
+  //       "id",
+  //       [db.sequelize.col(`client.uuid`), "clientId"],
+  //       [db.sequelize.col(`client.full_name`), "clientName"],
+  //       [db.sequelize.col(`psychologist.full_name`), "assessedBy"],
+  //       [db.sequelize.col(`testType.name`), "testName"],
+  //       ["created_at", "assessmentDate"],
+  //       // [
+  //       //   db.sequelize.fn(
+  //       //     "TO_CHAR",
+  //       //     db.sequelize.col("clientAssessment.created_at"),
+  //       //     "DD Mon YYYY"
+  //       //   ),
+  //       //   "assessmentDate",
+  //       // ],
+  //     ],
+  //     include: [
+  //       {
+  //         model: db.appointments,
+  //         as: "appointment",
+  //         attributes: [],
+  //       },
+  //       {
+  //         model: db.employees,
+  //         as: "psychologist",
+  //         attributes: [],
+  //       },
+  //       {
+  //         model: db.clients,
+  //         as: "client",
+  //         attributes: [],
+  //       },
+  //       {
+  //         model: db.testTypes,
+  //         as: "testType",
+  //         attributes: [],
+  //       },
+  //     ],
+  //   });
+  // };
 
   const findOneById = (id) => {
     return db.clientAssessments.findOne({
       where: {
         id,
       },
-      attributes: ["id", "result", "createdAt", "updatedAt"],
+      attributes: [
+        "id",
+        "isInCenterAssessment",
+        "assessmentDate",
+        "result",
+        "createdAt",
+        "updatedAt",
+      ],
       include: [
         {
           model: db.clients,

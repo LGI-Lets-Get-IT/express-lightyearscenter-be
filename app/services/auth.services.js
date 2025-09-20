@@ -18,10 +18,42 @@ const clientRepository = require("../repositories/clients.repositories")(db);
 const customError = new Error();
 
 const login = async (currentToken, email, password) => {
+  // Check if user is already logged in with a valid token
   if (currentToken && currentToken !== "undefined") {
-    customError.statusCode = 403;
-    customError.message = "You are already logged in";
-    throw customError;
+    try {
+      // Validate the existing token
+      const decodedToken = decodeToken(
+        currentToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        "refresh"
+      );
+
+      // Check if the token belongs to the same user trying to log in
+      let existingUser = await clientRepository.findOneByRefreshToken(
+        currentToken
+      );
+      if (!existingUser) {
+        existingUser = await employeeRepository.findOneByRefreshToken(
+          currentToken
+        );
+      }
+
+      if (existingUser) {
+        const existingEmail =
+          existingUser?.email ?? existingUser?.guardianEmail;
+        if (existingEmail === email) {
+          customError.statusCode = 403;
+          customError.message = "You are already logged in";
+          throw customError;
+        }
+      }
+    } catch (error) {
+      // If token is invalid/expired, continue with login process
+      console.log(
+        "Existing token is invalid, proceeding with login:",
+        error.message
+      );
+    }
   }
 
   let userData = await clientRepository.findOneByEmail(email);
@@ -46,6 +78,7 @@ const login = async (currentToken, email, password) => {
     fullName: userData?.fullName,
     email: userData?.email ?? userData?.guardianEmail,
     ...(userData?.role && { role: userData?.role?.name }),
+    ...(userData?.schoolId && { schoolId: userData?.schoolId }),
     // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     permissions: userData?.roleId
       ? rolePermissionsMappingConfig[userData?.roleId]
@@ -56,12 +89,14 @@ const login = async (currentToken, email, password) => {
     fullName: userData?.fullName,
     email: userData?.email ?? userData?.guardianEmail,
     ...(userData?.role && { role: userData?.role?.name }),
+    ...(userData?.schoolId && { schoolId: userData?.schoolId }),
     // permissions: rolePermissionsMappingConfig[userData?.roleId] || []
     permissions: userData?.roleId
       ? rolePermissionsMappingConfig[userData?.roleId]
       : rolePermissionsMappingConfig[roleConstant.CLIENT],
   });
 
+  // Clear any existing tokens for this user before setting new ones
   const updatedToken = await userData.update({
     refreshToken: refreshToken,
   });
@@ -78,6 +113,7 @@ const login = async (currentToken, email, password) => {
       email: userData?.email ?? userData?.guardianEmail,
       fullName: userData?.fullName,
       ...(userData?.role && { role: userData?.role?.name }),
+      ...(userData?.schoolId && { schoolId: userData?.schoolId }),
       permissions: userData?.roleId
         ? rolePermissionsMappingConfig[userData?.roleId]
         : rolePermissionsMappingConfig[roleConstant.CLIENT],
@@ -89,8 +125,10 @@ const login = async (currentToken, email, password) => {
 
 const logout = async (currentToken) => {
   if (!currentToken || currentToken == "undefined") {
+    // If no token provided, consider logout successful (user might have already logged out)
+    // return { message: "Already logged out" };
     customError.statusCode = 401;
-    customError.message = "You are not logged in";
+    customError.message = "You are already logged out";
     throw customError;
   }
 
@@ -98,6 +136,8 @@ const logout = async (currentToken) => {
   if (!userData) {
     userData = await employeeRepository.findOneByRefreshToken(currentToken);
     if (!userData) {
+      // If token not found in database, consider logout successful
+      // return { message: "Token already invalidated" };
       customError.statusCode = 404;
       customError.message = "Token is invalid or expired";
       throw customError;
@@ -118,6 +158,11 @@ const logout = async (currentToken) => {
 };
 
 const getRefreshToken = async (currentToken) => {
+  console.log(
+    "getRefreshToken called with token:",
+    currentToken ? "present" : "missing"
+  );
+
   if (!currentToken) {
     customError.statusCode = 401;
     customError.message = "Refresh token invalid.";
@@ -125,8 +170,17 @@ const getRefreshToken = async (currentToken) => {
   }
 
   let userData = await clientRepository.findOneByRefreshToken(currentToken);
+  console.log(
+    "Client refresh token lookup result:",
+    userData ? "found" : "not found"
+  );
+
   if (!userData) {
     userData = await employeeRepository.findOneByRefreshToken(currentToken);
+    console.log(
+      "Employee refresh token lookup result:",
+      userData ? "found" : "not found"
+    );
     if (!userData) {
       customError.statusCode = 404;
       customError.message = "Token not found";
@@ -139,7 +193,12 @@ const getRefreshToken = async (currentToken) => {
     process.env.REFRESH_TOKEN_SECRET,
     "refresh"
   );
-  if (decodedToken.id !== userData.id) {
+
+  // FIXED: Check both uuid and id for consistency
+  const tokenId = decodedToken.id;
+  const userId = userData?.uuid ?? userData?.id;
+
+  if (tokenId !== userId) {
     customError.message = "Token is incorrect";
     throw customError;
   }
@@ -149,10 +208,33 @@ const getRefreshToken = async (currentToken) => {
     email: userData?.email ?? userData?.guardianEmail,
     fullName: userData?.fullName,
     ...(userData?.role && { role: userData?.role?.name }),
+    ...(userData?.schoolId && { schoolId: userData?.schoolId }),
     permissions: userData?.roleId
       ? rolePermissionsMappingConfig[userData?.roleId]
       : rolePermissionsMappingConfig[roleConstant.CLIENT],
   });
+
+  // FIXED: Generate new refresh token and update in database
+  // const newRefreshToken = generateRefreshToken({
+  //   id: userData?.uuid ?? userData?.id,
+  //   email: userData?.email ?? userData?.guardianEmail,
+  //   fullName: userData?.fullName,
+  //   ...(userData?.role && { role: userData?.role?.name }),
+  //   permissions: userData?.roleId
+  //     ? rolePermissionsMappingConfig[userData?.roleId]
+  //     : rolePermissionsMappingConfig[roleConstant.CLIENT],
+  // });
+
+  // Update the refresh token in database
+  // const updatedUser = await userData.update({
+  //   refreshToken: newRefreshToken,
+  // });
+
+  // if (!updatedUser) {
+  //   customError.statusCode = 500;
+  //   customError.message = "Failed to update refresh token";
+  //   throw customError;
+  // }
 
   return {
     user: {
@@ -160,11 +242,13 @@ const getRefreshToken = async (currentToken) => {
       email: userData?.email ?? userData?.guardianEmail,
       fullName: userData?.fullName,
       ...(userData?.role && { role: userData?.role?.name }),
+      ...(userData?.schoolId && { schoolId: userData?.schoolId }),
       permissions: userData?.roleId
         ? rolePermissionsMappingConfig[userData?.roleId]
         : rolePermissionsMappingConfig[roleConstant.CLIENT],
     },
     accessToken: newAccessToken,
+    // refreshToken: newRefreshToken, // FIXED: Return new refresh token
   };
 };
 

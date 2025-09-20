@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class ClientAssessment extends Model {
     /**
@@ -9,72 +9,83 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.appointments, {
-        foreignKey: 'appointmentId',
-        as: 'appointment'
+        foreignKey: "appointmentId",
+        as: "appointment",
       });
       this.belongsTo(models.employees, {
-        foreignKey: 'psychologistId',
-        as: 'psychologist',
+        foreignKey: "psychologistId",
+        as: "psychologist",
       });
       this.belongsTo(models.clients, {
-        foreignKey: 'clientId',
-        as: 'client',
+        foreignKey: "clientId",
+        as: "client",
       });
       this.belongsTo(models.testTypes, {
-        foreignKey: 'testTypeId',
-        as: 'testType',
+        foreignKey: "testTypeId",
+        as: "testType",
       });
     }
   }
-  ClientAssessment.init({
-    appointmentId: {
-      type: DataTypes.INTEGER,
-      field: 'appointment_id',
-      references: {
-        key: 'id',
-        model: 'Appointments'
+  ClientAssessment.init(
+    {
+      appointmentId: {
+        type: DataTypes.INTEGER,
+        field: "appointment_id",
+        references: {
+          key: "id",
+          model: "Appointments",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-    },
-    psychologistId: {
-      type: DataTypes.INTEGER,
-      field: 'psychologist_id',
-      references: {
-        key: 'id',
-        model: 'Psychologist',
+      psychologistId: {
+        type: DataTypes.INTEGER,
+        field: "psychologist_id",
+        references: {
+          key: "id",
+          model: "Psychologist",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-    },
-    clientId: {
-      type: DataTypes.INTEGER,
-      field: 'client_id',
-      references: {
-        key: 'id',
-        model: 'Clients',
+      clientId: {
+        type: DataTypes.INTEGER,
+        field: "client_id",
+        references: {
+          key: "id",
+          model: "Clients",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    },
-    testTypeId: {
-      type: DataTypes.INTEGER,
-      field: 'test_type_id',
-      references: {
-        key: 'id',
-        model: 'TestType'
+      testTypeId: {
+        type: DataTypes.INTEGER,
+        field: "test_type_id",
+        references: {
+          key: "id",
+          model: "TestType",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      result: {
+        type: DataTypes.TEXT,
+      },
+      assessmentDate: {
+        type: DataTypes.DATE,
+        field: "assessment_date",
+      },
+      isInCenterAssessment: {
+        type: DataTypes.BOOLEAN,
+        field: "is_in_center_assessment",
+      },
     },
-    result: {
-      type: DataTypes.TEXT
-    },
-  }, {
-    sequelize,
-    modelName: 'ClientAssessment',
-    tableName: 'client_assessments',
-    underscored: true,
-  });
+    {
+      sequelize,
+      modelName: "ClientAssessment",
+      tableName: "client_assessments",
+      underscored: true,
+    }
+  );
   return ClientAssessment;
 };

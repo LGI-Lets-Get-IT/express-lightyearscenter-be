@@ -85,6 +85,10 @@ module.exports = (sequelize, DataTypes) => {
       problem: {
         type: DataTypes.TEXT,
       },
+      intakeFormLink: {
+        type: DataTypes.STRING,
+        field: "intake_form_link",
+      },
       guardianName: {
         type: DataTypes.STRING(128),
         field: "guardian_name",
@@ -117,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowShareData: {
         type: DataTypes.BOOLEAN,
-        field: "is_active",
+        field: "allow_share_data",
         defaultValue: true,
       },
       isActive: {

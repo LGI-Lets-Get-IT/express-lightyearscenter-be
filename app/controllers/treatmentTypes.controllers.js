@@ -2,7 +2,6 @@ const treatmentTypeService = require('../services/treatmentTypes.services')
 
 const getAll = async (req, res) => {
   try {
-    console.log('ERORR')
     const treatments = await treatmentTypeService.getAllTreatments()
 
     res.jsonSuccess(200, "Successfully get all treatment types data", treatments)

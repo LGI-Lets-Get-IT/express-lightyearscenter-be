@@ -37,6 +37,11 @@ function SchoolRepository(db) {
       attributes: { exclude: ["createdAt"] },
       include: [
         {
+          model: db.employees,
+          as: "pic",
+          attributes: ["id", "fullName", "phoneNumber", "email"],
+        },
+        {
           model: db.clients,
           as: "clients",
           attributes: [

@@ -9,6 +9,7 @@ const verifyPermission = (...requiredPermissions) => {
         throw customError;
       }
 
+      console.log("REQUIREDPERM", requiredPermissions);
       const hasPermission = req.permissions.some((perm) =>
         requiredPermissions.includes(perm)
       );

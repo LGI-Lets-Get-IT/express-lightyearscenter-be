@@ -9,9 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.clients, {
-        foreignKey: 'school_id',
-        as: 'clients'
-      })
+        foreignKey: "school_id",
+        as: "clients",
+      });
+      this.hasMany(models.employees, {
+        foreignKey: "school_id",
+        as: "pic",
+      });
     }
   }
   School.init(
@@ -20,25 +24,25 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       phoneNumber: {
         type: DataTypes.STRING(32),
-        field: 'phone_number',
+        field: "phone_number",
       },
       email: DataTypes.STRING(128),
       picFullName: {
         type: DataTypes.STRING(128),
-        field: 'pic_full_name',
+        field: "pic_full_name",
       },
       picPhoneNumber: {
         type: DataTypes.STRING(32),
-        field: 'pic_phone_number',
+        field: "pic_phone_number",
       },
       picEmail: {
         type: DataTypes.STRING(128),
-        field: 'pic_email',
+        field: "pic_email",
       },
       password: DataTypes.STRING,
       isActive: {
         type: DataTypes.BOOLEAN,
-        field: 'is_active',
+        field: "is_active",
         defaultValue: true,
       },
     },

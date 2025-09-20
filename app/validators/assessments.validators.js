@@ -11,6 +11,8 @@ exports.assessmentSchema = {
     psychologistId: Joi.number().required(),
     testId: Joi.number().required(),
     result: Joi.string().required(),
+    assessmentDate: Joi.date().required(),
+    isInCenterAssessment: Joi.boolean().required(),
   }),
 
   update: Joi.object({

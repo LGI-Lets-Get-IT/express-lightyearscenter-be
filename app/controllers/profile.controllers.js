@@ -28,7 +28,6 @@ const getUserProfile = async (req, res) => {
 
 const editUserProfile = async (req, res) => {
   try {
-    console.log("REQQQ", req.user);
     const updatedUser = await clientService.updateClientShareData(
       req.user.id,
       req.body

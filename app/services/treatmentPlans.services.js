@@ -213,14 +213,11 @@ const updatePlanById = async (planId, bodyData) => {
       }
     );
 
-    console.log("existingTargets", existingTargets);
-
     const incomingTargets = bodyData.targets || [];
 
     const targetsToUpdate = incomingTargets.filter((t) => t.id);
     const targetsToCreate = incomingTargets.filter((t) => !t.id);
     const incomingTargetIds = targetsToUpdate.map((t) => t.id);
-    console.log("incomingTargets", incomingTargets);
     const targetsToDelete = existingTargets.filter(
       (t) => !incomingTargetIds.includes(t.id)
     );

@@ -1,17 +1,47 @@
 function TreatmentPlanRepository(db) {
   const findAll = (queryParams) => {
     let whereOptions = {};
+    let includeOptions = [
+      {
+        model: db.clients,
+        as: "client",
+        attributes: [],
+      },
+      {
+        model: db.employees,
+        as: "psychologist",
+        attributes: [],
+      },
+      {
+        model: db.treatmentPrograms,
+        as: "programs",
+        attributes: [],
+      },
+      {
+        model: db.targetedBehaviors,
+        as: "targetedBehaviors",
+        attributes: [],
+      },
+    ];
+
     if (queryParams) {
-      const { therapistId, ...restParams } = queryParams;
+      const { therapistId, schoolId, ...restParams } = queryParams;
+
+      // Handle therapistId filtering through treatmentPrograms relationship
       if (therapistId) {
-        whereOptions.treatmentProgram = { therapistId };
-      } else {
-        whereOptions.treatmentPlans = restParams;
+        includeOptions[2].where = { therapistId };
       }
+
+      // Handle schoolId filtering through client relationship
+      if (schoolId) {
+        includeOptions[0].where = { schoolId };
+      }
+
+      whereOptions = restParams;
     }
 
     return db.treatmentPlans.findAll({
-      where: whereOptions.treatmentPlans,
+      where: whereOptions,
       group: [
         "TreatmentPlan.id",
         "client.id",
@@ -37,29 +67,7 @@ function TreatmentPlanRepository(db) {
         ],
         "consultDate",
       ],
-      include: [
-        {
-          model: db.clients,
-          as: "client",
-          attributes: [],
-        },
-        {
-          model: db.employees,
-          as: "psychologist",
-          attributes: [],
-        },
-        {
-          model: db.treatmentPrograms,
-          as: "programs",
-          attributes: [],
-          where: whereOptions.treatmentProgram,
-        },
-        {
-          model: db.targetedBehaviors,
-          as: "targetedBehaviors",
-          attributes: [],
-        },
-      ],
+      include: includeOptions,
     });
   };
 

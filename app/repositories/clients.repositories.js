@@ -11,6 +11,23 @@ function ClientRepository(db) {
     });
   };
 
+  const findAllByUuid = (clientUuids) => {
+    console.log("CLIENTUUIDS", clientUuids);
+    return db.clients.findAll({
+      where: {
+        uuid: clientUuids,
+      },
+    });
+  };
+
+  const findAllBySchoolId = (schoolId) => {
+    return db.clients.findAll({
+      where: {
+        schoolId,
+      },
+    });
+  };
+
   const findOneById = (id) => {
     return db.clients.findOne({
       where: {
@@ -72,6 +89,7 @@ function ClientRepository(db) {
         "gender",
         "className",
         "problem",
+        "intakeFormLink",
         "guardianName",
         "guardianNationality",
         "guardianPhone",
@@ -224,7 +242,9 @@ function ClientRepository(db) {
   return {
     findAll,
     findAllById,
+    findAllBySchoolId,
     findOneById,
+    findAllByUuid,
     findOneByUuid,
     findOneByUuidWithAppointments,
     findOneByEmail,
