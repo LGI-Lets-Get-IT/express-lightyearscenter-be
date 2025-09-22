@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Light Years CDC - Assessment Created</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f6f9fc;
+        font-family: Arial, sans-serif;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        margin-bottom: 8px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      .header {
+        text-align: center;
+        padding: 30px 20px 10px;
+        background-color: #ffffff;
+      }
+      .header img {
+        max-height: 60px;
+      }
+      .content {
+        padding: 30px;
+        color: #333333;
+        line-height: 1.6;
+      }
+      .content h2 {
+        color: #2b2e7f;
+      }
+      .highlight {
+        background-color: #f1f3f7;
+        padding: 12px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 16px;
+        margin: 10px 0;
+        color: #2b2e7f;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #2b2e7f;
+        /* color: #ffffff; */
+        text-decoration: none;
+        border-radius: 6px;
+        margin-top: 20px;
+      }
+      .footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 12px;
+        color: #888888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="https://dashboard.thelightyearscdc.com/images/TLY_LOGO_L.png"
+          alt="The Light Years Logo"
+        />
+      </div>
+      <div class="content">
+        <p>Dear <strong>{{ guardianName }}</strong>,</p>
+
+        <p>
+          We're glad to inform you that the assessment has been created for your
+          child,
+          <strong>{{clientName}}</strong> at The Light Years Child Development
+          Center!
+        </p>
+
+        <p>
+          This assessment provides valuable insights into your child's progress
+          and development., and will help us work together in supporting their
+          growth and development.
+        </p>
+
+        <p>Here are the details of the assessment:</p>
+        <ul>
+          <li><strong>Client Name:</strong> {{clientName}}</li>
+          <li><strong>Psychologist Name:</strong> {{psychologistName}}</li>
+          <li><strong>Assessment Date:</strong> {{assessmentDate}}</li>
+          <li><strong>Test Name:</strong> {{testName}}</li>
+          <li><strong>Test Result:</strong> {{testResult}}</li>
+        </ul>
+
+        <a href="{{ link }}" class="btn" style="color: #ffffff !important"
+          >View Assessment</a
+        >
+        <p>
+          If you have any questions or require further assistance, please feel
+          free to reach out to us.
+        </p>
+      </div>
+      <div class="footer">
+        © 2025 The Light Years Child Development Center. All rights reserved.<br />
+      </div>
+    </div>
+  </body>
+</html>
