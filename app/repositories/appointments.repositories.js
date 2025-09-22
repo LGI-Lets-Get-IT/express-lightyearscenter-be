@@ -27,6 +27,7 @@ function AppointmentRepository(db) {
       raw: true,
       where: whereOptions,
       order: [
+        ["createdAt", "DESC"],
         ["appointmentDate", "DESC"],
         ["status", "DESC"],
       ],
@@ -43,10 +44,10 @@ function AppointmentRepository(db) {
         [
           db.sequelize.literal(`
             CASE
-              WHEN appointment_date > CURRENT_DATE THEN 'Upcoming'
-              WHEN appointment_date = CURRENT_DATE AND now() < booking_time_start THEN 'Upcoming'
-              WHEN appointment_date = CURRENT_DATE AND now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
-              WHEN appointment_date < CURRENT_DATE OR (appointment_date = CURRENT_DATE AND now() > booking_time_end) THEN 'Done'
+              WHEN appointment_date::date > CURRENT_DATE THEN 'Upcoming'
+              WHEN appointment_date::date = CURRENT_DATE AND now() < booking_time_start THEN 'Upcoming'
+              WHEN appointment_date::date = CURRENT_DATE AND now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
+              WHEN appointment_date::date < CURRENT_DATE OR (appointment_date::date = CURRENT_DATE AND now() > booking_time_end) THEN 'Done'
               ELSE 'Unknown'
             END 
           `),
@@ -119,10 +120,10 @@ function AppointmentRepository(db) {
         [
           db.sequelize.literal(`
             CASE
-              WHEN appointment_date > CURRENT_DATE THEN 'Upcoming'
-              WHEN appointment_date = CURRENT_DATE AND now() < booking_time_start THEN 'Upcoming'
-              WHEN appointment_date = CURRENT_DATE AND now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
-              WHEN appointment_date < CURRENT_DATE OR (appointment_date = CURRENT_DATE AND now() > booking_time_end) THEN 'Done'
+              WHEN appointment_date::date > CURRENT_DATE THEN 'Upcoming'
+              WHEN appointment_date::date = CURRENT_DATE AND now() < booking_time_start THEN 'Upcoming'
+              WHEN appointment_date::date = CURRENT_DATE AND now() BETWEEN booking_time_start AND booking_time_end THEN 'Ongoing'
+              WHEN appointment_date::date < CURRENT_DATE OR (appointment_date::date = CURRENT_DATE AND now() > booking_time_end) THEN 'Done'
               ELSE 'Unknown'
             END 
           `),

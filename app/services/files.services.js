@@ -335,29 +335,9 @@ const generateTreatmentPlanDoc = async (planId) => {
     "TREATMENT_PLAN_REPORT",
     planData?.get({ plain: true })
   );
-  const attachment = [
-    {
-      filename: "TREATMENT_PLAN_REPORT.pdf",
-      content: Buffer.from(generatedFile),
-    },
-  ];
-  const sendMail = await mailService.sendMail(
-    "mrizalrn@gmail.com",
-    "Treatment Plan Report",
-    "PARENT_TREATMENT_PLAN_REPORT",
-    {
-      parentName: planData?.client?.guardianName,
-      childName: planData?.client?.fullName,
-      childDob: format(planData?.client?.dateOfBirth, "dd MMM yyyy"),
-      consultDate: format(planData?.consultDate, "dd MMM yyyy"),
-      psychologistName: planData?.psychologist?.fullName,
-    },
-    attachment
-  );
-  return generatedFile;
-};
 
-// const sendFileToEmail = async
+  return { data: planData?.get({ plain: true }), generatedFile };
+};
 
 module.exports = {
   getAllFiles,
