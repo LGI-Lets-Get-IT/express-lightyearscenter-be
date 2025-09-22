@@ -1,7 +1,6 @@
 const db = require("../models");
 const treatmentPlanRepository =
   require("../repositories/treatmentPlans.repositories")(db);
-const treatmentProgramService = require("../services/treatmentPrograms.services");
 const clientService = require("../services/clients.services");
 const { format } = require("date-fns/format");
 const treatmentProgramRepository =
@@ -9,6 +8,8 @@ const treatmentProgramRepository =
 const targetedBehaviorRepository =
   require("../repositories/targetedBehaviors.repositories")(db);
 const customError = new Error();
+const mailService = require("../services/mail.services");
+const fileService = require("../services/files.services");
 
 const getAllPlans = async () => {
   const result = await treatmentPlanRepository.findAll();
@@ -128,6 +129,33 @@ const createPlan = async (bodyData) => {
     );
 
     await tr.commit();
+
+    const { data, generatedFile } = await fileService.generateTreatmentPlanDoc(
+      createdPlan.id
+    );
+
+    const fileAttachment = [
+      {
+        filename: `${data?.client?.fullName}-TREATMENT_PLAN_REPORT.pdf`,
+        content: Buffer.from(generatedFile),
+      },
+    ];
+    // Send Treatment Plan Report Email to client
+    const sendMailToClient = await mailService.sendMail(
+      data?.client?.guardianEmail,
+      "Treatment Plan Report",
+      "PARENT_TREATMENT_PLAN_REPORT",
+      {
+        parentName: data?.client?.guardianName,
+        childName: data?.client?.fullName,
+        consultDate: data?.consultDate,
+        childDob: data?.client?.formattedDOB,
+        // childDob: format(data?.client?.dateOfBirth, "dd MMM yyyy"),
+        // consultDate: format(data?.consultDate, "dd MMM yyyy"),
+        psychologistName: data?.psychologist?.fullName,
+      },
+      fileAttachment
+    );
 
     return createdPlan;
   } catch (error) {
