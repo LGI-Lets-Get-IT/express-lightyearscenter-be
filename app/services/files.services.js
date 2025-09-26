@@ -6,11 +6,12 @@ const mailService = require("../services/mail.services");
 const { treatmentSessions, employees, clients } = require("../models");
 const { format } = require("date-fns/format");
 const clientService = require("./clients.services");
-const treatmentPlanService = require("./treatmentPlans.services");
+const treatmentPlanRepository =
+  require("../repositories/treatmentPlans.repositories")(db);
 
 const getAllFiles = async (uuid, clientName) => {
   const authClient = new google.auth.GoogleAuth({
-    keyFile: "./the-lightyears-cdc-0cb82813d8e5.json",
+    keyFile: process.env.GOOGLE_SERVICE_KEY_FILE,
     scopes: ["https://www.googleapis.com/auth/drive"],
   });
 
@@ -21,13 +22,19 @@ const getAllFiles = async (uuid, clientName) => {
   const folderName = `${clientName}_${uuid}`;
 
   const folderId = await driveApi.files.list({
-    q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
-    spaces: "drive",
+    q: `'${process.env.DRIVE_FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
     supportsAllDrives: true,
-    driveId: process.env.DRIVE_ID,
     includeItemsFromAllDrives: true,
-    corpora: "drive",
   });
+
+  // const folderId = await driveApi.files.list({
+  //   q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
+  //   spaces: "drive",
+  //   supportsAllDrives: true,
+  //   driveId: process.env.DRIVE_ID,
+  //   includeItemsFromAllDrives: true,
+  //   corpora: "drive",
+  // });
 
   if (!folderId.data.files.length) {
     return;
@@ -37,10 +44,17 @@ const getAllFiles = async (uuid, clientName) => {
     q: `'${folderId.data.files[0].id}' in parents`,
     fields: "files(id, name, mimeType, webViewLink, size, createdTime)",
     supportsAllDrives: true,
-    driveId: process.env.DRIVE_ID,
     includeItemsFromAllDrives: true,
-    corpora: "drive",
   });
+
+  // const filesList = await driveApi.files.list({
+  //   q: `'${folderId.data.files[0].id}' in parents`,
+  //   fields: "files(id, name, mimeType, webViewLink, size, createdTime)",
+  //   supportsAllDrives: true,
+  //   driveId: process.env.DRIVE_ID,
+  //   includeItemsFromAllDrives: true,
+  //   corpora: "drive",
+  // });
   return filesList.data.files.map((file) => ({
     id: file.id,
     name: file.name,
@@ -67,14 +81,20 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
 
     const folderName = `${clientName}_${uuid}`;
     const existingFolder = await driveApi.files.list({
-      q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
+      q: `'${process.env.DRIVE_FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
       fields: "files(id, name)",
-      spaces: "drive",
       supportsAllDrives: true,
-      driveId: process.env.DRIVE_ID,
       includeItemsFromAllDrives: true,
-      corpora: "drive",
     });
+    // const existingFolder = await driveApi.files.list({
+    //   q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false`,
+    //   fields: "files(id, name)",
+    //   spaces: "drive",
+    //   supportsAllDrives: true,
+    //   driveId: process.env.DRIVE_ID,
+    //   includeItemsFromAllDrives: true,
+    //   corpora: "drive",
+    // });
 
     let folderId;
     if (existingFolder.data.files.length > 0) {
@@ -83,7 +103,7 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
       const folderMetadata = {
         name: folderName,
         mimeType: "application/vnd.google-apps.folder",
-        parents: [`${process.env.DRIVE_ID}`],
+        parents: [`${process.env.DRIVE_FOLDER_ID}`],
       };
       const createdFolder = await driveApi.files.create({
         requestBody: folderMetadata,
@@ -94,7 +114,6 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
       folderId = createdFolder.data.id;
     }
 
-    console.log("FILEDATAAA", fileData);
     const uploadedFile = await driveApi.files.create({
       supportsAllDrives: true,
       requestBody: {
@@ -110,7 +129,7 @@ const uploadFile = async (currentUser, uuid, clientName, fileData) => {
     });
 
     const client = await clientService.getClientByUuid(uuid);
-    const plans = await treatmentPlanService.getAllPlansWithProgramsByClientId(
+    const plans = await treatmentPlanRepository.findAllByClientIdWithPrograms(
       client.id
     );
     const psychologistEmails = plans.map((plan) => plan.psychologist.email);
