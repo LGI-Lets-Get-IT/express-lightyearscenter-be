@@ -108,7 +108,11 @@ const createAssessment = async (bodyData) => {
         assessmentDate: formatForEmail(bodyData.assessmentDate, "dd MMM yyyy"),
         testName: testData.name,
         testResult: bodyData.result,
-        link: `https://dashboard.thelightyearscdc.com/assessments/${createdAssessment.id}`,
+        // link: `https://dashboard.thelightyearscdc.com/assessments/${createdAssessment.id}`,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com/assessments/${createdAssessment.id}`
+            : `https://dashboard-staging.thelightyearscdc.com/assessments/${createdAssessment.id}`,
       },
     });
 
