@@ -278,6 +278,10 @@ const forgotPassword = async (email) => {
         fullName: userData.guardianName || userData.fullName,
         email,
         password: generatedPassword.password,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com`
+            : `https://dashboard-staging.thelightyearscdc.com`,
       }
     );
 

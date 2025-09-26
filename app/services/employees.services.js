@@ -169,6 +169,10 @@ const createEmployee = async (bodyData) => {
         fullName: bodyRest.fullName,
         email: bodyRest.email,
         password: generatedPassword,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com`
+            : `https://dashboard-staging.thelightyearscdc.com`,
       }
     );
 
@@ -225,6 +229,10 @@ const updateEmployeePasswordById = async (id, password) => {
         fullName: employee.fullName,
         email: employee.email,
         password: password,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com`
+            : `https://dashboard-staging.thelightyearscdc.com`,
       }
     );
 
