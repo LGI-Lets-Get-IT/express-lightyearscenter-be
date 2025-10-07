@@ -625,28 +625,29 @@ const deleteAppointmentByIds = async (appointmentIds) => {
       }
     );
 
-    // const sendEmailToPIC = await mailService.sendMail(
-    //   employeeData.email,
-    //   `Appointment Cancelled: ${bodyData.title} with ${
-    //     clientData.fullName
-    //   } on ${formatForEmail(bodyData.appointmentDate, "dd MMM yyyy")}`,
-    //   "APPOINTMENT_PIC_UPDATED",
-    //   {
-    //     fullName: employeeData.fullName,
-    //     clientName: clientData.fullName,
-    //     picType: bodyData.picType,
-    //     appointmentTitle: bodyData.title,
-    //     appointmentType: bodyData.appointmentType,
-    //     appointmentDate: formatForEmail(
-    //       bodyData.appointmentDate,
-    //       "dd MMM yyyy"
-    //     ),
-    //     startTime: formatForEmail(bodyData.bookingTimeStart, "HH:mm"),
-    //     endTime: formatForEmail(bodyData.bookingTimeEnd, "HH:mm"),
-    //     roomName: roomOptions[bodyData.roomId],
-    //     link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
-    //   }
-    // );
+    const sendEmailToPIC = await mailService.sendMail(
+      employeeData.email,
+      `Appointment Cancelled: ${deletedAppointmentData.title} with ${
+        deletedAppointmentData.client?.fullName
+      } on ${formatForEmail(
+        deletedAppointmentData.appointmentDate,
+        "dd MMM yyyy"
+      )}`,
+      "APPOINTMENT_PIC_CANCELLED",
+      {
+        guardianName: deletedAppointmentData.client?.guardianName,
+        clientName: deletedAppointmentData.client?.fullName,
+        picName: employeeData.fullName,
+        appointmentTitle: deletedAppointmentData.title,
+        appointmentType: deletedAppointmentData.appointmentType,
+        appointmentDate: formatForEmail(
+          deletedAppointmentData.appointmentDate,
+          "dd MMM yyyy"
+        ),
+        appointmentTime: deletedAppointmentData.appointmentTime,
+        roomName: roomOptions[deletedAppointmentData.roomId],
+      }
+    );
     await tr.commit();
 
     return deletedAppointments;
