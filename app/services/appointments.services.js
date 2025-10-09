@@ -869,6 +869,14 @@ const createBulkAppointments = async (appointmentsData) => {
 
         // Queue PIC email (only once for bulk appointments)
         if (index === 0) {
+          // Aggregate appointment data for bulk email
+          const appointmentTitles = bulkCreatedAppointments.map(
+            (apt) => apt.title
+          );
+          const appointmentDates = bulkCreatedAppointments.map((apt) =>
+            formatForEmail(apt.appointmentDate, "dd MMM yyyy")
+          );
+
           emailQueue.add({
             to: employeeData.email,
             subject: `New Appointment Assigned: ${appointmentsData.length} appointments with ${clientData.fullName}`,
@@ -876,10 +884,13 @@ const createBulkAppointments = async (appointmentsData) => {
             data: {
               fullName: employeeData.fullName,
               clientName: clientData.fullName,
-              appointmentCount: appointmentsData.length,
-              appointmentTitle: appointmentsData[0].title,
-              appointmentType: appointmentsData[0].appointmentType,
-              // link: `https://dashboard.thelightyearscdc.com/appointments`,
+              picType: appointment.picType,
+              appointmentTitle: appointmentTitles.join(", "),
+              appointmentType: appointment.appointmentType,
+              appointmentDate: appointmentDates.join(", "),
+              startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
+              endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
+              roomName: roomOptions[appointment.roomId],
               link:
                 process.env.NODE_ENV === "production"
                   ? `https://dashboard.thelightyearscdc.com/appointments`
