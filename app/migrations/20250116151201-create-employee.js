@@ -11,48 +11,47 @@ module.exports = {
       },
       roleId: {
         type: Sequelize.INTEGER,
-        field: 'role_id',
+        field: "role_id",
         references: {
-          model: 'roles',
-          key: 'id'
+          model: "roles",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       fullName: {
         type: Sequelize.STRING(128),
-        field: 'full_name'
+        field: "full_name",
       },
       phoneNumber: {
         type: Sequelize.STRING,
-        unique: true,
-        field: 'phone_number'
+        field: "phone_number",
       },
       email: {
         type: Sequelize.STRING(128),
         unique: true,
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       refreshToken: {
         type: Sequelize.TEXT,
-        field: 'refresh_token'
+        field: "refresh_token",
       },
       isActive: {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
-        field: 'is_active'
+        field: "is_active",
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: 'created_at',
+        field: "created_at",
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: 'updated_at',
+        field: "updated_at",
       },
     });
   },

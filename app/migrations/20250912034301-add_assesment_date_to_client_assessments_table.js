@@ -9,8 +9,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.addColumn("client_assessments", "assessment_date", {
-      type: Sequelize.DATE,
-    });
+    await queryInterface.removeColumn("client_assessments", "assessment_date");
   },
 };

@@ -9,7 +9,7 @@ exports.treatmentPlanSchema = {
     clientId: Joi.number().required(),
     psychologistId: Joi.number().required(),
     presentProblem: Joi.string().required(),
-    consultDate: Joi.date().greater("now").required(),
+    consultDate: Joi.date().required(),
     parentPlan: Joi.string().required(),
     programs: Joi.array().items(
       Joi.object({
@@ -29,7 +29,6 @@ exports.treatmentPlanSchema = {
       })
     ),
   }),
-
 
   update: Joi.object({
     clientId: Joi.number().required(),

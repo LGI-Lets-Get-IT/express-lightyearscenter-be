@@ -138,6 +138,10 @@ const createClient = async (bodyData) => {
         fullName: bodyData.guardianName,
         email: bodyData.guardianEmail,
         password: bodyData.password,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com`
+            : `https://dashboard-staging.thelightyearscdc.com`,
       }
     );
 
@@ -222,6 +226,10 @@ const updateClientPasswordByUuid = async (uuid, password) => {
         childName: user.fullName,
         email: user.guardianEmail,
         password,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com`
+            : `https://dashboard-staging.thelightyearscdc.com`,
       }
     );
 

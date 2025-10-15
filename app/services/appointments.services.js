@@ -196,7 +196,11 @@ const createAppointmentV1 = async (bodyData) => {
         startTime: formatForEmail(createdAppointment.bookingTimeStart, "HH:mm"),
         endTime: formatForEmail(createdAppointment.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[createdAppointment.roomId],
-        link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+        // link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`
+            : `https://dashboard-staging.thelightyearscdc.com/appointments/${createdAppointment.id}`,
       },
     });
 
@@ -223,7 +227,10 @@ const createAppointmentV1 = async (bodyData) => {
         startTime: formatForEmail(createdAppointment.bookingTimeStart, "HH:mm"),
         endTime: formatForEmail(createdAppointment.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[createdAppointment.roomId],
-        link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`
+            : `https://dashboard-staging.thelightyearscdc.com/appointments/${createdAppointment.id}`,
       },
     });
 
@@ -359,7 +366,11 @@ const createAppointmentV2 = async (bodyData) => {
               startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
               endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
               roomName: roomOptions[appointment.roomId],
-              link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+              // link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+              link:
+                process.env.NODE_ENV === "production"
+                  ? `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`
+                  : `https://dashboard-staging.thelightyearscdc.com/appointments/${appointment.id}`,
             },
           });
 
@@ -383,7 +394,11 @@ const createAppointmentV2 = async (bodyData) => {
               startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
               endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
               roomName: roomOptions[appointment.roomId],
-              link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+              // link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+              link:
+                process.env.NODE_ENV === "production"
+                  ? `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`
+                  : `https://dashboard-staging.thelightyearscdc.com/appointments/${appointment.id}`,
             },
           });
         });
@@ -421,7 +436,11 @@ const createAppointmentV2 = async (bodyData) => {
             startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
             endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
             roomName: roomOptions[createdAppointment.roomId],
-            link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+            // link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+            link:
+              process.env.NODE_ENV === "production"
+                ? `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`
+                : `https://dashboard-staging.thelightyearscdc.com/appointments/${createdAppointment.id}`,
           },
         });
 
@@ -448,7 +467,11 @@ const createAppointmentV2 = async (bodyData) => {
             startTime: format(createdAppointment.bookingTimeStart, "HH:mm"),
             endTime: format(createdAppointment.bookingTimeEnd, "HH:mm"),
             roomName: roomOptions[createdAppointment.roomId],
-            link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+            // link: `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`,
+            link:
+              process.env.NODE_ENV === "production"
+                ? `https://dashboard.thelightyearscdc.com/appointments/${createdAppointment.id}`
+                : `https://dashboard-staging.thelightyearscdc.com/appointments/${createdAppointment.id}`,
           },
         });
       }, 0);
@@ -515,7 +538,11 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
         startTime: formatForEmail(bodyData.bookingTimeStart, "HH:mm"),
         endTime: formatForEmail(bodyData.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[bodyData.roomId],
-        link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
+        // link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`
+            : `https://dashboard-staging.thelightyearscdc.com/appointments/${appointmentId}`,
       }
     );
 
@@ -538,7 +565,11 @@ const updateAppointmentById = async (appointmentId, bodyData) => {
         startTime: formatForEmail(bodyData.bookingTimeStart, "HH:mm"),
         endTime: formatForEmail(bodyData.bookingTimeEnd, "HH:mm"),
         roomName: roomOptions[bodyData.roomId],
-        link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
+        // link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
+        link:
+          process.env.NODE_ENV === "production"
+            ? `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`
+            : `https://dashboard-staging.thelightyearscdc.com/appointments/${appointmentId}`,
       }
     );
     await tr.commit();
@@ -594,28 +625,29 @@ const deleteAppointmentByIds = async (appointmentIds) => {
       }
     );
 
-    // const sendEmailToPIC = await mailService.sendMail(
-    //   employeeData.email,
-    //   `Appointment Cancelled: ${bodyData.title} with ${
-    //     clientData.fullName
-    //   } on ${formatForEmail(bodyData.appointmentDate, "dd MMM yyyy")}`,
-    //   "APPOINTMENT_PIC_UPDATED",
-    //   {
-    //     fullName: employeeData.fullName,
-    //     clientName: clientData.fullName,
-    //     picType: bodyData.picType,
-    //     appointmentTitle: bodyData.title,
-    //     appointmentType: bodyData.appointmentType,
-    //     appointmentDate: formatForEmail(
-    //       bodyData.appointmentDate,
-    //       "dd MMM yyyy"
-    //     ),
-    //     startTime: formatForEmail(bodyData.bookingTimeStart, "HH:mm"),
-    //     endTime: formatForEmail(bodyData.bookingTimeEnd, "HH:mm"),
-    //     roomName: roomOptions[bodyData.roomId],
-    //     link: `https://dashboard.thelightyearscdc.com/appointments/${appointmentId}`,
-    //   }
-    // );
+    const sendEmailToPIC = await mailService.sendMail(
+      employeeData.email,
+      `Appointment Cancelled: ${deletedAppointmentData.title} with ${
+        deletedAppointmentData.client?.fullName
+      } on ${formatForEmail(
+        deletedAppointmentData.appointmentDate,
+        "dd MMM yyyy"
+      )}`,
+      "APPOINTMENT_PIC_CANCELLED",
+      {
+        guardianName: deletedAppointmentData.client?.guardianName,
+        clientName: deletedAppointmentData.client?.fullName,
+        picName: employeeData.fullName,
+        appointmentTitle: deletedAppointmentData.title,
+        appointmentType: deletedAppointmentData.appointmentType,
+        appointmentDate: formatForEmail(
+          deletedAppointmentData.appointmentDate,
+          "dd MMM yyyy"
+        ),
+        appointmentTime: deletedAppointmentData.appointmentTime,
+        roomName: roomOptions[deletedAppointmentData.roomId],
+      }
+    );
     await tr.commit();
 
     return deletedAppointments;
@@ -827,12 +859,24 @@ const createBulkAppointments = async (appointmentsData) => {
             startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
             endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
             roomName: roomOptions[appointment.roomId],
-            link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+            // link: `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`,
+            link:
+              process.env.NODE_ENV === "production"
+                ? `https://dashboard.thelightyearscdc.com/appointments/${appointment.id}`
+                : `https://dashboard-staging.thelightyearscdc.com/appointments/${appointment.id}`,
           },
         });
 
         // Queue PIC email (only once for bulk appointments)
         if (index === 0) {
+          // Aggregate appointment data for bulk email
+          const appointmentTitles = bulkCreatedAppointments.map(
+            (apt) => apt.title
+          );
+          const appointmentDates = bulkCreatedAppointments.map((apt) =>
+            formatForEmail(apt.appointmentDate, "dd MMM yyyy")
+          );
+
           emailQueue.add({
             to: employeeData.email,
             subject: `New Appointment Assigned: ${appointmentsData.length} appointments with ${clientData.fullName}`,
@@ -840,10 +884,17 @@ const createBulkAppointments = async (appointmentsData) => {
             data: {
               fullName: employeeData.fullName,
               clientName: clientData.fullName,
-              appointmentCount: appointmentsData.length,
-              appointmentTitle: appointmentsData[0].title,
-              appointmentType: appointmentsData[0].appointmentType,
-              link: `https://dashboard.thelightyearscdc.com/appointments`,
+              picType: appointment.picType,
+              appointmentTitle: appointmentTitles.join(", "),
+              appointmentType: appointment.appointmentType,
+              appointmentDate: appointmentDates.join(", "),
+              startTime: formatForEmail(appointment.bookingTimeStart, "HH:mm"),
+              endTime: formatForEmail(appointment.bookingTimeEnd, "HH:mm"),
+              roomName: roomOptions[appointment.roomId],
+              link:
+                process.env.NODE_ENV === "production"
+                  ? `https://dashboard.thelightyearscdc.com/appointments`
+                  : `https://dashboard-staging.thelightyearscdc.com/appointments`,
             },
           });
         }

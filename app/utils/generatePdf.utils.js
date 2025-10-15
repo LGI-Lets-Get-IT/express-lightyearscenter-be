@@ -2,7 +2,9 @@ const path = require("path");
 const fs = require("fs");
 const handlebars = require("handlebars");
 const puppeteer = require("puppeteer");
-const { getAgeInYearsMonthDays } = require('../utils/getAge.utils');
+const { getAgeInYearsMonthDays } = require("../utils/getAge.utils");
+
+handlebars.registerHelper("inc", (Value) => parseInt(Value) + 1);
 
 const generatePdf = async (templateName, data) => {
   const logoPath = path.join(__dirname, "../../public", "TLY_LOGO_L.png");
@@ -29,7 +31,7 @@ const generatePdf = async (templateName, data) => {
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
   const page = await browser.newPage();
 
@@ -49,7 +51,7 @@ const generatePdf = async (templateName, data) => {
     displayHeaderFooter: true,
     headerTemplate: `
       <div style="display: flex; justify-content: space-between; align-items: center; width:100%; padding: 0 50px 0 50px;">
-        <img src="data:image/png;base64,${logoBase64}" style="width: auto;" alt="The Light Years Logo" />
+        <img src="data:image/png;base64,${logoBase64}" style="width: 350px;" alt="The Light Years Logo" />
         <div style="position: fixed; top: 30%; left: 25%;width: 50%;opacity: 0.1;z-index: 0; text-align: center; pointer-events: none;">
             <img src="data:image/png;base64,${watermarkBase64}" style="width: 600px; opacity: 0.3;" />
         </div>
