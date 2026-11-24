@@ -1,12 +1,9 @@
-const allowedOrigins = require('./allowedOrigins.config')
+const { isAllowedOrigin } = require('./allowedOrigins.config')
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (allowedOrigins.indexOf(origin) !== -1 || origin) {
-      callback(null, true);
-    } else {
-      callback(null, new Error("Not allowed by CORS"));
-    }
+    // No Origin header = not a cross-site browser request (curl, server-to-server).
+    callback(null, !origin || isAllowedOrigin(origin));
   },
   credentials: true,
   optionsSuccessStatus: 200,
