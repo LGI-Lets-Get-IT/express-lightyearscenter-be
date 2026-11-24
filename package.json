@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "api for the light years cdc",
   "main": "server.js",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
