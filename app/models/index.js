@@ -3,8 +3,14 @@
 const Sequelize = require("sequelize");
 const process = require("process");
 const env = process.env.NODE_ENV || "development";
-const config = require("../config/db.config")[env];
+const config = { ...require("../config/db.config")[env] };
 const db = {};
+
+// Sequelize loads the driver with a dynamic require, which Vercel's bundler
+// can't trace, so pg gets left out of the deployment. Pass it in explicitly.
+if (config.dialect === "postgres") {
+  config.dialectModule = require("pg");
+}
 
 let sequelize;
 if (config.use_env_variable) {
