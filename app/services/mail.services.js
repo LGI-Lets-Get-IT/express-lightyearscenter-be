@@ -8,15 +8,15 @@ const sendMail = async (
   subject,
   templateName,
   data,
-  attachments
+  attachments,
 ) => {
   const transporter = nodemailer.createTransport({
-    host: "smtp.resend.com",
+    host: process.env.SMTP_HOST,
     secure: true,
-    port: 465,
+    port: process.env.SMTP_PORT,
     auth: {
-      user: process.env.AUTH_USER_RESEND,
-      pass: process.env.AUTH_PASS_RESEND,
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
     },
   });
 

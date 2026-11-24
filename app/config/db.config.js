@@ -37,6 +37,9 @@ module.exports = {
     database: process.env.DB_NAME_PRODUCTION,
     host: process.env.DB_HOST_PRODUCTION,
     dialect: process.env.DB_DIALECT,
+    dialectOptions: {
+      ssl: { require: true, rejectUnauthorized: false },
+    },
     define: { aliases: false },
     pool: {
       min: 0, // min connection
